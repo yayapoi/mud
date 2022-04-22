@@ -18,7 +18,6 @@ mud client for for mud server，只是一个使用 QT 制作的 mud client。 ex
 
 ## 源码使用
 1、下载zlib 源码
-
 2、编译zlib
 3、下载mud-client源码
 4、拷贝zlib的 zconf.h  zlib.h libzlib.dll 至mud-client目录
