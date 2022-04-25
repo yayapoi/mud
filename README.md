@@ -28,6 +28,7 @@ mud client for for mud server, example: pkuxkx,   address: mud.pkuxkx.net   port
 4、使用 qTextEdit 显示消息
 
 ## 软件架构
+请看 mud-client.png
 
 ## 下载链接
 https://github.com/yayapoi/mud
