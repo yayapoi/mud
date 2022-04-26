@@ -117,26 +117,31 @@
 */
 
 
+/*
+ * 0x0D”、“\n
+ *
+ * 0x0A”、“\r
+*/
+
 #include "fontwidget.h"
 #include "ui_fontwidget.h"
 #include <QTextDocument>
 #include <QTextBlock>
-#include <qtextcursor.h>
 #include <qdebug.h>
+#include <QRegularExpression>
 
 FontWidget::FontWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FontWidget)
 {
     ui->setupUi(this);
+    ui->fightEdit->setReadOnly(true);
+    ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+    insertTextCursor=ui->fightEdit->cursorForPosition(QPoint(0,0));
+    insertTextCursor.movePosition(QTextCursor::End);
 
-    QColor color(Qt::red);
-    QTextCharFormat fmt;
-    fmt.setBackground(QColor(50, 50, 50));
-    fmt.setForeground(color);
-    fmt.setFontItalic(true);
-    ui->writeEdit->mergeCurrentCharFormat(fmt);
-    ui->writeEdit->append("asdfasdf");
+    /*QString styleStr="\033[2;37;0m           \033[1;37m游戏地址	\033[2;37;0m\033[36m\033[4mmud.pkuxkx.net 8080";
+    appendNewText(styleStr);*/
 }
 
 FontWidget::~FontWidget()
@@ -146,19 +151,125 @@ FontWidget::~FontWidget()
 
 void FontWidget::appendNewText(QString & testStr)
 {
-    QTextCursor adf=ui->writeEdit->cursorForPosition(QPoint(0,0));
-    adf.movePosition(QTextCursor::End);
-    adf.insertText(testStr);
+    /*
+     * //正确的赋值字颜色  行间距  等，并且插入字符串
+        QTextCursor adf=ui->fightTE->cursorForPosition(QPoint(0,0));
+        adf.movePosition(QTextCursor::End);//先移到 qtextedit 最后，否则设置颜色等不成功
+        QTextBlockFormat blockFormat;//行间距
+        blockFormat.setLineHeight(5, QTextBlockFormat::LineDistanceHeight);
+        QTextCharFormat fmt;//字体背景色
+        QFont font;//字体
+        font.setFamily("宋体");//中文字体
+        font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
+        //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
+        fmt.setForeground(Qt::gray);//设置选中行的字体颜色
+        fmt.setFont(font);
+        adf.mergeCharFormat(fmt);//应用字体
+        adf.setBlockFormat(blockFormat);//应用行间距
+        adf.insertText(testStr);//插入字符
+*/
+    while (testStr.length()>0) {
+        //获取所有的颜色并且替换
+        getStyleFormStr(testStr,insertTextCursor);
+        testStr.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
+        insertTextCursor.insertText(testStr);
+    }
 }
 
-void FontWidget::on_pushButton_clicked()
+void FontWidget::appendNewText(QByteArray backArray)
 {
-    QTextCursor cursor=ui->writeEdit->document()->find("dddd");
+    QString testStr(backArray);
+    qDebug()<<lowNum++<<"****"<<testStr;
+    //testStr.remove('\r');
+    //testStr.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
+    //testStr.remove(QRegularExpression("\\r\\n$"));
+
+    QTextBlockFormat blockFormat;//行间距
+    blockFormat.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
+    QTextCharFormat fmt;//字体背景色
+    QFont font;//字体
+    font.setFamily("宋体");//中文字体
+    font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
+    fmt.setFont(font);
+    //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
+    fmt.setForeground(Qt::gray);//设置选中行的字体颜色
+    while (backArray.size()>0) {//截取出要打印的字符串  一行的那种
+        QByteArray oneStr;
+        getOneStrFromArray(backArray, oneStr);
+
+
+        insertTextCursor.mergeCharFormat(fmt);//应用字体
+        insertTextCursor.setBlockFormat(blockFormat);//应用行间距
+        /*QString asdfasdfasdf(oneStr);
+        asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));*/
+        insertTextCursor.insertText(oneStr);//插入字符
+    }
+}
+
+void FontWidget::getStyleFormStr(QString &styleStr, QTextCursor &cursor)
+{
+    styleStr.remove(QRegularExpression("\\033"));//去除掉\033
+    qDebug()<<"styleStr--"<<styleStr;
+    QRegularExpression regular("\\d+");
+    int index=0;
+    do{
+        QRegularExpressionMatch regularmatch=regular.match(styleStr, index);
+        if(regularmatch.hasMatch())
+        {
+            index=regularmatch.capturedEnd();
+            QString checkStr=regularmatch.captured(0);
+            qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<checkStr;
+        }
+        else
+        {
+            break;
+        }
+    }while (index < styleStr.length());
+}
+
+void FontWidget::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
+{
+    bool findStr=false;//找到回车换行
+    int charNum=0;//没找到回车换行，但是到尾部了
+    for(; charNum<inArray.size()-1; charNum++)
+    {
+        if(uchar(inArray[charNum])==0x0D && uchar(inArray[charNum+1])==0x0A)
+        {
+            findStr=true;
+            charNum++;
+            break;
+        }
+    }
+
+    if(findStr)//找到回车换行
+    {
+        outArray=inArray.mid(0, charNum+1);
+        inArray=inArray.mid(charNum+1);
+        //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<QString(backArray);
+    }
+    else
+    {
+        if(charNum+1 == inArray.size())//没找到回车换行，但是到尾部了
+        {
+            outArray=inArray;
+            inArray=inArray.mid(charNum+1);
+            //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<QString(backArray);
+        }
+        else
+        {
+            //qDebug()<<"error  backArray--"<<QString(backArray);
+        }
+    }
+}
+
+//通过光标获取选中的文本，并且获取字体的属性
+    /*
+     * QTextCursor cursor=ui->writeEdit->document()->find("dddd");
     QTextBlock textBlock = ui->writeEdit->document()->findBlockByLineNumber(cursor.blockNumber());//通过行号找到指定行 数据块
     QVector<QTextLayout::FormatRange> vectora=textBlock.textFormats();
     for(auto asdfasdf:vectora)
         qDebug()<<asdfasdf.start<<"--"<<asdfasdf.length<<"--"<<asdfasdf.format;
     ui->showEdit->clear();
     ui->showEdit->appendPlainText(textBlock.text());
-}
+*/
 

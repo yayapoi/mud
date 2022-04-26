@@ -70,6 +70,8 @@ private:
     bool compressed=false;
     QByteArray zbuffer;
     QByteArray backArray;
+    /*@brief 上次没有处理完的非一行数据*/
+    QByteArray halfStrArray;
     z_stream zstrm;
     QByteArray zout;
     int zoutSize=10000;//废弃
