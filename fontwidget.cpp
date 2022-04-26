@@ -267,8 +267,6 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
             checkStr.remove(QRegularExpression("\\033\\["));
             //qDebug()<<"checkStr--"<<checkStr;
             int index=0;
-            QTextCharFormat fmt;//字体背景色
-            QFont font;//字体
             while (index<checkStr.size()) {
                 QRegularExpressionMatch regularmatch1=regular1.match(checkStr, index);
                 if(regularmatch1.hasMatch())
@@ -293,11 +291,11 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
 
 void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharFormat& backCharFormat)
 {
-    backFont.setFamily("宋体");//字体
-    backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
     switch (fontStyle) {
     case Colors::close_all:
     {
+        backFont.setFamily("宋体");//字体
+        backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
         backFont.setWeight(QFont::Normal);//设置粗体属性实际上就是将字体的粗细设为一个确定的值
         backFont.setUnderline(false);//下划线
         backFont.setStrikeOut(false);//删除线
@@ -420,7 +418,7 @@ void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCha
 
 void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
 {
-    int Num=0;
+    /*int Num=0;
     bool fandStr=false;
     for(; Num<inArray.size()-1; Num++)
     {
@@ -441,25 +439,27 @@ void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
     {
         outArray=inArray;
         inArray.clear();
-    }
-    /*QRegularExpression regular("\033\\[\\d+(;\\d+)*m");//为什么不生效，需要研究
+    }*/
+    QRegularExpression regular("\033\\[\\d+(;\\d+)*m");//为什么不生效，需要研究
     QRegularExpressionMatch regularmatch=regular.match(inArray);
     if(regularmatch.hasMatch())//检测出颜色切换
     {
-        qDebug()<<"old inArray--"<<inArray;
-        int start=regularmatch.capturedStart();
-        qDebug()<<"start--"<<start;
-        outArray=inArray.mid(0,start);
-        qDebug()<<"outArray--"<<outArray;
-        inArray.remove(0,start);
-        qDebug()<<"new inArray--"<<inArray;
-        qDebug();
+        QByteArray backStrArray=regularmatch.captured(0).toUtf8();
+        int Num=inArray.indexOf(backStrArray);
+
+        //qDebug()<<"old inArray--"<<inArray;
+        //qDebug()<<"start--"<<Num;
+        outArray=inArray.mid(0,Num);
+        //qDebug()<<"outArray--"<<outArray;
+        inArray.remove(0,Num);
+        //qDebug()<<"new inArray--"<<inArray;
+        //qDebug();
     }
     else
     {
         outArray=inArray;
         inArray.clear();
-    }*/
+    }
 }
 
 //通过光标获取选中的文本，并且获取字体的属性
