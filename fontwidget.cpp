@@ -118,9 +118,12 @@
 
 
 /*
- * 0x0D”、“\n
- *
- * 0x0A”、“\r
+ * 0x0D \n
+ * 0x0A \r
+ * 0X5B [
+ * 0X3B ;
+ * 0X1B \033
+ * 0X6D m
 */
 
 #include "fontwidget.h"
@@ -137,11 +140,17 @@ FontWidget::FontWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->fightEdit->setReadOnly(true);
     ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+
     insertTextCursor=ui->fightEdit->cursorForPosition(QPoint(0,0));
     insertTextCursor.movePosition(QTextCursor::End);
-
-    /*QString styleStr="\033[2;37;0m           \033[1;37m游戏地址	\033[2;37;0m\033[36m\033[4mmud.pkuxkx.net 8080";
-    appendNewText(styleStr);*/
+    blockFormat.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
+    font.setFamily("宋体");//中文字体
+    font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
+    fmt.setFont(font);
+    //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
+    fmt.setForeground(Qt::lightGray);//设置选中行的字体颜色
+    insertTextCursor.mergeCharFormat(fmt);//应用字体
+    insertTextCursor.setBlockFormat(blockFormat);//应用行间距
 }
 
 FontWidget::~FontWidget()
@@ -149,60 +158,34 @@ FontWidget::~FontWidget()
     delete ui;
 }
 
-void FontWidget::appendNewText(QString & testStr)
-{
-    /*
-     * //正确的赋值字颜色  行间距  等，并且插入字符串
-        QTextCursor adf=ui->fightTE->cursorForPosition(QPoint(0,0));
-        adf.movePosition(QTextCursor::End);//先移到 qtextedit 最后，否则设置颜色等不成功
-        QTextBlockFormat blockFormat;//行间距
-        blockFormat.setLineHeight(5, QTextBlockFormat::LineDistanceHeight);
-        QTextCharFormat fmt;//字体背景色
-        QFont font;//字体
-        font.setFamily("宋体");//中文字体
-        font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
-        //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
-        fmt.setForeground(Qt::gray);//设置选中行的字体颜色
-        fmt.setFont(font);
-        adf.mergeCharFormat(fmt);//应用字体
-        adf.setBlockFormat(blockFormat);//应用行间距
-        adf.insertText(testStr);//插入字符
-*/
-    while (testStr.length()>0) {
-        //获取所有的颜色并且替换
-        getStyleFormStr(testStr,insertTextCursor);
-        testStr.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
-        insertTextCursor.insertText(testStr);
-    }
-}
-
 void FontWidget::appendNewText(QByteArray backArray)
 {
-    QString testStr(backArray);
-    qDebug()<<lowNum++<<"****"<<testStr;
-    //testStr.remove('\r');
-    //testStr.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
-    //testStr.remove(QRegularExpression("\\r\\n$"));
+    //QString testStr(backArray);
+    //qDebug()<<lowNum++<<"****"<<testStr;
 
-    QTextBlockFormat blockFormat;//行间距
-    blockFormat.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
-    QTextCharFormat fmt;//字体背景色
-    QFont font;//字体
-    font.setFamily("宋体");//中文字体
-    font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
-    fmt.setFont(font);
-    //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
-    fmt.setForeground(Qt::gray);//设置选中行的字体颜色
-    while (backArray.size()>0) {//截取出要打印的字符串  一行的那种
+    while (backArray.size()>0) {//循环截取出要打印的字符串  一行的那种
         QByteArray oneStr;
-        getOneStrFromArray(backArray, oneStr);
+        getOneStrFromArray(backArray, oneStr);//截取出要打印的字符串  一行的那种
+        while (oneStr.size()>0) {
+            getCursorStyleFromArray(oneStr);//设置光标颜色
+            QByteArray showStr;
+            getShowStrFromArray(oneStr, showStr);//从数组中获取 当前光标颜色下应该显示的文字
 
+            //QString asdfasdfasdf(oneStr);
+            //asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
+            insertTextCursor.insertText(showStr);//插入字符
+        }
 
-        insertTextCursor.mergeCharFormat(fmt);//应用字体
-        insertTextCursor.setBlockFormat(blockFormat);//应用行间距
-        /*QString asdfasdfasdf(oneStr);
-        asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));*/
-        insertTextCursor.insertText(oneStr);//插入字符
+        //QString babababa;//十六进制查看
+        //for(int num=0; num<oneStr.size(); num++)
+        //{
+        //babababa=babababa+tr("0x%1,").arg((quint8)oneStr.at(num),2,16,QLatin1Char('0')).toUpper();
+        //}
+        //qDebug()<<"showStr----"<<QString(oneStr);
+        //qDebug()<<"oneStr----"<<oneStr;
+        //qDebug()<<"bababa----"<<babababa;
+        //qDebug();
+        //insertTextCursor.insertText(oneStr);//插入字符
     }
 }
 
@@ -262,8 +245,225 @@ void FontWidget::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
     }
 }
 
+void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
+{
+    QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");
+    QRegularExpression regular1("\\d+");
+    QRegularExpressionMatch regularmatch=regular.match(inArray);
+    if(regularmatch.hasMatch())//字符串一开始就是颜色设置
+    {
+        //qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<regularmatch.captured(0);
+        //int end=regularmatch.capturedEnd();
+        //int start=regularmatch.capturedStart();
+        //QString checkStr=regularmatch.captured(0);
+        //qDebug()<<"old checkStr--"<<checkStr;
+        //checkStr.remove(QRegularExpression("\\033\\["));
+        //inArray.remove(regularmatch.capturedStart(),regularmatch.capturedEnd()-regularmatch.capturedStart());
+        //qDebug()<<"start--"<<start<<"  end--"<<end<<"  new checkStr--"<<checkStr<<"  inArray--"<<inArray;
+        if(regularmatch.capturedStart()==0)
+        {
+            QString checkStr=regularmatch.captured(0);
+            inArray.remove(regularmatch.capturedStart(),regularmatch.capturedLength());
+            checkStr.remove(QRegularExpression("\\033\\["));
+            //qDebug()<<"checkStr--"<<checkStr;
+            int index=0;
+            QTextCharFormat fmt;//字体背景色
+            QFont font;//字体
+            while (index<checkStr.size()) {
+                QRegularExpressionMatch regularmatch1=regular1.match(checkStr, index);
+                if(regularmatch1.hasMatch())
+                {
+                    index=regularmatch1.capturedEnd();
+                    //qDebug()<<"("<<regularmatch1.capturedStart()<<","<<regularmatch1.capturedEnd()<<")"<<regularmatch1.captured(0).toInt();
+                    //获取每种颜色设置
+
+                    setTextCursorFromArray(regularmatch1.captured(0).toInt(), font, fmt);
+                    fmt.setFont(font);
+                    //insertTextCursor.setBlockFormat(blockFormat);//应用行间距
+                    insertTextCursor.mergeCharFormat(fmt);//应用字体
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharFormat& backCharFormat)
+{
+    backFont.setFamily("宋体");//字体
+    backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
+    switch (fontStyle) {
+    case Colors::close_all:
+    {
+        backFont.setWeight(QFont::Normal);//设置粗体属性实际上就是将字体的粗细设为一个确定的值
+        backFont.setUnderline(false);//下划线
+        backFont.setStrikeOut(false);//删除线
+        backFont.setOverline(false);//上划线
+        backFont.setItalic(false);//斜体
+        backFont.setBold(false);//设置黑体 粗体
+        backCharFormat.setForeground(Qt::lightGray);
+        backCharFormat.setBackground(Qt::black);
+        break;
+    }
+    case Colors::Bold_Color:
+    {
+        backFont.setBold(true);//设置黑体 粗体
+        break;
+    }
+    case Colors::underline:
+    {
+        backFont.setUnderline(true);//下划线
+        break;
+    }
+    case Colors::Italic:
+    {
+        backFont.setItalic(true);//斜体
+        break;
+    }
+    case Colors::Overline:
+    {
+        backFont.setOverline(true);//上划线
+        break;
+    }
+    case Colors::StrikeOut:
+    {
+        backFont.setStrikeOut(true);//删除线
+        break;
+    }
+    case Colors::font_darkgray:
+    {
+        backCharFormat.setForeground(Qt::darkGray);
+        break;
+    }
+    case Colors::font_red:
+    {
+        backCharFormat.setForeground(Qt::red);
+        break;
+    }
+    case Colors::font_green:
+    {
+        backCharFormat.setForeground(Qt::green);
+        break;
+    }
+    case Colors::font_yellow:
+    {
+        backCharFormat.setForeground(Qt::yellow);
+        break;
+    }
+    case Colors::font_blue:
+    {
+        backCharFormat.setForeground(Qt::blue);
+        break;
+    }
+    case Colors::font_magenta:
+    {
+        backCharFormat.setForeground(Qt::magenta);
+        break;
+    }
+    case Colors::font_darkgrren:
+    {
+        backCharFormat.setForeground(Qt::darkGreen);
+        break;
+    }
+    case Colors::font_white:
+    {
+        backCharFormat.setForeground(Qt::white);
+        break;
+    }
+    case Colors::back_darkgray:
+    {
+        backCharFormat.setBackground(Qt::darkGray);
+        break;
+    }
+    case Colors::back_red:
+    {
+        backCharFormat.setBackground(Qt::red);
+        break;
+    }
+    case Colors::back_green:
+    {
+        backCharFormat.setBackground(Qt::green);
+        break;
+    }
+    case Colors::back_yellow:
+    {
+        backCharFormat.setBackground(Qt::yellow);
+        break;
+    }
+    case Colors::back_blue:
+    {
+        backCharFormat.setBackground(Qt::blue);
+        break;
+    }
+    case Colors::back_magenta:
+    {
+        backCharFormat.setBackground(Qt::magenta);
+        break;
+    }
+    case Colors::back_darkgrren:
+    {
+        backCharFormat.setBackground(Qt::darkGreen);
+        break;
+    }
+    case Colors::back_white:
+    {
+        backCharFormat.setBackground(Qt::white);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
+{
+    int Num=0;
+    bool fandStr=false;
+    for(; Num<inArray.size()-1; Num++)
+    {
+        if(uchar(inArray[Num])==0X1B && uchar(inArray[Num+1])==0X5B && uchar(inArray[Num+3])!='z' )
+        {
+            //qDebug()<<"old inArray--"<<inArray;
+            outArray=inArray.mid(0,Num);
+            //qDebug()<<"start--"<<Num;
+            //qDebug()<<"outArray--"<<outArray;
+            inArray.remove(0,Num);
+            fandStr=true;
+            //qDebug()<<"new inArray--"<<inArray;
+            //qDebug();
+            break;
+        }
+    }
+    if(fandStr==false)
+    {
+        outArray=inArray;
+        inArray.clear();
+    }
+    /*QRegularExpression regular("\033\\[\\d+(;\\d+)*m");//为什么不生效，需要研究
+    QRegularExpressionMatch regularmatch=regular.match(inArray);
+    if(regularmatch.hasMatch())//检测出颜色切换
+    {
+        qDebug()<<"old inArray--"<<inArray;
+        int start=regularmatch.capturedStart();
+        qDebug()<<"start--"<<start;
+        outArray=inArray.mid(0,start);
+        qDebug()<<"outArray--"<<outArray;
+        inArray.remove(0,start);
+        qDebug()<<"new inArray--"<<inArray;
+        qDebug();
+    }
+    else
+    {
+        outArray=inArray;
+        inArray.clear();
+    }*/
+}
+
 //通过光标获取选中的文本，并且获取字体的属性
-    /*
+/*
      * QTextCursor cursor=ui->writeEdit->document()->find("dddd");
     QTextBlock textBlock = ui->writeEdit->document()->findBlockByLineNumber(cursor.blockNumber());//通过行号找到指定行 数据块
     QVector<QTextLayout::FormatRange> vectora=textBlock.textFormats();

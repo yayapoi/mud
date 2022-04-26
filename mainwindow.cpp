@@ -377,8 +377,8 @@ MainWindow::MainWindow(QWidget *parent)
         }*/
         messageFile->write(backArray);
 
-        QString testStr(backArray);
-        qDebug()<<lowNum++<<"****"<<testStr;
+        //QString testStr(backArray);
+        //qDebug()<<lowNum++<<"****"<<testStr;
         ui->fightTE->appendNewText(backArray);
 
         backArray.clear();
