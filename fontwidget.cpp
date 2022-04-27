@@ -1,4 +1,4 @@
-/*
+   /*
  * // 列举qt支持的所有中文字体
     //QFontDatabase fontDatabase;
     //    for(auto it:fontDatabase.families(QFontDatabase::SimplifiedChinese))
@@ -147,6 +147,10 @@ FontWidget::FontWidget(QWidget *parent) :
     ui->tmpEdit->document()->setMaximumBlockCount(2000);
     ui->tmpEdit->hide();
 
+    chatForm=new ChatForm(this);
+    chatForm->setGeometry(1000,0,500,500);
+    chatForm->show();
+
     connect(ui->fightEdit->verticalScrollBar(),&QScrollBar::rangeChanged,[&](int mixNum, int maxnum){
         //鼠标滚动或者向上拉滚动条时，开启滚动条不滚动
         //qDebug()<<"mixNum--"<<mixNum<<"  maxnum--"<<maxnum;
@@ -192,18 +196,82 @@ void FontWidget::appendNewText(QByteArray backArray)
     while (backArray.size()>0) {//循环截取出要打印的字符串  一行的那种
         QByteArray oneStr;
         getOneStrFromArray(backArray, oneStr);//截取出要打印的字符串  一行的那种
-        while (oneStr.size()>0) {
-            getCursorStyleFromArray(oneStr);//设置光标颜色
-            QByteArray showStr;
-            getShowStrFromArray(oneStr, showStr);//从数组中获取 当前光标颜色下应该显示的文字
+        {
+            QRegularExpression regular1("\\033\\[1;33m【任务】");
+            QRegularExpression regular2("\\033\\[1;35m【谣言】");
+            QRegularExpression regular3("\\033\\[1;36m【闲聊】");
 
-            //QString asdfasdfasdf(oneStr);
-            //asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
-            if(clickScrollBar)
+            QRegularExpression regular4("\\033\\[1;37m【求助】");
+            QRegularExpression regular5("\\033\\[1;37m【江湖】");
+            QRegularExpression regular6("\\033\\[37m【北侠QQ群】");
+            QRegularExpressionMatch regularmatch=regular1.match(oneStr);
+            if(regularmatch.hasMatch())//字符串一开始就是颜色设置
             {
-                tmpInsertTextCursor.insertText(showStr);//插入字符
+                qDebug()<<"("<<regularmatch.capturedStart()<<","<<regularmatch.capturedEnd()<<")"<<regularmatch.captured(0);
+                qDebug()<<"  【任务】--"<<QString(oneStr);
+                qDebug()<<"  【任务】--"<<oneStr;
+                chatForm->appendOneStr(0,oneStr,fmt,font);
             }
-            insertTextCursor.insertText(showStr);//插入字符
+            else
+            {
+                QRegularExpressionMatch regularmatch2=regular2.match(oneStr);
+                if(regularmatch2.hasMatch())//字符串一开始就是颜色设置
+                {
+                    qDebug()<<"("<<regularmatch2.capturedStart()<<","<<regularmatch2.capturedEnd()<<")"<<regularmatch2.captured(0);
+                    qDebug()<<"  【谣言】--"<<QString(oneStr);
+                    qDebug()<<"  【谣言】--"<<oneStr;
+                    chatForm->appendOneStr(1,oneStr,fmt,font);
+                }
+                else
+                {
+                    QRegularExpressionMatch regularmatch3=regular3.match(oneStr);
+                    if(regularmatch3.hasMatch())//字符串一开始就是颜色设置
+                    {
+                        qDebug()<<"("<<regularmatch3.capturedStart()<<","<<regularmatch3.capturedEnd()<<")"<<regularmatch3.captured(0);
+                        qDebug()<<"  【闲聊】--"<<QString(oneStr);
+                        qDebug()<<"  【闲聊】--"<<oneStr;
+                        chatForm->appendOneStr(2,oneStr,fmt,font);
+                    }
+                    else
+                    {
+                        QRegularExpressionMatch regularmatch4=regular4.match(oneStr);
+                        if(regularmatch4.hasMatch())//字符串一开始就是颜色设置
+                        {
+                            qDebug()<<"("<<regularmatch4.capturedStart()<<","<<regularmatch4.capturedEnd()<<")"<<regularmatch4.captured(0);
+                            qDebug()<<"  【求助】--"<<QString(oneStr);
+                            qDebug()<<"  【求助】--"<<oneStr;
+                            chatForm->appendOneStr(3,oneStr,fmt,font);
+                        }
+                        else
+                        {
+                            QRegularExpressionMatch regularmatch5=regular5.match(oneStr);
+                            if(regularmatch5.hasMatch())//字符串一开始就是颜色设置
+                            {
+
+                                qDebug()<<"("<<regularmatch5.capturedStart()<<","<<regularmatch5.capturedEnd()<<")"<<regularmatch5.captured(0);
+                                qDebug()<<"  【江湖】--"<<QString(oneStr);
+                                qDebug()<<"  【江湖】--"<<oneStr;
+                                chatForm->appendOneStr(4,oneStr,fmt,font);
+                            }
+                            else
+                            {
+                                QRegularExpressionMatch regularmatch6=regular6.match(oneStr);
+                                if(regularmatch6.hasMatch())//字符串一开始就是颜色设置
+                                {
+                                    qDebug()<<"("<<regularmatch6.capturedStart()<<","<<regularmatch6.capturedEnd()<<")"<<regularmatch6.captured(0);
+                                    qDebug()<<"  【北侠QQ群】--"<<QString(oneStr);
+                                    qDebug()<<"  【北侠QQ群】--"<<oneStr;
+                                    chatForm->appendOneStr(5,oneStr,fmt,font);
+                                }
+                                else
+                                {
+                                    showStrThisWidget(oneStr);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -476,6 +544,23 @@ void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
     {
         outArray=inArray;
         inArray.clear();
+    }
+}
+
+void FontWidget::showStrThisWidget(QByteArray &inArray)
+{
+    while (inArray.size()>0) {
+        getCursorStyleFromArray(inArray);//设置光标颜色
+        QByteArray showStr;
+        getShowStrFromArray(inArray, showStr);//从数组中获取 当前光标颜色下应该显示的文字
+
+        //QString asdfasdfasdf(oneStr);
+        //asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
+        if(clickScrollBar)
+        {
+            tmpInsertTextCursor.insertText(showStr);//插入字符
+        }
+        insertTextCursor.insertText(showStr);//插入字符
     }
 }
 

@@ -398,7 +398,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
         tsetadf=tsetadf?false:true;
     });
-    goTimer->start(60000);
+    //goTimer->start(60000);
 }
 
 MainWindow::~MainWindow()

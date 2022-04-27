@@ -65,7 +65,7 @@ private:
     void checkStr(QByteArray);
     /* @brief 检查解压的大小，决定输出数组的大小*/
     int checkOutSize(int);
-    /* @brief 按行匹配分开【闲聊】【任务】【江湖】【求助】【谣言】*/
+    /* @brief 按行匹配分开【闲聊】【任务】【江湖】【求助】【谣言】【北侠QQ群】*/
     void checkAlise(QByteArray&);
 
     z_stream mZstream;
