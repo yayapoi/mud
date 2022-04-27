@@ -53,6 +53,8 @@ public:
 private slots:
     void on_cmdLE_returnPressed();
 
+    void on_toolButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;
@@ -76,6 +78,7 @@ private:
     QByteArray zout;
     int zoutSize=10000;//废弃
     int lowNum=0;
+    bool tsetadf=false;
 
     QFile* messageFile;
     //QRegularExpression *regular=nullptr;//使用下面的正则表达式，不使用这段 ***

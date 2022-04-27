@@ -5,6 +5,7 @@
 #include <iostream>
 #include <QRegularExpression>
 #include <QFontDatabase>
+#include <QTimer>
 
 struct totalZlibStruct{
     int showNum=0;//出现几次
@@ -384,6 +385,20 @@ MainWindow::MainWindow(QWidget *parent)
         backArray.clear();
     });
     testSocket->connectToHost("47.97.249.185",8081);
+
+    QTimer* goTimer=new QTimer;
+    connect(goTimer, &QTimer::timeout, [&](){
+        if(tsetadf)
+        {
+            socketWrite("go west");
+        }
+        else
+        {
+            socketWrite("go east");
+        }
+        tsetadf=tsetadf?false:true;
+    });
+    goTimer->start(60000);
 }
 
 MainWindow::~MainWindow()
@@ -534,3 +549,9 @@ void MainWindow::on_cmdLE_returnPressed()
     socketWrite(ui->cmdLE->text());
     ui->cmdLE->selectAll();
 }
+
+void MainWindow::on_toolButton_clicked()
+{
+    ui->fightTE->setClickScrollBar();
+}
+

@@ -132,6 +132,7 @@
 #include <QTextBlock>
 #include <qdebug.h>
 #include <QRegularExpression>
+#include <QScrollBar>
 
 FontWidget::FontWidget(QWidget *parent) :
     QWidget(parent),
@@ -140,6 +141,26 @@ FontWidget::FontWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->fightEdit->setReadOnly(true);
     ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+    ui->fightEdit->document()->setMaximumBlockCount(2000);
+    ui->tmpEdit->setEnabled(false);
+    ui->tmpEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+    ui->tmpEdit->document()->setMaximumBlockCount(2000);
+    ui->tmpEdit->hide();
+
+    connect(ui->fightEdit->verticalScrollBar(),&QScrollBar::rangeChanged,[&](int mixNum, int maxnum){
+        //鼠标滚动或者向上拉滚动条时，开启滚动条不滚动
+        //qDebug()<<"mixNum--"<<mixNum<<"  maxnum--"<<maxnum;
+        lowNum=maxnum;
+    });
+    connect(ui->fightEdit->verticalScrollBar(),&QScrollBar::valueChanged,[&](int testnum){
+        //鼠标滚动或者向上拉滚动条时，开启滚动条不滚动
+        //qDebug()<<"testnum--"<<testnum<<"  lowNum--"<<lowNum;
+        if(testnum<lowNum)
+        {
+            clickScrollBar=true;
+            ui->tmpEdit->show();
+        }
+    });
 
     insertTextCursor=ui->fightEdit->cursorForPosition(QPoint(0,0));
     insertTextCursor.movePosition(QTextCursor::End);
@@ -151,6 +172,11 @@ FontWidget::FontWidget(QWidget *parent) :
     fmt.setForeground(Qt::lightGray);//设置选中行的字体颜色
     insertTextCursor.mergeCharFormat(fmt);//应用字体
     insertTextCursor.setBlockFormat(blockFormat);//应用行间距
+
+    tmpInsertTextCursor=ui->tmpEdit->cursorForPosition(QPoint(0,0));
+    tmpInsertTextCursor.movePosition(QTextCursor::End);
+    tmpInsertTextCursor.mergeCharFormat(fmt);//应用字体
+    tmpInsertTextCursor.setBlockFormat(blockFormat);//应用行间距
 }
 
 FontWidget::~FontWidget()
@@ -173,20 +199,31 @@ void FontWidget::appendNewText(QByteArray backArray)
 
             //QString asdfasdfasdf(oneStr);
             //asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
+            if(clickScrollBar)
+            {
+                tmpInsertTextCursor.insertText(showStr);//插入字符
+            }
             insertTextCursor.insertText(showStr);//插入字符
         }
-
-        //QString babababa;//十六进制查看
-        //for(int num=0; num<oneStr.size(); num++)
-        //{
-        //babababa=babababa+tr("0x%1,").arg((quint8)oneStr.at(num),2,16,QLatin1Char('0')).toUpper();
-        //}
-        //qDebug()<<"showStr----"<<QString(oneStr);
-        //qDebug()<<"oneStr----"<<oneStr;
-        //qDebug()<<"bababa----"<<babababa;
-        //qDebug();
-        //insertTextCursor.insertText(oneStr);//插入字符
     }
+}
+
+void FontWidget::setClickScrollBar()
+{
+    clickScrollBar=false;
+    ui->tmpEdit->hide();
+    ui->tmpEdit->clear();
+    ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+}
+
+void FontWidget::resizeEvent(QResizeEvent *event)
+{
+    qDebug()<<"FontWidget::resizeEvent";
+    if(clickScrollBar==false)
+    {
+        ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+    }
+    QWidget::resizeEvent(event);
 }
 
 void FontWidget::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
@@ -257,6 +294,7 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
                     setTextCursorFromArray(regularmatch1.captured(0).toInt(), font, fmt);
                     fmt.setFont(font);
                     //insertTextCursor.setBlockFormat(blockFormat);//应用行间距
+                    tmpInsertTextCursor.mergeCharFormat(fmt);//应用字体
                     insertTextCursor.mergeCharFormat(fmt);//应用字体
                 }
                 else
@@ -451,4 +489,19 @@ void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
     ui->showEdit->clear();
     ui->showEdit->appendPlainText(textBlock.text());
 */
+
+
+void FontWidget::on_fightEdit_textChanged()
+{
+    if(clickScrollBar==false)
+    {
+        ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+    }
+}
+
+
+void FontWidget::on_tmpEdit_textChanged()
+{
+    ui->tmpEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+}
 

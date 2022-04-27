@@ -15,11 +15,18 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0" colspan="2">
+     <widget class="FontWidget" name="fightTE" native="true"/>
+    </item>
     <item row="1" column="0">
      <widget class="QLineEdit" name="cmdLE"/>
     </item>
-    <item row="0" column="0">
-     <widget class="FontWidget" name="fightTE" native="true"/>
+    <item row="1" column="1">
+     <widget class="QToolButton" name="toolButton">
+      <property name="text">
+       <string>恢复</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
