@@ -2,6 +2,8 @@
 #include "ui_chatform.h"
 #include <QScrollBar>
 #include <QRegularExpression>
+#include <QDebug>
+#include <QTime>
 
 ChatForm::ChatForm(QWidget *parent) :
     QWidget(parent),
@@ -64,41 +66,41 @@ ChatForm::ChatForm(QWidget *parent) :
         if(testnum<beiXiaQQQunEditlowNum){beiXiaQQQunEditScrollBar=true;}});
 
 
-    blockFormat.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
-    font.setFamily("宋体");//中文字体
-    font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
-    fmt.setFont(font);
-    fmt.setForeground(Qt::lightGray);//设置选中行的字体颜色
+    blockFormat1.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
+    font1.setFamily("宋体");//中文字体
+    font1.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
+    fmt1.setFont(font1);
+    fmt1.setForeground(Qt::lightGray);//设置选中行的字体颜色
 
     renWuEditinsertTextCursor=ui->renWuEdit->cursorForPosition(QPoint(0,0));
     renWuEditinsertTextCursor.movePosition(QTextCursor::End);
-    renWuEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-    renWuEditinsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+    renWuEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
+    renWuEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
 
     yaoYanEditinsertTextCursor=ui->yaoYanEdit->cursorForPosition(QPoint(0,0));
     yaoYanEditinsertTextCursor.movePosition(QTextCursor::End);
-    yaoYanEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-    yaoYanEditinsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+    yaoYanEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
+    yaoYanEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
 
     xianLiaoEditinsertTextCursor=ui->xianLiaoEdit->cursorForPosition(QPoint(0,0));
     xianLiaoEditinsertTextCursor.movePosition(QTextCursor::End);
-    xianLiaoEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-    xianLiaoEditinsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+    xianLiaoEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
+    xianLiaoEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
 
     qiuZhuEditinsertTextCursor=ui->qiuZhuEdit->cursorForPosition(QPoint(0,0));
     qiuZhuEditinsertTextCursor.movePosition(QTextCursor::End);
-    qiuZhuEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-    qiuZhuEditinsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+    qiuZhuEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
+    qiuZhuEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
 
     jiangHuEditinsertTextCursor=ui->jiangHuEdit->cursorForPosition(QPoint(0,0));
     jiangHuEditinsertTextCursor.movePosition(QTextCursor::End);
-    jiangHuEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-    jiangHuEditinsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+    jiangHuEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
+    jiangHuEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
 
     beiXiaQQQunEditinsertTextCursor=ui->beiXiaQQQunEdit->cursorForPosition(QPoint(0,0));
     beiXiaQQQunEditinsertTextCursor.movePosition(QTextCursor::End);
-    beiXiaQQQunEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-    beiXiaQQQunEditinsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+    beiXiaQQQunEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
+    beiXiaQQQunEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
 }
 
 ChatForm::~ChatForm()
@@ -188,9 +190,14 @@ void ChatForm::on_resetBT_clicked()
 
 void ChatForm::showStrThisWidget(int Num, QByteArray &inarray, QTextCharFormat &inFmt, QFont &inFont)
 {
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    QString current_date = current_date_time.toString("MM-dd ");
+    QString current_time = current_date_time.toString("hh:mm:ss: ");
+    QByteArray showStr;
+    showStr.append(current_date.toUtf8());
+    showStr.append(current_time.toUtf8());
     while (inarray.size()>0) {
         getCursorStyleFromArray(Num, inarray, inFmt, inFont);//设置光标颜色
-        QByteArray showStr;
         getShowStrFromArray(inarray, showStr);//从数组中获取 当前光标颜色下应该显示的文字
 
         switch (Num) {
@@ -227,6 +234,7 @@ void ChatForm::showStrThisWidget(int Num, QByteArray &inarray, QTextCharFormat &
         default:
             break;
         }
+        showStr.clear();
     }
 }
 
@@ -261,13 +269,13 @@ void ChatForm::getCursorStyleFromArray(int Num, QByteArray &inarray, QTextCharFo
                     //获取每种颜色设置
 
                     setTextCursorFromArray(regularmatch1.captured(0).toInt(), inFont, inFmt);
-                    fmt.setFont(font);
-                    renWuEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-                    yaoYanEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-                    xianLiaoEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-                    qiuZhuEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-                    jiangHuEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
-                    beiXiaQQQunEditinsertTextCursor.mergeCharFormat(fmt);//应用字体
+                    inFmt.setFont(inFont);
+                    renWuEditinsertTextCursor.mergeCharFormat(inFmt);//应用字体
+                    yaoYanEditinsertTextCursor.mergeCharFormat(inFmt);//应用字体
+                    xianLiaoEditinsertTextCursor.mergeCharFormat(inFmt);//应用字体
+                    qiuZhuEditinsertTextCursor.mergeCharFormat(inFmt);//应用字体
+                    jiangHuEditinsertTextCursor.mergeCharFormat(inFmt);//应用字体
+                    beiXiaQQQunEditinsertTextCursor.mergeCharFormat(inFmt);//应用字体
                 }
                 else
                 {
@@ -416,7 +424,7 @@ void ChatForm::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
 
         //qDebug()<<"old inArray--"<<inArray;
         //qDebug()<<"start--"<<Num;
-        outArray=inArray.mid(0,Num);
+        outArray.append(inArray.mid(0,Num));
         //qDebug()<<"outArray--"<<outArray;
         inArray.remove(0,Num);
         //qDebug()<<"new inArray--"<<inArray;
@@ -424,7 +432,7 @@ void ChatForm::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
     }
     else
     {
-        outArray=inArray;
+        outArray.append(inArray);
         inArray.clear();
     }
 }

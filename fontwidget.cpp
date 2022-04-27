@@ -1,9 +1,9 @@
-   /*
+/*
  * // 列举qt支持的所有中文字体
     //QFontDatabase fontDatabase;
     //    for(auto it:fontDatabase.families(QFontDatabase::SimplifiedChinese))
     //    {
-    //        qDebug()<<it;
+    //qDebug()<<it;
     //}
     // 列出系统支持的所有字体
     //    for (auto it:fontDatabase.families())
@@ -96,8 +96,8 @@
     ui->fightTE->append(msg);
     // 获取行数、字数，设置最大行数
     int lineCount = ui->fightTE->document()->lineCount();
-    qDebug()<<"行数："<<lineCount;
-    qDebug()<<"字数："<<ui->fightTE->document()->characterCount();
+//qDebug()<<"行数："<<lineCount;
+//qDebug()<<"字数："<<ui->fightTE->document()->characterCount();
     ui->fightTE->document()->setMaximumBlockCount(5);
 
 
@@ -207,9 +207,10 @@ void FontWidget::appendNewText(QByteArray backArray)
             QRegularExpressionMatch regularmatch=regular1.match(oneStr);
             if(regularmatch.hasMatch())//字符串一开始就是颜色设置
             {
-                qDebug()<<"("<<regularmatch.capturedStart()<<","<<regularmatch.capturedEnd()<<")"<<regularmatch.captured(0);
-                qDebug()<<"  【任务】--"<<QString(oneStr);
-                qDebug()<<"  【任务】--"<<oneStr;
+                //qDebug()<<"("<<regularmatch.capturedStart()<<","<<regularmatch.capturedEnd()<<")"<<regularmatch.captured(0);
+                //qDebug()<<"  【任务】--"<<QString(oneStr);
+                //qDebug()<<"  【任务】--"<<oneStr;
+                fmt.setForeground(Qt::yellow);
                 chatForm->appendOneStr(0,oneStr,fmt,font);
             }
             else
@@ -217,9 +218,10 @@ void FontWidget::appendNewText(QByteArray backArray)
                 QRegularExpressionMatch regularmatch2=regular2.match(oneStr);
                 if(regularmatch2.hasMatch())//字符串一开始就是颜色设置
                 {
-                    qDebug()<<"("<<regularmatch2.capturedStart()<<","<<regularmatch2.capturedEnd()<<")"<<regularmatch2.captured(0);
-                    qDebug()<<"  【谣言】--"<<QString(oneStr);
-                    qDebug()<<"  【谣言】--"<<oneStr;
+                    //qDebug()<<"("<<regularmatch2.capturedStart()<<","<<regularmatch2.capturedEnd()<<")"<<regularmatch2.captured(0);
+                    //qDebug()<<"  【谣言】--"<<QString(oneStr);
+                    //qDebug()<<"  【谣言】--"<<oneStr;
+                    fmt.setForeground(Qt::yellow);
                     chatForm->appendOneStr(1,oneStr,fmt,font);
                 }
                 else
@@ -227,9 +229,10 @@ void FontWidget::appendNewText(QByteArray backArray)
                     QRegularExpressionMatch regularmatch3=regular3.match(oneStr);
                     if(regularmatch3.hasMatch())//字符串一开始就是颜色设置
                     {
-                        qDebug()<<"("<<regularmatch3.capturedStart()<<","<<regularmatch3.capturedEnd()<<")"<<regularmatch3.captured(0);
-                        qDebug()<<"  【闲聊】--"<<QString(oneStr);
-                        qDebug()<<"  【闲聊】--"<<oneStr;
+                        //qDebug()<<"("<<regularmatch3.capturedStart()<<","<<regularmatch3.capturedEnd()<<")"<<regularmatch3.captured(0);
+                        //qDebug()<<"  【闲聊】--"<<QString(oneStr);
+                        //qDebug()<<"  【闲聊】--"<<oneStr;
+                        fmt.setForeground(Qt::yellow);
                         chatForm->appendOneStr(2,oneStr,fmt,font);
                     }
                     else
@@ -237,9 +240,10 @@ void FontWidget::appendNewText(QByteArray backArray)
                         QRegularExpressionMatch regularmatch4=regular4.match(oneStr);
                         if(regularmatch4.hasMatch())//字符串一开始就是颜色设置
                         {
-                            qDebug()<<"("<<regularmatch4.capturedStart()<<","<<regularmatch4.capturedEnd()<<")"<<regularmatch4.captured(0);
-                            qDebug()<<"  【求助】--"<<QString(oneStr);
-                            qDebug()<<"  【求助】--"<<oneStr;
+                            //qDebug()<<"("<<regularmatch4.capturedStart()<<","<<regularmatch4.capturedEnd()<<")"<<regularmatch4.captured(0);
+                            //qDebug()<<"  【求助】--"<<QString(oneStr);
+                            //qDebug()<<"  【求助】--"<<oneStr;
+                            fmt.setForeground(Qt::yellow);
                             chatForm->appendOneStr(3,oneStr,fmt,font);
                         }
                         else
@@ -248,9 +252,10 @@ void FontWidget::appendNewText(QByteArray backArray)
                             if(regularmatch5.hasMatch())//字符串一开始就是颜色设置
                             {
 
-                                qDebug()<<"("<<regularmatch5.capturedStart()<<","<<regularmatch5.capturedEnd()<<")"<<regularmatch5.captured(0);
-                                qDebug()<<"  【江湖】--"<<QString(oneStr);
-                                qDebug()<<"  【江湖】--"<<oneStr;
+                                //qDebug()<<"("<<regularmatch5.capturedStart()<<","<<regularmatch5.capturedEnd()<<")"<<regularmatch5.captured(0);
+                                //qDebug()<<"  【江湖】--"<<QString(oneStr);
+                                //qDebug()<<"  【江湖】--"<<oneStr;
+                                fmt.setForeground(Qt::yellow);
                                 chatForm->appendOneStr(4,oneStr,fmt,font);
                             }
                             else
@@ -258,9 +263,10 @@ void FontWidget::appendNewText(QByteArray backArray)
                                 QRegularExpressionMatch regularmatch6=regular6.match(oneStr);
                                 if(regularmatch6.hasMatch())//字符串一开始就是颜色设置
                                 {
-                                    qDebug()<<"("<<regularmatch6.capturedStart()<<","<<regularmatch6.capturedEnd()<<")"<<regularmatch6.captured(0);
-                                    qDebug()<<"  【北侠QQ群】--"<<QString(oneStr);
-                                    qDebug()<<"  【北侠QQ群】--"<<oneStr;
+                                    //qDebug()<<"("<<regularmatch6.capturedStart()<<","<<regularmatch6.capturedEnd()<<")"<<regularmatch6.captured(0);
+                                    //qDebug()<<"  【北侠QQ群】--"<<QString(oneStr);
+                                    //qDebug()<<"  【北侠QQ群】--"<<oneStr;
+                                    fmt.setForeground(Qt::yellow);
                                     chatForm->appendOneStr(5,oneStr,fmt,font);
                                 }
                                 else
@@ -286,7 +292,7 @@ void FontWidget::setClickScrollBar()
 
 void FontWidget::resizeEvent(QResizeEvent *event)
 {
-    qDebug()<<"FontWidget::resizeEvent";
+    //qDebug()<<"FontWidget::resizeEvent";
     if(clickScrollBar==false)
     {
         ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
@@ -570,7 +576,7 @@ void FontWidget::showStrThisWidget(QByteArray &inArray)
     QTextBlock textBlock = ui->writeEdit->document()->findBlockByLineNumber(cursor.blockNumber());//通过行号找到指定行 数据块
     QVector<QTextLayout::FormatRange> vectora=textBlock.textFormats();
     for(auto asdfasdf:vectora)
-        qDebug()<<asdfasdf.start<<"--"<<asdfasdf.length<<"--"<<asdfasdf.format;
+//qDebug()<<asdfasdf.start<<"--"<<asdfasdf.length<<"--"<<asdfasdf.format;
     ui->showEdit->clear();
     ui->showEdit->appendPlainText(textBlock.text());
 */

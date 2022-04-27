@@ -82,9 +82,9 @@ private:
     int jiangHuEditlowNum=0;
     int beiXiaQQQunEditlowNum=0;
 
-    QTextCharFormat fmt;//字体背景色
-    QFont font;//字体
-    QTextBlockFormat blockFormat;//行间距
+    QTextCharFormat fmt1;//字体背景色
+    QFont font1;//字体
+    QTextBlockFormat blockFormat1;//行间距
     QTextCursor renWuEditinsertTextCursor;
     QTextCursor yaoYanEditinsertTextCursor;
     QTextCursor xianLiaoEditinsertTextCursor;
