@@ -18,7 +18,7 @@ enum Colors { close_all=0,//关闭所有属性
               font_red,
               font_green,
               font_yellow,
-              font_blue,
+              font_cyan,
               font_magenta,
               font_darkgrren,
               font_white,
@@ -26,7 +26,7 @@ enum Colors { close_all=0,//关闭所有属性
               back_red,
               back_green,
               back_yellow,
-              back_blue,
+              back_cyan,
               back_magenta,
               back_darkgrren,
               back_white};
@@ -51,12 +51,6 @@ private:
 
 
     int lowNum=0;
-    /**
-     * @brief 通过用户传入的样式字符串，初始化指针，用户使用指针进行插入
-     * @param styleStr  用户传入的样式
-     * @param cursor  用户使用此进行插入数值
-     */
-    void getStyleFormStr(QString& styleStr, QTextCursor& cursor);
 
     /* @brief 从输入数组中，截取出一行放入输出数组中*/
     void getOneStrFromArray(QByteArray &inArray, QByteArray &outArray);

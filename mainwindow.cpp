@@ -258,7 +258,7 @@ MainWindow::MainWindow(QWidget *parent)
     testSocket=new QTcpSocket;
     connect(testSocket,&QTcpSocket::connected,[&](){});
     connect(testSocket,&QTcpSocket::disconnected,[&](){});
-    connect(testSocket,&QTcpSocket::readyRead,[&](){
+    connect(testSocket,&QTcpSocket::readyRead,[&](){//粘包问题，或者丢到触发处判断 须填
         /*{
             zbuffer.append(testSocket->readAll());
             if (compressed) {

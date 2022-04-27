@@ -189,27 +189,6 @@ void FontWidget::appendNewText(QByteArray backArray)
     }
 }
 
-void FontWidget::getStyleFormStr(QString &styleStr, QTextCursor &cursor)
-{
-    styleStr.remove(QRegularExpression("\\033"));//去除掉\033
-    qDebug()<<"styleStr--"<<styleStr;
-    QRegularExpression regular("\\d+");
-    int index=0;
-    do{
-        QRegularExpressionMatch regularmatch=regular.match(styleStr, index);
-        if(regularmatch.hasMatch())
-        {
-            index=regularmatch.capturedEnd();
-            QString checkStr=regularmatch.captured(0);
-            qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<checkStr;
-        }
-        else
-        {
-            break;
-        }
-    }while (index < styleStr.length());
-}
-
 void FontWidget::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
 {
     bool findStr=false;//找到回车换行
@@ -351,9 +330,9 @@ void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCha
         backCharFormat.setForeground(Qt::yellow);
         break;
     }
-    case Colors::font_blue:
+    case Colors::font_cyan:
     {
-        backCharFormat.setForeground(Qt::blue);
+        backCharFormat.setForeground(Qt::cyan);
         break;
     }
     case Colors::font_magenta:
@@ -391,9 +370,9 @@ void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCha
         backCharFormat.setBackground(Qt::yellow);
         break;
     }
-    case Colors::back_blue:
+    case Colors::back_cyan:
     {
-        backCharFormat.setBackground(Qt::blue);
+        backCharFormat.setBackground(Qt::cyan);
         break;
     }
     case Colors::back_magenta:
@@ -440,7 +419,7 @@ void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
         outArray=inArray;
         inArray.clear();
     }*/
-    QRegularExpression regular("\033\\[\\d+(;\\d+)*m");//为什么不生效，需要研究
+    QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");//对比的是字符串，不是传入的数组，导致获得的起点不是真正的起点
     QRegularExpressionMatch regularmatch=regular.match(inArray);
     if(regularmatch.hasMatch())//检测出颜色切换
     {
