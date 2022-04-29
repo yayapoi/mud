@@ -35,3 +35,6 @@ win32: LIBS += -L$$PWD/./ -llibzlib.dll
 
 INCLUDEPATH += $$PWD/.
 DEPENDPATH += $$PWD/.
+
+RESOURCES += \
+    res.qrc

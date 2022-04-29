@@ -210,7 +210,6 @@ void FontWidget::appendNewText(QByteArray backArray)
                 //qDebug()<<"("<<regularmatch.capturedStart()<<","<<regularmatch.capturedEnd()<<")"<<regularmatch.captured(0);
                 //qDebug()<<"  【任务】--"<<QString(oneStr);
                 //qDebug()<<"  【任务】--"<<oneStr;
-                fmt.setForeground(Qt::yellow);
                 chatForm->appendOneStr(0,oneStr,fmt,font);
             }
             else
@@ -221,7 +220,6 @@ void FontWidget::appendNewText(QByteArray backArray)
                     //qDebug()<<"("<<regularmatch2.capturedStart()<<","<<regularmatch2.capturedEnd()<<")"<<regularmatch2.captured(0);
                     //qDebug()<<"  【谣言】--"<<QString(oneStr);
                     //qDebug()<<"  【谣言】--"<<oneStr;
-                    fmt.setForeground(Qt::yellow);
                     chatForm->appendOneStr(1,oneStr,fmt,font);
                 }
                 else
@@ -232,7 +230,6 @@ void FontWidget::appendNewText(QByteArray backArray)
                         //qDebug()<<"("<<regularmatch3.capturedStart()<<","<<regularmatch3.capturedEnd()<<")"<<regularmatch3.captured(0);
                         //qDebug()<<"  【闲聊】--"<<QString(oneStr);
                         //qDebug()<<"  【闲聊】--"<<oneStr;
-                        fmt.setForeground(Qt::yellow);
                         chatForm->appendOneStr(2,oneStr,fmt,font);
                     }
                     else
@@ -243,7 +240,6 @@ void FontWidget::appendNewText(QByteArray backArray)
                             //qDebug()<<"("<<regularmatch4.capturedStart()<<","<<regularmatch4.capturedEnd()<<")"<<regularmatch4.captured(0);
                             //qDebug()<<"  【求助】--"<<QString(oneStr);
                             //qDebug()<<"  【求助】--"<<oneStr;
-                            fmt.setForeground(Qt::yellow);
                             chatForm->appendOneStr(3,oneStr,fmt,font);
                         }
                         else
@@ -255,7 +251,6 @@ void FontWidget::appendNewText(QByteArray backArray)
                                 //qDebug()<<"("<<regularmatch5.capturedStart()<<","<<regularmatch5.capturedEnd()<<")"<<regularmatch5.captured(0);
                                 //qDebug()<<"  【江湖】--"<<QString(oneStr);
                                 //qDebug()<<"  【江湖】--"<<oneStr;
-                                fmt.setForeground(Qt::yellow);
                                 chatForm->appendOneStr(4,oneStr,fmt,font);
                             }
                             else
@@ -266,7 +261,6 @@ void FontWidget::appendNewText(QByteArray backArray)
                                     //qDebug()<<"("<<regularmatch6.capturedStart()<<","<<regularmatch6.capturedEnd()<<")"<<regularmatch6.captured(0);
                                     //qDebug()<<"  【北侠QQ群】--"<<QString(oneStr);
                                     //qDebug()<<"  【北侠QQ群】--"<<oneStr;
-                                    fmt.setForeground(Qt::yellow);
                                     chatForm->appendOneStr(5,oneStr,fmt,font);
                                 }
                                 else
@@ -292,11 +286,11 @@ void FontWidget::setClickScrollBar()
 
 void FontWidget::resizeEvent(QResizeEvent *event)
 {
-    //qDebug()<<"FontWidget::resizeEvent";
     if(clickScrollBar==false)
     {
         ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
     }
+    chatForm->setGeometry(this->width()/2,this->height()/2,this->width()/2-20,this->height()/2);
     QWidget::resizeEvent(event);
 }
 

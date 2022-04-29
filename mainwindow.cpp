@@ -218,7 +218,7 @@ void showtotalZlibNum()
 {
     QMap<double, totalZlibStruct*>::iterator beginite=totalZlibNum.begin();
     while (beginite!=totalZlibNum.end()) {
-        qDebug()<<"key="<<beginite.key()<<"  showNum--"<<beginite.value()->showNum<<"  maxSize--"<<beginite.value()->maxSize<<"  minSize--"<<beginite.value()->minSize;
+        //qDebug()<<"key="<<beginite.key()<<"  showNum--"<<beginite.value()->showNum<<"  maxSize--"<<beginite.value()->maxSize<<"  minSize--"<<beginite.value()->minSize;
         beginite++;
     }
 }
@@ -253,7 +253,7 @@ MainWindow::MainWindow(QWidget *parent)
     messageFile=new QFile("D:/sdfgsdfg.txt");
     if(messageFile->open(QIODevice::WriteOnly))
     {
-        qDebug()<<"open";
+        //qDebug()<<"open";
     }
     inittotalZlibNum();
     testSocket=new QTcpSocket;
@@ -271,7 +271,7 @@ MainWindow::MainWindow(QWidget *parent)
                         zstrm.next_out = (Bytef*)(zout.data() + zstrm.total_out);
                         zstrm.avail_out = 2000;
                         rc = inflate(&zstrm, Z_SYNC_FLUSH);
-                        qDebug()<<"size--"<<zstrm.next_in - (Bytef*)zbuffer.data()<<" rc-"<<rc;
+//qDebug()<<"size--"<<zstrm.next_in - (Bytef*)zbuffer.data()<<" rc-"<<rc;
                         zbuffer.remove(0, zstrm.next_in - (Bytef*)zbuffer.data());
                     } while (rc == Z_OK && zstrm.avail_out == 0);
                     if (rc == Z_OK) {
@@ -281,12 +281,12 @@ MainWindow::MainWindow(QWidget *parent)
                         buffer.append(zbuffer);
                         zbuffer.clear();
                         inflateEnd(&zstrm);
-                        qDebug()<<"str---"<<QString(buffer);
+//qDebug()<<"str---"<<QString(buffer);
                         buffer.clear();
                     }
                     else if (rc != Z_OK) {
                         // ERROR!  look at zstrm.msg
-                        qDebug()<<"rc != Z_OK---"<<rc;
+//qDebug()<<"rc != Z_OK---"<<rc;
                     }
                 }
             else
@@ -330,7 +330,7 @@ MainWindow::MainWindow(QWidget *parent)
                     {
                         babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
                     }
-                    qDebug()<<"**----"<<babababa;
+//qDebug()<<"**----"<<babababa;
                 }
                 else
                 {
@@ -339,7 +339,7 @@ MainWindow::MainWindow(QWidget *parent)
                     {
                         babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
                     }
-                    qDebug()<<"**----"<<babababa;
+//qDebug()<<"**----"<<babababa;
                 }*/
             }
         }
@@ -378,7 +378,7 @@ MainWindow::MainWindow(QWidget *parent)
         }*/
         messageFile->write(backArray);
 
-        //QString testStr(backArray);
+        QString testStr(backArray);
         //qDebug()<<lowNum++<<"****"<<testStr;
         ui->fightTE->appendNewText(backArray);
 
@@ -398,7 +398,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
         tsetadf=tsetadf?false:true;
     });
-    //goTimer->start(60000);
+    goTimer->start(60000);
 }
 
 MainWindow::~MainWindow()
@@ -432,7 +432,7 @@ void MainWindow::socketWrite(QString writeStr)
     if(testSocket!=nullptr)
     {
         testSocket->write(&pasdf[0],sizeofstring);
-        qDebug()<<"MainWindow::socketWrite";
+//qDebug()<<"MainWindow::socketWrite";
     }*/
     if(testSocket!=nullptr)
     {
@@ -467,7 +467,7 @@ void MainWindow::checkStr(QByteArray testArray)
                     }
                     else if(uchar(secondChar)==Common::SB)//se    :IAC SB MCCP2 IAC SE
                     {
-                        qDebug()<<"MainWindow::checkStr Common::SB";
+                        //qDebug()<<"MainWindow::checkStr Common::SB";
                         zstrm.next_in = Z_NULL;
                         zstrm.avail_in = 0;
                         zstrm.zalloc = Z_NULL;
@@ -478,7 +478,7 @@ void MainWindow::checkStr(QByteArray testArray)
                     }
                     else if(uchar(secondChar)==Common::DONT)//DONT   :IAC DONT MCCP2
                     {
-                        qDebug()<<"MainWindow::checkStr Common::DONT";
+                        //qDebug()<<"MainWindow::checkStr Common::DONT";
                         compressed = false;
                     }
                 }
