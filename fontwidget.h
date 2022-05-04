@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <qtextcursor.h>
 #include <chatform.h>
+#include <QRegularExpression>
 
 namespace Ui {
 class FontWidget;
@@ -35,6 +36,16 @@ private:
     Ui::FontWidget *ui;
 
     ChatForm *chatForm=nullptr;
+
+    QRegularExpression tabRegular{"\\t"};
+    QRegularExpression regular{"\\033\\[\\d+(;\\d+)*m"};//对比的是字符串，不是传入的数组，导致获得的起点不是真正的起点
+    QRegularExpression Numregular{"\\d+"};
+    QRegularExpression regular1{"\\033\\[1;33m【任务】"};
+    QRegularExpression regular2{"\\033\\[1;35m【谣言】"};
+    QRegularExpression regular3{"\\033\\[1;36m【闲聊】"};
+    QRegularExpression regular4{"\\033\\[1;37m【求助】"};
+    QRegularExpression regular5{"\\033\\[1;37m【江湖】"};
+    QRegularExpression regular6{"\\033\\[37m【北侠QQ群】"};
 
     QTextCursor insertTextCursor;
     QTextCursor tmpInsertTextCursor;

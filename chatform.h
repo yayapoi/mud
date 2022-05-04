@@ -5,6 +5,7 @@
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
 #include <QTextCursor>
+#include <QRegularExpression>
 
 namespace Ui {
 class ChatForm;
@@ -81,6 +82,10 @@ private:
     int qiuZhuEditlowNum=0;
     int jiangHuEditlowNum=0;
     int beiXiaQQQunEditlowNum=0;
+
+    QRegularExpression tabRegular{"\\t"};
+    QRegularExpression regular{"\\033\\[\\d+(;\\d+)*m"};//对比的是字符串，不是传入的数组，导致获得的起点不是真正的起点
+    QRegularExpression regular1{"\\d+"};
 
     QTextCharFormat fmt1;//字体背景色
     QFont font1;//字体

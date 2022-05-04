@@ -12,19 +12,26 @@ SOURCES += \
     chatform.cpp \
     fontwidget.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    regClass/regclass.cpp \
+    statusBar/pointbar.cpp \
+    statusBar/statusform.cpp
 
 HEADERS += \
     chatform.h \
     fontwidget.h \
     mainwindow.h \
+    regClass/regclass.h \
+    statusBar/pointbar.h \
+    statusBar/statusform.h \
     zconf.h \
     zlib.h
 
 FORMS += \
     chatform.ui \
     fontwidget.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    statusBar/statusform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

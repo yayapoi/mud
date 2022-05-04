@@ -1,7 +1,6 @@
 #include "chatform.h"
 #include "ui_chatform.h"
 #include <QScrollBar>
-#include <QRegularExpression>
 #include <QDebug>
 #include <QTime>
 
@@ -10,6 +9,29 @@ ChatForm::ChatForm(QWidget *parent) :
     ui(new Ui::ChatForm)
 {
     ui->setupUi(this);
+    this->setStyleSheet("QMenu\
+                        {\
+                                color:black;\
+                                background-color:rgb(255,255,255);\
+                                border:none;\
+                        }"
+                         "QMenu::item\
+                        {\
+                                color:black;\
+                                background-color:rgb(255,255,255);\
+                        }"
+                         "QMenu::item:selected\
+                        {\
+                                color:rgb(255,255,255);\
+                                background-color:#1a9b81;\
+                        }\
+                        QMenu::separator\
+                        {\
+                                height:1px;\
+                                background-color:rgba(255,255,255,1);\
+                                margin-left:5px;\
+                                margin-right:5px;\
+                        }");
     ui->chatWidget->setTabText(0,"任务");
     ui->chatWidget->setTabText(1,"谣言");
     ui->chatWidget->setTabText(2,"闲聊");
@@ -67,7 +89,7 @@ ChatForm::ChatForm(QWidget *parent) :
 
 
     blockFormat1.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
-    font1.setFamily("宋体");//中文字体
+    font1.setFamily("新宋体");//中文字体
     font1.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
     fmt1.setFont(font1);
     fmt1.setForeground(Qt::lightGray);//设置选中行的字体颜色
@@ -200,35 +222,37 @@ void ChatForm::showStrThisWidget(int Num, QByteArray &inarray, QTextCharFormat &
         getCursorStyleFromArray(Num, inarray, inFmt, inFont);//设置光标颜色
         getShowStrFromArray(inarray, showStr);//从数组中获取 当前光标颜色下应该显示的文字
 
+        QString showStrStr(showStr);
+        showStrStr.replace(tabRegular,"        ");
         switch (Num) {
         case StrType::renWu:
         {
-            renWuEditinsertTextCursor.insertText(showStr);//应用字体
+            renWuEditinsertTextCursor.insertText(showStrStr);//应用字体
             break;
         }
         case StrType::yaoYan:
         {
-            yaoYanEditinsertTextCursor.insertText(showStr);//应用字体
+            yaoYanEditinsertTextCursor.insertText(showStrStr);//应用字体
             break;
         }
         case StrType::xianLiao:
         {
-            xianLiaoEditinsertTextCursor.insertText(showStr);//应用字体
+            xianLiaoEditinsertTextCursor.insertText(showStrStr);//应用字体
             break;
         }
         case StrType::qiuZhu:
         {
-            qiuZhuEditinsertTextCursor.insertText(showStr);//应用字体
+            qiuZhuEditinsertTextCursor.insertText(showStrStr);//应用字体
             break;
         }
         case StrType::jiangHu:
         {
-            jiangHuEditinsertTextCursor.insertText(showStr);//应用字体
+            jiangHuEditinsertTextCursor.insertText(showStrStr);//应用字体
             break;
         }
         case StrType::beiXiaQun:
         {
-            beiXiaQQQunEditinsertTextCursor.insertText(showStr);//应用字体
+            beiXiaQQQunEditinsertTextCursor.insertText(showStrStr);//应用字体
             break;
         }
         default:
@@ -240,8 +264,6 @@ void ChatForm::showStrThisWidget(int Num, QByteArray &inarray, QTextCharFormat &
 
 void ChatForm::getCursorStyleFromArray(int Num, QByteArray &inarray, QTextCharFormat &inFmt, QFont &inFont)
 {
-    QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");
-    QRegularExpression regular1("\\d+");
     QRegularExpressionMatch regularmatch=regular.match(inarray);
     if(regularmatch.hasMatch())//字符串一开始就是颜色设置
     {
@@ -291,7 +313,7 @@ void ChatForm::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharF
     switch (fontStyle) {
     case Colors::close_all:
     {
-        backFont.setFamily("宋体");//字体
+        backFont.setFamily("新宋体");//字体
         backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
         backFont.setWeight(QFont::Normal);//设置粗体属性实际上就是将字体的粗细设为一个确定的值
         backFont.setUnderline(false);//下划线
@@ -415,7 +437,6 @@ void ChatForm::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharF
 
 void ChatForm::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
 {
-    QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");//对比的是字符串，不是传入的数组，导致获得的起点不是真正的起点
     QRegularExpressionMatch regularmatch=regular.match(inArray);
     if(regularmatch.hasMatch())//检测出颜色切换
     {

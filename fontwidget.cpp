@@ -124,6 +124,18 @@
  * 0X3B ;
  * 0X1B \033
  * 0X6D m
+ *
+ *
+ *     QByteArray test;unicode的fff9  就是 utf-8的efbfb9
+    test.append(0x31);
+    test.append(0xEF);
+    test.append(0xBF);
+    test.append(0xB9);
+    test.append(0xFF);
+    test.append(0xF9);
+    qDebug()<<"**----"<<test;
+    qDebug()<<"**----"<<QString(test);
+    tmpInsertTextCursor.insertText(QString(test));
 */
 
 #include "fontwidget.h"
@@ -131,7 +143,6 @@
 #include <QTextDocument>
 #include <QTextBlock>
 #include <qdebug.h>
-#include <QRegularExpression>
 #include <QScrollBar>
 
 FontWidget::FontWidget(QWidget *parent) :
@@ -139,12 +150,35 @@ FontWidget::FontWidget(QWidget *parent) :
     ui(new Ui::FontWidget)
 {
     ui->setupUi(this);
+    this->setStyleSheet("QMenu\
+                        {\
+                                color:black;\
+                                background-color:rgb(255,255,255);\
+                                border:none;\
+                        }"
+                         "QMenu::item\
+                        {\
+                                color:black;\
+                                background-color:rgb(255,255,255);\
+                        }"
+                         "QMenu::item:selected\
+                        {\
+                                color:rgb(255,255,255);\
+                                background-color:#1a9b81;\
+                        }\
+                        QMenu::separator\
+                        {\
+                                height:1px;\
+                                background-color:rgba(255,255,255,1);\
+                                margin-left:5px;\
+                                margin-right:5px;\
+                        }");
     ui->fightEdit->setReadOnly(true);
     ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
     ui->fightEdit->document()->setMaximumBlockCount(2000);
     ui->tmpEdit->setEnabled(false);
     ui->tmpEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
-    ui->tmpEdit->document()->setMaximumBlockCount(2000);
+    ui->tmpEdit->document()->setMaximumBlockCount(100);
     ui->tmpEdit->hide();
 
     chatForm=new ChatForm(this);
@@ -169,7 +203,7 @@ FontWidget::FontWidget(QWidget *parent) :
     insertTextCursor=ui->fightEdit->cursorForPosition(QPoint(0,0));
     insertTextCursor.movePosition(QTextCursor::End);
     blockFormat.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
-    font.setFamily("宋体");//中文字体
+    font.setFamily("新宋体");//中文字体
     font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
     fmt.setFont(font);
     //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
@@ -190,20 +224,14 @@ FontWidget::~FontWidget()
 
 void FontWidget::appendNewText(QByteArray backArray)
 {
-    //QString testStr(backArray);
+    QString testStr(backArray);
     //qDebug()<<lowNum++<<"****"<<testStr;
+    //qDebug()<<lowNum++<<"****"<<backArray;
 
     while (backArray.size()>0) {//循环截取出要打印的字符串  一行的那种
         QByteArray oneStr;
         getOneStrFromArray(backArray, oneStr);//截取出要打印的字符串  一行的那种
         {
-            QRegularExpression regular1("\\033\\[1;33m【任务】");
-            QRegularExpression regular2("\\033\\[1;35m【谣言】");
-            QRegularExpression regular3("\\033\\[1;36m【闲聊】");
-
-            QRegularExpression regular4("\\033\\[1;37m【求助】");
-            QRegularExpression regular5("\\033\\[1;37m【江湖】");
-            QRegularExpression regular6("\\033\\[37m【北侠QQ群】");
             QRegularExpressionMatch regularmatch=regular1.match(oneStr);
             if(regularmatch.hasMatch())//字符串一开始就是颜色设置
             {
@@ -331,8 +359,6 @@ void FontWidget::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
 
 void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
 {
-    QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");
-    QRegularExpression regular1("\\d+");
     QRegularExpressionMatch regularmatch=regular.match(inArray);
     if(regularmatch.hasMatch())//字符串一开始就是颜色设置
     {
@@ -352,7 +378,7 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
             //qDebug()<<"checkStr--"<<checkStr;
             int index=0;
             while (index<checkStr.size()) {
-                QRegularExpressionMatch regularmatch1=regular1.match(checkStr, index);
+                QRegularExpressionMatch regularmatch1=Numregular.match(checkStr, index);
                 if(regularmatch1.hasMatch())
                 {
                     index=regularmatch1.capturedEnd();
@@ -379,7 +405,7 @@ void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCha
     switch (fontStyle) {
     case Colors::close_all:
     {
-        backFont.setFamily("宋体");//字体
+        backFont.setFamily("新宋体");//字体
         backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
         backFont.setWeight(QFont::Normal);//设置粗体属性实际上就是将字体的粗细设为一个确定的值
         backFont.setUnderline(false);//下划线
@@ -503,29 +529,6 @@ void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCha
 
 void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
 {
-    /*int Num=0;
-    bool fandStr=false;
-    for(; Num<inArray.size()-1; Num++)
-    {
-        if(uchar(inArray[Num])==0X1B && uchar(inArray[Num+1])==0X5B && uchar(inArray[Num+3])!='z' )
-        {
-            //qDebug()<<"old inArray--"<<inArray;
-            outArray=inArray.mid(0,Num);
-            //qDebug()<<"start--"<<Num;
-            //qDebug()<<"outArray--"<<outArray;
-            inArray.remove(0,Num);
-            fandStr=true;
-            //qDebug()<<"new inArray--"<<inArray;
-            //qDebug();
-            break;
-        }
-    }
-    if(fandStr==false)
-    {
-        outArray=inArray;
-        inArray.clear();
-    }*/
-    QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");//对比的是字符串，不是传入的数组，导致获得的起点不是真正的起点
     QRegularExpressionMatch regularmatch=regular.match(inArray);
     if(regularmatch.hasMatch())//检测出颜色切换
     {
@@ -554,13 +557,15 @@ void FontWidget::showStrThisWidget(QByteArray &inArray)
         QByteArray showStr;
         getShowStrFromArray(inArray, showStr);//从数组中获取 当前光标颜色下应该显示的文字
 
+        QString showStrStr(showStr);
+        showStrStr.replace(tabRegular,"        ");
         //QString asdfasdfasdf(oneStr);
         //asdfasdfasdf.remove(QRegularExpression("\\033\\[\\d+(;\\d+)*m"));
         if(clickScrollBar)
         {
-            tmpInsertTextCursor.insertText(showStr);//插入字符
+            tmpInsertTextCursor.insertText(showStrStr);//插入字符
         }
-        insertTextCursor.insertText(showStr);//插入字符
+        insertTextCursor.insertText(showStrStr);//插入字符
     }
 }
 
