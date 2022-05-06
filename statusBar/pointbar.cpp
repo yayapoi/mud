@@ -11,7 +11,7 @@ void PointBar::setPointNum(int now, int end, int max)
 {
     nowNum=now;
     lastMaxNum=end;
-    maxNum=max;
+    maxNum=max<=0?1:max;
 }
 
 void PointBar::setPointStatus(int statur)
