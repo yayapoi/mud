@@ -52,5 +52,9 @@ void PointBar::paintEvent(QPaintEvent *e)
         linear.setColorAt(1,Qt::blue);
     painter.setBrush(linear);
     painter.drawRect(nowRect);
+
+    painter.setPen(QPen(Qt::magenta, 2));
+    QString showStr=QString(" %1% ( %2 / %3 / %4 )").arg(QString::number(100.0*nowNum/maxNum, 'f', 2)).arg(nowNum).arg(lastMaxNum).arg(maxNum);
+    painter.drawText(maxRect,Qt::AlignCenter,showStr);
     QLabel::paintEvent(e);
 }

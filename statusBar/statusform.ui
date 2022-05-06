@@ -6,78 +6,181 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
-    <height>44</height>
+    <width>263</width>
+    <height>168</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="1,98,1">
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,8">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QLabel" name="hpHead">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="hpHead">
+           <property name="text">
+            <string>hp:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mpHead">
+           <property name="text">
+            <string>mp:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QLabel" name="neiliHead">
+           <property name="text">
+            <string>neili:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="jingliHead">
+           <property name="text">
+            <string>jingli:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="PointBar" name="hpBar">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="PointBar" name="mpBar">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="PointBar" name="neiliBar">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="PointBar" name="jingliBar">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
+     <item>
+      <widget class="QLabel" name="jingyan">
        <property name="text">
-        <string>hp:</string>
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="mpHead">
+      <widget class="QLabel" name="zhandou">
        <property name="text">
-        <string>mp:</string>
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="shiwu">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="zhenqi">
+       <property name="text">
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
-    <layout class="QVBoxLayout" name="verticalLayout">
+   <item row="1" column="1">
+    <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="PointBar" name="hpBar">
+      <widget class="QLabel" name="qianneng">
        <property name="text">
-        <string/>
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="PointBar" name="mpBar">
+      <widget class="QLabel" name="mang">
        <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="2">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QLabel" name="hpNum">
-       <property name="text">
-        <string>(0/0/0)</string>
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="mpNum">
+      <widget class="QLabel" name="yinshui">
        <property name="text">
-        <string>(0/0/0)</string>
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="zhanyi">
+       <property name="text">
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>

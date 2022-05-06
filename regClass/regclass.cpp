@@ -1,10 +1,19 @@
 #include "regclass.h"
 #include <QRegularExpression>
+#include <QDebug>
 
 RegClass::RegClass(QObject *parent)
     : QObject{parent}
 {
+    RegPtr* newReg=new RegPtr;
+    //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
+    newReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
+    newReg->oneReg.regName="123";
+    newReg->oneReg.row=3;
 
+    QMap<QString, RegPtr*>* qqqqq=new QMap<QString, RegPtr*>;
+    qqqqq->insert(newReg->oneReg.regName,newReg);
+    regMap.insert(newReg->oneReg.parent,qqqqq);
 }
 
 void RegClass::getMessage(QByteArray inArray)
@@ -43,10 +52,10 @@ void RegClass::getMessage(QByteArray inArray)
             {
                 regList[Num].row++;
             }*/
-            QMap<QString, QMap<QString, RegPtr*>>::const_iterator firstMap = regMap.constBegin();
+            QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.constBegin();
             while (firstMap != regMap.constEnd()) {
-                QMap<QString, RegPtr*>::const_iterator secondMap = firstMap.value().constBegin();
-                while (secondMap != firstMap.value().constEnd()) {
+                QMap<QString, RegPtr*>::const_iterator secondMap = firstMap.value()->constBegin();
+                while (secondMap != firstMap.value()->constEnd()) {
                     secondMap.value()->row++;
                     ++secondMap;
                 }
@@ -56,8 +65,8 @@ void RegClass::getMessage(QByteArray inArray)
             //循环触发器
             firstMap = regMap.constBegin();
             while (firstMap != regMap.constEnd()) {
-                QMap<QString, RegPtr*>::const_iterator secondMap = firstMap.value().constBegin();
-                while (secondMap != firstMap.value().constEnd()) {
+                QMap<QString, RegPtr*>::const_iterator secondMap = firstMap.value()->constBegin();
+                while (secondMap != firstMap.value()->constEnd()) {
                     getregfromList(secondMap.value());
                     ++secondMap;
                 }
@@ -149,6 +158,7 @@ void RegClass::regFromArray(QByteArray &inArray, RegPtr *Reg)
     //更新行数
     //}
     int index=0;
+    //qDebug()<<"RegClass::regFromArray--"<<inArray;
     while(index<inArray.size())
     {
         QRegularExpression regStr(Reg->oneReg.regStr);
@@ -165,22 +175,28 @@ void RegClass::regFromArray(QByteArray &inArray, RegPtr *Reg)
                 Reg->beginPoint=beginPoint;
                 Reg->strLength=length;
                 //获取正常的结果 须填
-                if(Reg->oneReg.oneStrOneReg)
+                if(Reg->oneReg.oneStrOneReg)//最新数据只匹配一次
                 {
+                    //qDebug()<<"Reg->oneReg.oneStrOneReg true";
+                    sendAllMessage(regularmatch, Reg);
                     break;
                 }
-                else
+                else//最新数据可匹配多次
                 {
+                    sendAllMessage(regularmatch, Reg);
+                    //qDebug()<<"Reg->oneReg.oneStrOneReg false";
                     index=inArray.indexOf(checkStr)+checkStr.length();
                 }
             }
             else//无效匹配，删除并开始再次判断
             {
+                //qDebug()<<"row<Reg->row || (row=Reg->row && ((beginPoint>Reg->beginPoint) ||(beginPoint=Reg->beginPoint && leng";
                 index=inArray.indexOf(checkStr)+checkStr.length();
             }
         }
         else
         {
+            //qDebug()<<"regularmatch.hasMatch() false";
             break;
         }
     }
@@ -188,7 +204,7 @@ void RegClass::regFromArray(QByteArray &inArray, RegPtr *Reg)
 
 void RegClass::getAllFromArray(QByteArray &inArray, QByteArray &regArray, int maxrow, int &row, int &beginPoint, int &length)
 {
-    /*if(maxrow==1)
+    if(maxrow==1)
     {
         row=0;
         beginPoint=inArray.indexOf(regArray);
@@ -196,14 +212,50 @@ void RegClass::getAllFromArray(QByteArray &inArray, QByteArray &regArray, int ma
     }
     else
     {
-        int index=inArray.indexOf(regArray);
-        if(index<inArray.size()-1)
+        int arrayBegin=inArray.indexOf(regArray);
+        int maxNum=arrayBegin+regArray.length();
+        bool findKey=false;
+        for(int Num=0; Num<maxNum; Num++)
         {
-            d
+            if(Num<=arrayBegin)
+            {
+                beginPoint=arrayBegin;
+                length=0;
+            }
+            if(findKey)
+            {
+                findKey=false;
+                row++;
+                beginPoint=0;
+                length=0;
+            }
+            if(inArray[Num]=='\n')
+            {
+                findKey=true;
+            }
+            length++;
         }
-        else
+        row=maxrow-row;
+        //qDebug()<<"row--"<<row;
+        //qDebug()<<"beginPoint--"<<beginPoint;
+        //qDebug()<<"length--"<<length;
+    }
+}
+
+void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
+{
+    if(Reg->oneReg.sysOrUser)
+    {
+        if(Reg->oneReg.sysStr=="hp")
         {
-            d
+            QStringList backList=matchReg.capturedTexts();
+            backList.pop_front();
+            //qDebug()<<"backList--"<<backList;
+            emit getHp(backList);
         }
-    }*/
+    }
+    else
+    {
+        //须填
+    }
 }

@@ -7,6 +7,7 @@
 #include <QRegularExpressionMatch>
 #include "zlib.h"
 #include <qfile.h>
+#include <regClass/regclass.h>
 
 /*
  * MCCP2 协议
@@ -80,6 +81,7 @@ private:
     int lowNum=0;
     bool tsetadf=false;
 
+    RegClass testRegClass;
     QFile* messageFile;
     //QRegularExpression *regular=nullptr;//使用下面的正则表达式，不使用这段 ***
 };

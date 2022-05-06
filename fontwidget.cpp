@@ -133,8 +133,8 @@
     test.append(0xB9);
     test.append(0xFF);
     test.append(0xF9);
-    qDebug()<<"**----"<<test;
-    qDebug()<<"**----"<<QString(test);
+//qDebug()<<"**----"<<test;
+//qDebug()<<"**----"<<QString(test);
     tmpInsertTextCursor.insertText(QString(test));
 */
 
@@ -152,29 +152,29 @@ FontWidget::FontWidget(QWidget *parent) :
     ui->setupUi(this);
     this->setStyleSheet("QMenu\
                         {\
-                                color:black;\
-                                background-color:rgb(255,255,255);\
-                                border:none;\
+                            color:black;\
+                            background-color:rgb(255,255,255);\
+                            border:none;\
                         }"
                          "QMenu::item\
                         {\
-                                color:black;\
-                                background-color:rgb(255,255,255);\
+                            color:black;\
+                            background-color:rgb(255,255,255);\
                         }"
                          "QMenu::item:selected\
                         {\
-                                color:rgb(255,255,255);\
-                                background-color:#1a9b81;\
+                            color:rgb(255,255,255);\
+                            background-color:#1a9b81;\
                         }\
                         QMenu::separator\
                         {\
-                                height:1px;\
-                                background-color:rgba(255,255,255,1);\
-                                margin-left:5px;\
-                                margin-right:5px;\
+                            height:1px;\
+                            background-color:rgba(255,255,255,1);\
+                            margin-left:5px;\
+                            margin-right:5px;\
                         }");
-    ui->fightEdit->setReadOnly(true);
-    ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+                        ui->fightEdit->setReadOnly(true);
+            ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
     ui->fightEdit->document()->setMaximumBlockCount(2000);
     ui->tmpEdit->setEnabled(false);
     ui->tmpEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
@@ -184,6 +184,10 @@ FontWidget::FontWidget(QWidget *parent) :
     chatForm=new ChatForm(this);
     chatForm->setGeometry(1000,0,500,500);
     chatForm->show();
+
+    myStatusForm=new StatusForm(this);
+    myStatusForm->setGeometry(1000,0,300,170);
+    myStatusForm->show();
 
     connect(ui->fightEdit->verticalScrollBar(),&QScrollBar::rangeChanged,[&](int mixNum, int maxnum){
         //鼠标滚动或者向上拉滚动条时，开启滚动条不滚动
@@ -312,6 +316,11 @@ void FontWidget::setClickScrollBar()
     ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
 }
 
+void FontWidget::setHpMpStatus(QStringList sdfa)
+{
+    myStatusForm->setHpMpStatus(sdfa);
+}
+
 void FontWidget::resizeEvent(QResizeEvent *event)
 {
     if(clickScrollBar==false)
@@ -319,6 +328,7 @@ void FontWidget::resizeEvent(QResizeEvent *event)
         ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
     }
     chatForm->setGeometry(this->width()/2,this->height()/2,this->width()/2-20,this->height()/2);
+    myStatusForm->setGeometry(this->width()-300-20,10,300,170);
     QWidget::resizeEvent(event);
 }
 

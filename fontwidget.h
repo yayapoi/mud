@@ -5,6 +5,7 @@
 #include <qtextcursor.h>
 #include <chatform.h>
 #include <QRegularExpression>
+#include <statusBar/statusform.h>
 
 namespace Ui {
 class FontWidget;
@@ -23,6 +24,8 @@ public:
 
     /* @brief 外部告诉此窗口要滚动下去*/
     void setClickScrollBar();
+    /* @brief 设置状态，血量*/
+    void setHpMpStatus(QStringList);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;
@@ -36,6 +39,7 @@ private:
     Ui::FontWidget *ui;
 
     ChatForm *chatForm=nullptr;
+    StatusForm* myStatusForm=nullptr;
 
     QRegularExpression tabRegular{"\\t"};
     QRegularExpression regular{"\\033\\[\\d+(;\\d+)*m"};//对比的是字符串，不是传入的数组，导致获得的起点不是真正的起点

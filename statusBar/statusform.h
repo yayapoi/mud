@@ -16,6 +16,7 @@ public:
     ~StatusForm();
 
     void setHpMpStatus(int hpMax, int hped, int hpNow, int mpMax, int mped, int mpNow);
+    void setHpMpStatus(QStringList);
 private:
     Ui::StatusForm *ui;
 };

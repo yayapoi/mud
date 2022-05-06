@@ -249,7 +249,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     zout.resize(zoutSize);
 
-
+    connect(&testRegClass,&RegClass::getHp,[&](QList<QString> asdf){ui->fightTE->setHpMpStatus(asdf);});
     messageFile=new QFile("D:/sdfgsdfg.txt");
     if(messageFile->open(QIODevice::WriteOnly))
     {
@@ -381,6 +381,7 @@ MainWindow::MainWindow(QWidget *parent)
         QString testStr(backArray);
         //qDebug()<<lowNum++<<"****"<<testStr;
         ui->fightTE->appendNewText(backArray);
+        testRegClass.getMessage(backArray);
 
         backArray.clear();
     });
@@ -399,7 +400,20 @@ MainWindow::MainWindow(QWidget *parent)
         tsetadf=tsetadf?false:true;
     });
     //goTimer->start(60000);
-
+    /*QString testStr="#4.89M,3463,5260,5260,5260,5260\r\n#2517,2517,2517,1794,1794,1764\r\n#0,101,0,-1,0,0";
+    QRegularExpression regular("#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*");
+    int index=0;
+    QRegularExpressionMatch regularmatch=regular.match(testStr, index);
+    if(regularmatch.hasMatch())
+    {
+        index=regularmatch.capturedEnd();
+//qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<regularmatch.captured(0);
+        QString checkStr=regularmatch.captured(0);
+    }
+    else
+    {
+//qDebug()<<"error";
+    }*/
 }
 
 MainWindow::~MainWindow()

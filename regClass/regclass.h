@@ -15,6 +15,10 @@ struct RegStr
     int row=1;//这个触发器用户想让他匹配几行
     bool oneStrOneReg=true;//一行仅触发一次
     bool enable=true;
+
+    bool sysOrUser=true;//用户类则使用端口，系统类则使用关键词
+    int port=8080;//用户指定触发成功后发送给哪个tcp端口
+    QString sysStr="hp";
 };
 
 /* @brief 记录一个触发器，有触发器的已经触发行，开始点，和长度*/
@@ -41,9 +45,10 @@ public:
     /* @brief 改一个触发器*/
     void changeReg(RegStr oldReg, RegStr newReg);
 signals:
+    void getHp(QList<QString>);
 private:
     QList<QByteArray> messageList;
-    QMap<QString, QMap<QString, RegPtr*>> regMap;
+    QMap<QString, QMap<QString, RegPtr*>*> regMap;
 
     /* @brief 从输入数组中，截取出一行放入输出数组中*/
     void getOneStrFromArray(QByteArray &inArray, QByteArray &outArray);
@@ -53,6 +58,9 @@ private:
     void regFromArray(QByteArray &inArray, RegPtr* Reg);
     /* @brief 获取当前匹配到的字符串最晚出现在 第几行 最后位置，最后行的长度*/
     void getAllFromArray(QByteArray &inArray, QByteArray &regArray, int maxrow, int& row, int& beginPoint, int& length);
+
+    /* @brief 当获取到触发信息后，发送给该送的地方*/
+    void sendAllMessage(QRegularExpressionMatch& matchReg, RegPtr *Reg);
 };
 
 #endif // REGCLASS_H
