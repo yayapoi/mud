@@ -44,14 +44,14 @@
          <item>
           <widget class="QLabel" name="hpHead">
            <property name="text">
-            <string>hp:</string>
+            <string>体力:</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="mpHead">
            <property name="text">
-            <string>mp:</string>
+            <string>精神:</string>
            </property>
           </widget>
          </item>
@@ -62,14 +62,14 @@
          <item>
           <widget class="QLabel" name="neiliHead">
            <property name="text">
-            <string>neili:</string>
+            <string>内力:</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="jingliHead">
            <property name="text">
-            <string>jingli:</string>
+            <string>精力:</string>
            </property>
           </widget>
          </item>

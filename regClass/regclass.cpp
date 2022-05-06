@@ -78,17 +78,91 @@ void RegClass::getMessage(QByteArray inArray)
 
 void RegClass::newReg(RegStr inReg)
 {
-
+    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(inReg.parent);
+    if(firstMap!=regMap.end())//主分类存在
+    {
+        QMap<QString, RegPtr*>* secondMap=firstMap.value();
+        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(inReg.regName);
+        if(secondMapIter!=secondMap->end())//该名字存在
+        {
+            secondMapIter.value()->oneReg=inReg;
+        }
+        else//该名字不存在
+        {
+            RegPtr* newReg=new RegPtr;
+            newReg->oneReg=inReg;
+            secondMap->insert(inReg.regName,newReg);
+        }
+    }
+    else//主分类不存在
+    {
+        QMap<QString, RegPtr*>* secondMap=new QMap<QString, RegPtr*>;
+        RegPtr* newReg=new RegPtr;
+        newReg->oneReg=inReg;
+        secondMap->insert(inReg.regName,newReg);
+        regMap.insert(inReg.parent,secondMap);
+    }
 }
 
 void RegClass::deleteReg(RegStr inReg)
 {
-
+    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(inReg.parent);
+    if(firstMap!=regMap.end())//主分类存在
+    {
+        QMap<QString, RegPtr*>* secondMap=firstMap.value();
+        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(inReg.regName);
+        if(secondMapIter!=secondMap->end())//该名字存在
+        {
+            RegPtr* asdf=secondMapIter.value();
+            secondMap->remove(inReg.regName);
+            delete asdf;
+        }
+    }
+    firstMap = regMap.begin();
+    QStringList deleteList;
+    while (firstMap!=regMap.end()) {
+        if(firstMap.value()->size()==0)
+        {
+            deleteList.append(firstMap.key());
+            delete firstMap.value();
+        }
+        firstMap++;
+    }
+    while (!deleteList.isEmpty()) {
+        QString firstStr=deleteList.first();
+        regMap.remove(firstStr);
+        deleteList.pop_front();
+    }
 }
 
-void RegClass::changeReg(RegStr oldReg, RegStr newReg)
+void RegClass::changeReg(RegStr oldReg, RegStr newreg)
 {
+    deleteReg(oldReg);
+    newReg(newreg);
+}
 
+bool RegClass::regIsEmpty(RegStr &checkReg)
+{
+    bool flag=false;
+    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(checkReg.parent);
+    if(firstMap!=regMap.end())//主分类存在
+    {
+        QMap<QString, RegPtr*>* secondMap=firstMap.value();
+        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(checkReg.regName);
+        if(secondMapIter!=secondMap->end())//该名字存在
+        {
+            flag=true;
+        }
+        else//该名字不存在
+        {
+            flag=false;
+        }
+    }
+    else//主分类不存在
+    {
+        flag=false;
+    }
+    return flag;
 }
 
 void RegClass::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)

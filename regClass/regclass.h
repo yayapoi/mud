@@ -44,6 +44,8 @@ public:
     void deleteReg(RegStr inReg);
     /* @brief 改一个触发器*/
     void changeReg(RegStr oldReg, RegStr newReg);
+    /* @brief 检查一个触发器是否存在*/
+    bool regIsEmpty(RegStr &checkReg);
 signals:
     void getHp(QList<QString>);
 private:
