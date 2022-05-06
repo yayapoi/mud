@@ -400,6 +400,7 @@ MainWindow::MainWindow(QWidget *parent)
         tsetadf=tsetadf?false:true;
     });
     //goTimer->start(60000);
+
     /*QString testStr="#4.89M,3463,5260,5260,5260,5260\r\n#2517,2517,2517,1794,1794,1764\r\n#0,101,0,-1,0,0";
     QRegularExpression regular("#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*");
     int index=0;
@@ -414,6 +415,59 @@ MainWindow::MainWindow(QWidget *parent)
     {
 //qDebug()<<"error";
     }*/
+
+    /*QByteArray inarray, checkarray;
+    inarray.append(1);
+    inarray.append(2);
+    inarray.append(3);
+    inarray.append('\r');
+    inarray.append('\n');
+    inarray.append(4);
+    inarray.append(5);
+    inarray.append(6);
+    inarray.append('\r');
+    inarray.append('\n');
+    inarray.append(7);
+    inarray.append(8);
+    inarray.append(9);
+    inarray.append('\r');
+    inarray.append('\n');
+
+    checkarray.append(7);
+    checkarray.append(8);
+    checkarray.append(9);
+    checkarray.append('\r');
+    checkarray.append('\n');
+    //qDebug()<<"checkarray--"<<checkarray.size();
+
+    int maxRow=3;
+    int row=1,begin=-1,length=-1;
+    int arrayBegin=inarray.indexOf(checkarray);
+    int maxNum=arrayBegin+checkarray.length();
+    bool findKey=false;
+    for(int Num=0; Num<maxNum; Num++)
+    {
+        if(Num<=arrayBegin)
+        {
+            begin=arrayBegin;
+            length=0;
+        }
+        if(findKey)
+        {
+            findKey=false;
+            row++;
+            begin=0;
+            length=0;
+        }
+        if(inarray[Num]=='\n')
+        {
+            findKey=true;
+        }
+        length++;
+    }
+    qDebug()<<"row--"<<maxRow-row;
+    qDebug()<<"begin--"<<begin;
+    qDebug()<<"length--"<<length;*/
 }
 
 MainWindow::~MainWindow()

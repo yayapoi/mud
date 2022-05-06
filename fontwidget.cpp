@@ -133,8 +133,8 @@
     test.append(0xB9);
     test.append(0xFF);
     test.append(0xF9);
-//qDebug()<<"**----"<<test;
-//qDebug()<<"**----"<<QString(test);
+    qDebug()<<"**----"<<test;
+    qDebug()<<"**----"<<QString(test);
     tmpInsertTextCursor.insertText(QString(test));
 */
 
@@ -153,28 +153,28 @@ FontWidget::FontWidget(QWidget *parent) :
     this->setStyleSheet("QMenu\
                         {\
                             color:black;\
-                            background-color:rgb(255,255,255);\
-                            border:none;\
+                                background-color:rgb(255,255,255);\
+                                border:none;\
                         }"
                          "QMenu::item\
                         {\
-                            color:black;\
-                            background-color:rgb(255,255,255);\
+                                color:black;\
+                                background-color:rgb(255,255,255);\
                         }"
                          "QMenu::item:selected\
                         {\
-                            color:rgb(255,255,255);\
-                            background-color:#1a9b81;\
+                                color:rgb(255,255,255);\
+                                background-color:#1a9b81;\
                         }\
                         QMenu::separator\
                         {\
-                            height:1px;\
-                            background-color:rgba(255,255,255,1);\
-                            margin-left:5px;\
-                            margin-right:5px;\
+                                height:1px;\
+                                background-color:rgba(255,255,255,1);\
+                                margin-left:5px;\
+                                margin-right:5px;\
                         }");
-                        ui->fightEdit->setReadOnly(true);
-            ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+    ui->fightEdit->setReadOnly(true);
+    ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
     ui->fightEdit->document()->setMaximumBlockCount(2000);
     ui->tmpEdit->setEnabled(false);
     ui->tmpEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
