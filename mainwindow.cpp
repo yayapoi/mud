@@ -378,14 +378,16 @@ MainWindow::MainWindow(QWidget *parent)
         }*/
         messageFile->write(backArray);
 
-        QString testStr(backArray);
-        //qDebug()<<lowNum++<<"****"<<testStr;
+        //QString testStr(backArray);
+        //lowNum++;
+        //qDebug()<<lowNum<<"****"<<backArray;
+        //qDebug()<<lowNum<<"****"<<testStr;
         ui->fightTE->appendNewText(backArray);
         testRegClass.getMessage(backArray);
 
         backArray.clear();
     });
-    testSocket->connectToHost("47.97.249.185",8081);
+    //testSocket->connectToHost("47.97.249.185",8081);
 
     QTimer* goTimer=new QTimer;
     connect(goTimer, &QTimer::timeout, [&](){
@@ -468,6 +470,8 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug()<<"row--"<<maxRow-row;
     qDebug()<<"begin--"<<begin;
     qDebug()<<"length--"<<length;*/
+    //QString inStr="123;456;789;";
+    //appendMessage(inStr);
 }
 
 MainWindow::~MainWindow()
@@ -624,3 +628,61 @@ void MainWindow::on_toolButton_clicked()
     ui->fightTE->setClickScrollBar();
 }
 
+
+void appendMessage(QString inStr)
+{
+    int oldindex=0;
+    int index=0;
+    while (index<inStr.length()) {
+        index=inStr.indexOf(";",oldindex);
+        if(index!=-1)
+        {
+            QString appendStr=inStr.mid(oldindex,index-oldindex);
+            //qDebug()<<"--"<<appendStr;
+            QString backStr;
+            bool flag=getMessageFrom(appendStr, backStr);
+            if(flag==true)
+            {
+                appendMessage(backStr);
+            }
+            else
+                qDebug()<<"--"<<appendStr;
+        }
+        else
+        {
+            QString appendStr=inStr.mid(oldindex);
+            //qDebug()<<"--"<<appendStr;
+            QString backStr;
+            bool flag=getMessageFrom(appendStr, backStr);
+            if(flag==true)
+            {
+                appendMessage(backStr);
+            }
+            else
+                qDebug()<<"**"<<appendStr;
+            index=inStr.length();
+        }
+        oldindex=index=index+1;
+    }
+}
+
+bool getMessageFrom(QString &inStr, QString &backStr)
+{
+    bool flag=false;
+    if(inStr=="123")
+    {
+        backStr="12 12 12;12 12 12";
+        flag=true;
+    }
+    else if(inStr=="456")
+    {
+        backStr="000";
+        flag=true;
+    }
+    else if(inStr=="12 12 12")
+    {
+        backStr="13 13 13";
+        flag=true;
+    }
+    return flag;
+}

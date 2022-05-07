@@ -43,6 +43,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+void appendMessage(QString inStr);//测试
+bool getMessageFrom(QString& inStr, QString& backStr);//测试
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

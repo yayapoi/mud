@@ -42,10 +42,18 @@ public:
     void newReg(RegStr inReg);
     /* @brief 删除一个触发器*/
     void deleteReg(RegStr inReg);
+    /* @brief 删除一个触发器*/
+    void deleteReg(QString& parentName, QString& itemName);
+
     /* @brief 改一个触发器*/
     void changeReg(RegStr oldReg, RegStr newReg);
+    /* @brief 开关一个触发器*/
+    bool openOrCloseReg(QString& parentName, QString& itemName, bool& flag);
+
     /* @brief 检查一个触发器是否存在*/
     bool regIsEmpty(RegStr &checkReg);
+    /* @brief 检查一个触发器是否存在*/
+    bool regIsEmpty(QString& parentName, QString& itemName);
 signals:
     void getHp(QList<QString>);
 private:

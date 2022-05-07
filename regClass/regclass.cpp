@@ -106,15 +106,20 @@ void RegClass::newReg(RegStr inReg)
 
 void RegClass::deleteReg(RegStr inReg)
 {
-    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(inReg.parent);
+    deleteReg(inReg.parent, inReg.regName);
+}
+
+void RegClass::deleteReg(QString &parentName, QString &itemName)
+{
+    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(parentName);
     if(firstMap!=regMap.end())//主分类存在
     {
         QMap<QString, RegPtr*>* secondMap=firstMap.value();
-        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(inReg.regName);
+        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
         if(secondMapIter!=secondMap->end())//该名字存在
         {
             RegPtr* asdf=secondMapIter.value();
-            secondMap->remove(inReg.regName);
+            secondMap->remove(itemName);
             delete asdf;
         }
     }
@@ -141,14 +146,45 @@ void RegClass::changeReg(RegStr oldReg, RegStr newreg)
     newReg(newreg);
 }
 
-bool RegClass::regIsEmpty(RegStr &checkReg)
+bool RegClass::openOrCloseReg(QString &parentName, QString &itemName, bool &flag)
 {
-    bool flag=false;
-    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(checkReg.parent);
+    bool backflag=false;
+    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(parentName);
     if(firstMap!=regMap.end())//主分类存在
     {
         QMap<QString, RegPtr*>* secondMap=firstMap.value();
-        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(checkReg.regName);
+        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
+        if(secondMapIter!=secondMap->end())//该名字存在
+        {
+            secondMapIter.value()->oneReg.enable=flag;
+            backflag=true;
+        }
+        else//该名字不存在
+        {
+            backflag=false;
+        }
+    }
+    else//主分类不存在
+    {
+        backflag=false;
+    }
+    return backflag;
+}
+
+bool RegClass::regIsEmpty(RegStr &checkReg)
+{
+    bool flag=regIsEmpty(checkReg.parent, checkReg.regName);
+    return flag;
+}
+
+bool RegClass::regIsEmpty(QString &parentName, QString &itemName)
+{
+    bool flag=false;
+    QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(parentName);
+    if(firstMap!=regMap.end())//主分类存在
+    {
+        QMap<QString, RegPtr*>* secondMap=firstMap.value();
+        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
         if(secondMapIter!=secondMap->end())//该名字存在
         {
             flag=true;

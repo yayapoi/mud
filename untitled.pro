@@ -10,6 +10,8 @@ CONFIG += c++11
 
 SOURCES += \
     chatform.cpp \
+    cmdMessageControl/cmdcontrol.cpp \
+    cmdMessageControl/cmddo.cpp \
     fontwidget.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -19,6 +21,8 @@ SOURCES += \
 
 HEADERS += \
     chatform.h \
+    cmdMessageControl/cmdcontrol.h \
+    cmdMessageControl/cmddo.h \
     fontwidget.h \
     mainwindow.h \
     regClass/regclass.h \
