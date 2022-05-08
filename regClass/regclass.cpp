@@ -201,6 +201,17 @@ bool RegClass::regIsEmpty(QString &parentName, QString &itemName)
     return flag;
 }
 
+void RegClass::newRegStr(QString)
+{
+    RegStr testReg;
+    newReg(testReg);
+}
+
+void RegClass::openOrCloseRegStr(QString)
+{
+    //
+}
+
 void RegClass::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
 {
     bool findStr=false;//找到回车换行
@@ -367,5 +378,61 @@ void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
     else
     {
         //须填
+    }
+}
+
+void RegClass::getNewRegFromStr(QString &inStr, RegStr &backReg)
+{
+    {
+        QString regStr="";//触发正则
+        int coldTime=0;//冷却时间？
+        QString color=0;//颜色触发？
+        QString parent="默认分组";//名字唯一
+        QString regName="";//组内唯一
+        int row=1;//这个触发器用户想让他匹配几行
+        bool oneStrOneReg=true;//一行仅触发一次
+        bool enable=true;
+
+        bool sysOrUser=true;//用户类则使用端口，系统类则使用关键词
+        int port=8080;//用户指定触发成功后发送给哪个tcp端口
+        QString sysStr="hp";
+    }//类，名字，触发，匹配行，是否开启，
+    QRegularExpression regStr("#newReg\(\"([\s\S]+)\",\"([\s\S]+)\",\"([\s\S]+)\",\)");
+    QRegularExpressionMatch regularmatch=regStr.match(inArray, index);
+    if(regularmatch.hasMatch())
+    {
+        QByteArray checkStr=regularmatch.captured(0).toUtf8();
+        int row= -1, beginPoint= -1, length= -1;
+        getAllFromArray(inArray, checkStr, Reg->oneReg.row, row, beginPoint, length);
+        //qDebug()<<"checkStr--"<<checkStr;
+        if(row<Reg->row || (row=Reg->row && ((beginPoint>Reg->beginPoint) ||(beginPoint=Reg->beginPoint && length>Reg->strLength))))//有效匹配，判断是否循环
+        {
+            Reg->row=row;
+            Reg->beginPoint=beginPoint;
+            Reg->strLength=length;
+            //获取正常的结果 须填
+            if(Reg->oneReg.oneStrOneReg)//最新数据只匹配一次
+            {
+                //qDebug()<<"Reg->oneReg.oneStrOneReg true";
+                sendAllMessage(regularmatch, Reg);
+                break;
+            }
+            else//最新数据可匹配多次
+            {
+                sendAllMessage(regularmatch, Reg);
+                //qDebug()<<"Reg->oneReg.oneStrOneReg false";
+                index=inArray.indexOf(checkStr)+checkStr.length();
+            }
+        }
+        else//无效匹配，删除并开始再次判断
+        {
+            //qDebug()<<"row<Reg->row || (row=Reg->row && ((beginPoint>Reg->beginPoint) ||(beginPoint=Reg->beginPoint && leng";
+            index=inArray.indexOf(checkStr)+checkStr.length();
+        }
+    }
+    else
+    {
+        //qDebug()<<"regularmatch.hasMatch() false";
+        break;
     }
 }

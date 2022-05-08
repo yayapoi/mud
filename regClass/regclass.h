@@ -56,6 +56,11 @@ public:
     bool regIsEmpty(QString& parentName, QString& itemName);
 signals:
     void getHp(QList<QString>);
+public slots:
+    void newRegStr(QString);
+    void deleteRegStr(QString);
+    void changeRegStr(QString);
+    void openOrCloseRegStr(QString);
 private:
     QList<QByteArray> messageList;
     QMap<QString, QMap<QString, RegPtr*>*> regMap;
@@ -71,6 +76,8 @@ private:
 
     /* @brief 当获取到触发信息后，发送给该送的地方*/
     void sendAllMessage(QRegularExpressionMatch& matchReg, RegPtr *Reg);
+    /* @brief 从字符串中获取触发器*/
+    void getNewRegFromStr(QString& inStr, RegStr &backReg);
 };
 
 #endif // REGCLASS_H
