@@ -41,10 +41,10 @@ bool CmdDo::checkMessage(QString &instr)
     }
     if(flag==false)
     {
-        flag=globalCheck::checkChangeReg(instr);
+        flag=globalCheck::checkEnableRegReg(instr);
         if(flag==true)
         {
-            emit openOrCloseRegStr(instr);
+            emit enableRegStr(instr);
         }
     }
     if(flag==false)

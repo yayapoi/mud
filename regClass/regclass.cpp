@@ -19,15 +19,22 @@ RegClass::RegClass(QObject *parent)
     fightReg->oneReg.row=1;
 
     RegPtr* mapReg=new RegPtr;//  自用
-    mapReg->oneReg.regStr="^afdasdfasdf$";
+    mapReg->oneReg.regStr="不打了";
     mapReg->oneReg.regName="234";
-    mapReg->oneReg.sysStr="#changeReg(\"默认分组\",\"234\",0)";
+    mapReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0)";
     mapReg->oneReg.row=1;
+
+    RegPtr* dontReg=new RegPtr;//  自用
+    dontReg->oneReg.regStr="不想跟你较量";
+    dontReg->oneReg.regName="345";
+    dontReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0)";
+    dontReg->oneReg.row=1;
 
     QMap<QString, RegPtr*>* qqqqq=new QMap<QString, RegPtr*>;
     qqqqq->insert(newReg->oneReg.regName,newReg);
     qqqqq->insert(fightReg->oneReg.regName,fightReg);
     qqqqq->insert(mapReg->oneReg.regName,mapReg);
+    qqqqq->insert(dontReg->oneReg.regName,dontReg);
     regMap.insert(newReg->oneReg.parent,qqqqq);
 }
 
@@ -148,7 +155,7 @@ void RegClass::changeReg(RegStr oldReg, RegStr newreg)
     newReg(newreg);
 }
 
-bool RegClass::openOrCloseReg(QString &parentName, QString &itemName, bool &flag)
+bool RegClass::enableReg(QString &parentName, QString &itemName, bool &flag)
 {
     bool backflag=false;
     QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(parentName);
@@ -160,7 +167,7 @@ bool RegClass::openOrCloseReg(QString &parentName, QString &itemName, bool &flag
         {
             secondMapIter.value()->oneReg.enable=flag;
             backflag=true;
-            //qDebug()<<"RegClass::openOrCloseReg--";
+            //qDebug()<<"RegClass::enableReg--";
         }
         else//该名字不存在
         {
@@ -228,14 +235,14 @@ void RegClass::changeRegStr(QString)
     //未实现，可使用先删，后加的方式实现
 }
 
-void RegClass::openOrCloseRegStr(QString inStr)
+void RegClass::enableRegStr(QString inStr)
 {
     QString parentName;
     QString RegName;
     bool flag;
-    if(getOpenOrCloseRegFromStr(inStr, parentName, RegName, flag))
+    if(getEnableRegFromStr(inStr, parentName, RegName, flag))
     {
-        openOrCloseReg(parentName, RegName, flag);
+        enableReg(parentName, RegName, flag);
     }
 }
 
@@ -414,8 +421,7 @@ bool RegClass::getNewRegFromStr(QString &inStr, RegStr &backReg)
 {
     bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
     //QString testStr="#newReg(\"lei\",\"name\",\"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$\",3,1,0,8080,1)";
-    QRegularExpression regStr("^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$");
-    QRegularExpressionMatch regularmatch=regStr.match(inStr);
+    QRegularExpressionMatch regularmatch=NewRegregStr.match(inStr);
     if(regularmatch.hasMatch())
     {
         QStringList backList=regularmatch.capturedTexts();
@@ -443,8 +449,7 @@ bool RegClass::getDeleteRegFromStr(QString &inStr, QString &backParent, QString 
 {
     bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
     //QString testStr="#deleteReg(\"asd\",\"asd\")";
-    QRegularExpression regStr("^#deleteReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$");
-    QRegularExpressionMatch regularmatch=regStr.match(inStr);
+    QRegularExpressionMatch regularmatch=DeleteRegregStr.match(inStr);
     if(regularmatch.hasMatch())
     {
         QStringList backList=regularmatch.capturedTexts();
@@ -462,12 +467,11 @@ bool RegClass::getDeleteRegFromStr(QString &inStr, QString &backParent, QString 
     return flag;
 }
 
-bool RegClass::getOpenOrCloseRegFromStr(QString &inStr, QString &backParent, QString &backRegName, bool &backflag)
+bool RegClass::getEnableRegFromStr(QString &inStr, QString &backParent, QString &backRegName, bool &backflag)
 {
     bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
-    //QString testStr="#changeReg(\"asd\",\"asd\",1)";
-    QRegularExpression regStr("^#changeReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+)\\)$");
-    QRegularExpressionMatch regularmatch=regStr.match(inStr);
+    //QString testStr="#enableReg(\"asd\",\"asd\",1)";
+    QRegularExpressionMatch regularmatch=enableRegregStr.match(inStr);
     if(regularmatch.hasMatch())
     {
         QStringList backList=regularmatch.capturedTexts();
@@ -481,7 +485,7 @@ bool RegClass::getOpenOrCloseRegFromStr(QString &inStr, QString &backParent, QSt
     }
     else
     {
-        //qDebug()<<"getOpenOrCloseRegFromStr.hasMatch() false";
+        //qDebug()<<"getenableRegFromStr.hasMatch() false";
     }
     return flag;
 }

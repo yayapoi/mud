@@ -121,7 +121,7 @@ bool checkNewReg(QString &instr);
 bool checkDeleteReg(QString &instr);
 
 /* @brief 系统函数开关Reg，是则使用并返回true*/
-bool checkChangeReg(QString &instr);
+bool checkEnableRegReg(QString &instr);
 
 /* @brief 系统函数设置血条状态，是则使用并返回true*/
 bool checkSetHPBar(QString &instr);

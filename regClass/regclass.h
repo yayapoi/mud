@@ -24,7 +24,7 @@ public:
     /* @brief 改一个触发器*/
     void changeReg(RegStr oldReg, RegStr newReg);
     /* @brief 开关一个触发器*/
-    bool openOrCloseReg(QString& parentName, QString& itemName, bool& flag);
+    bool enableReg(QString& parentName, QString& itemName, bool& flag);
 
     /* @brief 检查一个触发器是否存在*/
     bool regIsEmpty(RegStr &checkReg);
@@ -37,10 +37,13 @@ public slots:
     void newRegStr(QString);
     void deleteRegStr(QString);
     void changeRegStr(QString);
-    void openOrCloseRegStr(QString);
+    void enableRegStr(QString);
 private:
     QList<QByteArray> messageList;
     QMap<QString, QMap<QString, RegPtr*>*> regMap;
+    QRegularExpression enableRegregStr{"^#enableReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+)\\)$"};
+    QRegularExpression DeleteRegregStr{"^#deleteReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$"};
+    QRegularExpression NewRegregStr{"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$"};
 
     /* @brief 从输入数组中，截取出一行放入输出数组中*/
     void getOneStrFromArray(QByteArray &inArray, QByteArray &outArray);
@@ -59,7 +62,7 @@ private:
     /* @brief 从字符串中获取删除触发器的名字和类*/
     bool getDeleteRegFromStr(QString& inStr, QString& backParent, QString& backRegName);
     /* @brief 从字符串中获取开关触发器的名字 类 状态*/
-    bool getOpenOrCloseRegFromStr(QString& inStr, QString& backParent, QString& backRegName, bool& flag);
+    bool getEnableRegFromStr(QString& inStr, QString& backParent, QString& backRegName, bool& flag);
 
     /* @brief 从数组中移除颜色结构*/
     bool removeColorFromArray(QByteArray &inArray);

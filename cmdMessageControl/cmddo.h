@@ -16,7 +16,7 @@ signals:
     /* @brief 发送给触发类*/
     void deleteRegStr(QString);
     /* @brief 发送给触发类*/
-    void openOrCloseRegStr(QString);
+    void enableRegStr(QString);
 
     /* @brief 发送给服务器*/
     void sendToServer(QString);

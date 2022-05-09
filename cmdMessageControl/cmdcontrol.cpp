@@ -106,7 +106,7 @@ bool CmdControl::checkMessage(QString &instr)
     bool flag=false;
     flag?true:flag=globalCheck::checkNewReg(instr);
     flag?true:flag=globalCheck::checkDeleteReg(instr);
-    flag?true:flag=globalCheck::checkChangeReg(instr);
+    flag?true:flag=globalCheck::checkEnableRegReg(instr);
     flag?true:flag=globalCheck::checkSetHPBar(instr);
     return flag;
 }

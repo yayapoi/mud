@@ -255,7 +255,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
     connect(&cmdDo,&CmdDo::newRegStr,[&](QString newRegStr){testRegClass.newRegStr(newRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::deleteRegStr,[&](QString deleteRegStr){testRegClass.deleteRegStr(deleteRegStr);});//发送给触发类
-    connect(&cmdDo,&CmdDo::openOrCloseRegStr,[&](QString openOrCloseRegStr){testRegClass.openOrCloseRegStr(openOrCloseRegStr);});//发送给触发类
+    connect(&cmdDo,&CmdDo::enableRegStr,[&](QString enableRegStr){testRegClass.enableRegStr(enableRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::sendToServer,[&](QString sendToServerStr){socketWrite(sendToServerStr);});//发送给服务器
     connect(&cmdDo,&CmdDo::cmdShowInWindow,[&](QString cmdShowInWindowStr){ui->fightTE->appendNewText(cmdShowInWindowStr.toUtf8());});//发送给显示界面
 

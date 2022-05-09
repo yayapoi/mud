@@ -22,10 +22,10 @@ bool globalCheck::checkDeleteReg(QString &instr)
     return flag;
 }
 
-bool globalCheck::checkChangeReg(QString &instr)
+bool globalCheck::checkEnableRegReg(QString &instr)
 {
     bool flag=false;
-    int index=instr.indexOf("#changeReg(");
+    int index=instr.indexOf("#enableReg(");
     if(index==0)
     {
         flag=true;
