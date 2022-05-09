@@ -3,32 +3,8 @@
 
 #include <QObject>
 #include <QMap>
-
-/* @brief 用户自定义的触发器*/
-struct RegStr
-{
-    QString regStr="";//触发正则
-    int coldTime=0;//冷却时间？
-    QString color=0;//颜色触发？
-    QString parent="默认分组";//名字唯一
-    QString regName="";//组内唯一
-    int row=1;//这个触发器用户想让他匹配几行
-    bool oneStrOneReg=true;//一行仅触发一次
-    bool enable=true;
-
-    bool sysOrUser=true;//用户类则使用端口，系统类则使用关键词
-    int port=8080;//用户指定触发成功后发送给哪个tcp端口
-    QString sysStr="hp";
-};
-
-/* @brief 记录一个触发器，有触发器的已经触发行，开始点，和长度*/
-struct RegPtr
-{
-    RegStr oneReg;
-    int row=0;//这个触发器在第几行已经触发过了
-    int beginPoint=-1;//在第几号位触发了
-    int strLength=-1;//触发长度
-};
+#include <globalhead.h>
+#include <QRegularExpression>
 
 class RegClass : public QObject
 {
@@ -55,7 +31,8 @@ public:
     /* @brief 检查一个触发器是否存在*/
     bool regIsEmpty(QString& parentName, QString& itemName);
 signals:
-    void getHp(QList<QString>);
+    /* @brief 发给命令解析类*/
+    void regStrSend(QString);
 public slots:
     void newRegStr(QString);
     void deleteRegStr(QString);
@@ -76,8 +53,16 @@ private:
 
     /* @brief 当获取到触发信息后，发送给该送的地方*/
     void sendAllMessage(QRegularExpressionMatch& matchReg, RegPtr *Reg);
-    /* @brief 从字符串中获取触发器*/
-    void getNewRegFromStr(QString& inStr, RegStr &backReg);
+
+    /* @brief 从字符串中获取新增触发器的属性*/
+    bool getNewRegFromStr(QString& inStr, RegStr &backReg);
+    /* @brief 从字符串中获取删除触发器的名字和类*/
+    bool getDeleteRegFromStr(QString& inStr, QString& backParent, QString& backRegName);
+    /* @brief 从字符串中获取开关触发器的名字 类 状态*/
+    bool getOpenOrCloseRegFromStr(QString& inStr, QString& backParent, QString& backRegName, bool& flag);
+
+    /* @brief 从数组中移除颜色结构*/
+    bool removeColorFromArray(QByteArray &inArray);
 };
 
 #endif // REGCLASS_H

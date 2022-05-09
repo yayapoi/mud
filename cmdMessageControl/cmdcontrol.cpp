@@ -1,5 +1,6 @@
 #include "cmdcontrol.h"
 #include <QDebug>
+#include <globalhead.h>
 
 CmdControl::CmdControl(QObject *parent)
     : QObject{parent}
@@ -15,12 +16,12 @@ CmdControl::CmdControl(QObject *parent)
     cmdTimer.start(25);
 }
 
-void CmdControl::appendMessage(QString inStr)
+void CmdControl::appendMessage(QString inStr)//须填 ;
 {
     int oldindex=0;
     int index=0;
     while (index<inStr.length()) {
-        index=inStr.indexOf(";",oldindex);
+        index=inStr.indexOf(";",oldindex);//系统使用了 ";"，用户使用 ";"时自动替换为";;"
         if(index!=-1)
         {
             QString appendStr=inStr.mid(oldindex,index-oldindex);
@@ -57,7 +58,7 @@ void CmdControl::appendMessage(QByteArray inarray)
     appendMessage(QString(inarray));
 }
 
-bool CmdControl::getMessageFrom(QString& inStr, QString& backStr)
+bool CmdControl::getMessageFrom(QString& inStr, QString& backStr)//须填
 {
     bool flag=false;
     if(inStr=="123")
@@ -102,8 +103,12 @@ void CmdControl::messageToList(QQueue<QString> &backList)
 
 bool CmdControl::checkMessage(QString &instr)
 {
-    //须填
-    return false;
+    bool flag=false;
+    flag?true:flag=globalCheck::checkNewReg(instr);
+    flag?true:flag=globalCheck::checkDeleteReg(instr);
+    flag?true:flag=globalCheck::checkChangeReg(instr);
+    flag?true:flag=globalCheck::checkSetHPBar(instr);
+    return flag;
 }
 
 void CmdControl::appendMessage(QStringList inlist)

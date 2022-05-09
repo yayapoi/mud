@@ -249,7 +249,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     zout.resize(zoutSize);
 
-    connect(&testRegClass,&RegClass::getHp,[&](QList<QString> asdf){ui->fightTE->setHpMpStatus(asdf);});
+    //connect(&testRegClass,&RegClass::getHp,[&](QList<QString> asdf){ui->fightTE->setHpMpStatus(asdf);});
+    connect(&testRegClass,&RegClass::regStrSend,[&](QString Str){cmdControl.appendMessage(Str);});
+    connect(&cmdControl,&CmdControl::newMessage,[&](QQueue<QString> queueStr){cmdDo.newMessage(queueStr);});
+    connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
+    connect(&cmdDo,&CmdDo::newRegStr,[&](QString newRegStr){testRegClass.newRegStr(newRegStr);});//发送给触发类
+    connect(&cmdDo,&CmdDo::deleteRegStr,[&](QString deleteRegStr){testRegClass.deleteRegStr(deleteRegStr);});//发送给触发类
+    connect(&cmdDo,&CmdDo::openOrCloseRegStr,[&](QString openOrCloseRegStr){testRegClass.openOrCloseRegStr(openOrCloseRegStr);});//发送给触发类
+    connect(&cmdDo,&CmdDo::sendToServer,[&](QString sendToServerStr){socketWrite(sendToServerStr);});//发送给服务器
+    connect(&cmdDo,&CmdDo::cmdShowInWindow,[&](QString cmdShowInWindowStr){ui->fightTE->appendNewText(cmdShowInWindowStr.toUtf8());});//发送给显示界面
+
     messageFile=new QFile("D:/sdfgsdfg.txt");
     if(messageFile->open(QIODevice::WriteOnly))
     {
@@ -387,7 +396,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         backArray.clear();
     });
-    //testSocket->connectToHost("47.97.249.185",8081);
+    testSocket->connectToHost("47.97.249.185",8081);
 
     QTimer* goTimer=new QTimer;
     connect(goTimer, &QTimer::timeout, [&](){
@@ -417,61 +426,52 @@ MainWindow::MainWindow(QWidget *parent)
     {
 //qDebug()<<"error";
     }*/
-
-    /*QByteArray inarray, checkarray;
-    inarray.append(1);
-    inarray.append(2);
-    inarray.append(3);
-    inarray.append('\r');
-    inarray.append('\n');
-    inarray.append(4);
-    inarray.append(5);
-    inarray.append(6);
-    inarray.append('\r');
-    inarray.append('\n');
-    inarray.append(7);
-    inarray.append(8);
-    inarray.append(9);
-    inarray.append('\r');
-    inarray.append('\n');
-
-    checkarray.append(7);
-    checkarray.append(8);
-    checkarray.append(9);
-    checkarray.append('\r');
-    checkarray.append('\n');
-    //qDebug()<<"checkarray--"<<checkarray.size();
-
-    int maxRow=3;
-    int row=1,begin=-1,length=-1;
-    int arrayBegin=inarray.indexOf(checkarray);
-    int maxNum=arrayBegin+checkarray.length();
-    bool findKey=false;
-    for(int Num=0; Num<maxNum; Num++)
+    /*QByteArray inArray;
+    inArray.append('1');
+    inArray.append('\x1B');
+    inArray.append('[');
+    inArray.append('m');
+    inArray.append(';');
+    inArray.append('3');
+    inArray.append('4');
+    inArray.append('m');
+    inArray.append('5');
+    bool found=false;
+    int Num=0;
+    while(Num<inArray.size()-1)
     {
-        if(Num<=arrayBegin)
+        if(inArray[Num]=='\x1B')
         {
-            begin=arrayBegin;
-            length=0;
+            int key=Num+1;
+            if(key<inArray.size() && inArray[key]=='[')//\x1B 后必是 [
+            {
+                key++;
+                while(key<inArray.size())
+                {
+                    if(inArray[key]==';' || ('0'<=inArray[key] && inArray[key]<='9') || inArray[key]=='m')
+                    {
+                        if(inArray[key]=='m')//M结尾
+                        {
+                            found=true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        found=false;
+                        break;
+                    }
+                    key++;
+                }
+            }
+            if(found)//数组中移除
+            {
+                inArray.remove(Num,key-Num+1);
+            }
         }
-        if(findKey)
-        {
-            findKey=false;
-            row++;
-            begin=0;
-            length=0;
-        }
-        if(inarray[Num]=='\n')
-        {
-            findKey=true;
-        }
-        length++;
+        Num++;
     }
-    qDebug()<<"row--"<<maxRow-row;
-    qDebug()<<"begin--"<<begin;
-    qDebug()<<"length--"<<length;*/
-    //QString inStr="123;456;789;";
-    //appendMessage(inStr);
+//qDebug()<<"inArray--"<<inArray;*/
 }
 
 MainWindow::~MainWindow()
@@ -510,7 +510,9 @@ void MainWindow::socketWrite(QString writeStr)
     if(testSocket!=nullptr)
     {
         testSocket->write(writeStr.toStdString().data());
-        //qDebug()<<"MainWindow::socketWrite";
+        //testSocket->write(writeStr.toUtf8());
+        testSocket->flush();
+        //qDebug()<<"MainWindow::socketWrite--"<<writeStr;
     }
 }
 
@@ -612,13 +614,9 @@ int MainWindow::checkOutSize(int inSize)
     return backSize;
 }
 
-void MainWindow::checkAlise(QByteArray &)
-{
-    //d
-}
-
 void MainWindow::on_cmdLE_returnPressed()
 {
+    //qDebug()<<ui->cmdLE->text();
     socketWrite(ui->cmdLE->text());
     ui->cmdLE->selectAll();
 }
@@ -626,63 +624,4 @@ void MainWindow::on_cmdLE_returnPressed()
 void MainWindow::on_toolButton_clicked()
 {
     ui->fightTE->setClickScrollBar();
-}
-
-
-void appendMessage(QString inStr)
-{
-    int oldindex=0;
-    int index=0;
-    while (index<inStr.length()) {
-        index=inStr.indexOf(";",oldindex);
-        if(index!=-1)
-        {
-            QString appendStr=inStr.mid(oldindex,index-oldindex);
-            //qDebug()<<"--"<<appendStr;
-            QString backStr;
-            bool flag=getMessageFrom(appendStr, backStr);
-            if(flag==true)
-            {
-                appendMessage(backStr);
-            }
-            else
-                qDebug()<<"--"<<appendStr;
-        }
-        else
-        {
-            QString appendStr=inStr.mid(oldindex);
-            //qDebug()<<"--"<<appendStr;
-            QString backStr;
-            bool flag=getMessageFrom(appendStr, backStr);
-            if(flag==true)
-            {
-                appendMessage(backStr);
-            }
-            else
-                qDebug()<<"**"<<appendStr;
-            index=inStr.length();
-        }
-        oldindex=index=index+1;
-    }
-}
-
-bool getMessageFrom(QString &inStr, QString &backStr)
-{
-    bool flag=false;
-    if(inStr=="123")
-    {
-        backStr="12 12 12;12 12 12";
-        flag=true;
-    }
-    else if(inStr=="456")
-    {
-        backStr="000";
-        flag=true;
-    }
-    else if(inStr=="12 12 12")
-    {
-        backStr="13 13 13";
-        flag=true;
-    }
-    return flag;
 }

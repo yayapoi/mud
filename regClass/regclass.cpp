@@ -1,18 +1,33 @@
 #include "regclass.h"
-#include <QRegularExpression>
 #include <QDebug>
 
 RegClass::RegClass(QObject *parent)
     : QObject{parent}
 {
-    RegPtr* newReg=new RegPtr;
+    RegPtr* newReg=new RegPtr;//血量触发  自用
     //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
     newReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
     newReg->oneReg.regName="123";
+    newReg->oneReg.sysStr="#setHpBar(\"%1\",\"%2\",\"%3\",\"%4\",\"%5\",\"%6\",\"%7\",\"%8\",\"%9\",\"%10\",\"%11\",\"%12\",\"%13\",\"%14\",\"%15\",\"%16\",\"%17\",\"%18\")";
     newReg->oneReg.row=3;
+
+    RegPtr* fightReg=new RegPtr;//战斗  自用
+    //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
+    fightReg->oneReg.regStr="流氓头\\(Liumang tou\\)";
+    fightReg->oneReg.regName="fight";
+    fightReg->oneReg.sysStr="fight liumang tou";
+    fightReg->oneReg.row=1;
+
+    RegPtr* mapReg=new RegPtr;//  自用
+    mapReg->oneReg.regStr="^afdasdfasdf$";
+    mapReg->oneReg.regName="234";
+    mapReg->oneReg.sysStr="#changeReg(\"默认分组\",\"234\",0)";
+    mapReg->oneReg.row=1;
 
     QMap<QString, RegPtr*>* qqqqq=new QMap<QString, RegPtr*>;
     qqqqq->insert(newReg->oneReg.regName,newReg);
+    qqqqq->insert(fightReg->oneReg.regName,fightReg);
+    qqqqq->insert(mapReg->oneReg.regName,mapReg);
     regMap.insert(newReg->oneReg.parent,qqqqq);
 }
 
@@ -22,20 +37,6 @@ void RegClass::getMessage(QByteArray inArray)
     //消息list中加入最新的一行
     //遍历所有触发器行数+1
     //循环触发器
-    //if（开启定时器）
-    //有几行，拼凑
-    //触发
-    //if（成功）
-    //{
-    //if（多次触发）
-    //{截取字符串，再次触发，循环递归}
-    //else
-    //{更新行数}
-    //}
-    //else
-    //{
-    //更新行数
-    //}
 
     QString testStr(inArray);
     //qDebug()<<lowNum++<<"****"<<testStr;
@@ -45,6 +46,7 @@ void RegClass::getMessage(QByteArray inArray)
         QByteArray oneStr;
         getOneStrFromArray(inArray, oneStr);//截取出要打印的字符串  一行的那种
         {
+            removeColorFromArray(oneStr);
             //消息list中加入最新的一行
             messageList.push_front(oneStr);
             //遍历所有触发器行数+1
@@ -158,6 +160,7 @@ bool RegClass::openOrCloseReg(QString &parentName, QString &itemName, bool &flag
         {
             secondMapIter.value()->oneReg.enable=flag;
             backflag=true;
+            //qDebug()<<"RegClass::openOrCloseReg--";
         }
         else//该名字不存在
         {
@@ -201,15 +204,39 @@ bool RegClass::regIsEmpty(QString &parentName, QString &itemName)
     return flag;
 }
 
-void RegClass::newRegStr(QString)
+void RegClass::newRegStr(QString inStr)
 {
     RegStr testReg;
-    newReg(testReg);
+    if(getNewRegFromStr(inStr,testReg))
+    {
+        newReg(testReg);
+    }
 }
 
-void RegClass::openOrCloseRegStr(QString)
+void RegClass::deleteRegStr(QString inStr)
 {
-    //
+    QString parentName;
+    QString RegName;
+    if(getDeleteRegFromStr(inStr, parentName, RegName))
+    {
+        deleteReg(parentName, RegName);
+    }
+}
+
+void RegClass::changeRegStr(QString)
+{
+    //未实现，可使用先删，后加的方式实现
+}
+
+void RegClass::openOrCloseRegStr(QString inStr)
+{
+    QString parentName;
+    QString RegName;
+    bool flag;
+    if(getOpenOrCloseRegFromStr(inStr, parentName, RegName, flag))
+    {
+        openOrCloseReg(parentName, RegName, flag);
+    }
 }
 
 void RegClass::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
@@ -279,7 +306,8 @@ void RegClass::regFromArray(QByteArray &inArray, RegPtr *Reg)
     //更新行数
     //}
     int index=0;
-    //qDebug()<<"RegClass::regFromArray--"<<inArray;
+    //qDebug()<<"RegClass::regFromArray--"<<QString(inArray);
+    //qDebug()<<"Reg->oneReg.regStr--"<<Reg->oneReg.regStr;
     while(index<inArray.size())
     {
         QRegularExpression regStr(Reg->oneReg.regStr);
@@ -295,7 +323,7 @@ void RegClass::regFromArray(QByteArray &inArray, RegPtr *Reg)
                 Reg->row=row;
                 Reg->beginPoint=beginPoint;
                 Reg->strLength=length;
-                //获取正常的结果 须填
+                //获取正常的结果
                 if(Reg->oneReg.oneStrOneReg)//最新数据只匹配一次
                 {
                     //qDebug()<<"Reg->oneReg.oneStrOneReg true";
@@ -367,72 +395,136 @@ void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
 {
     if(Reg->oneReg.sysOrUser)
     {
-        if(Reg->oneReg.sysStr=="hp")
+        QStringList backList=matchReg.capturedTexts();
+        backList.pop_front();
+        //qDebug()<<"backList--"<<backList;
+        for(int Num=0; Num<backList.size(); Num++)
         {
-            QStringList backList=matchReg.capturedTexts();
-            backList.pop_front();
-            //qDebug()<<"backList--"<<backList;
-            emit getHp(backList);
+            Reg->oneReg.sysStr = Reg->oneReg.sysStr.arg(backList[Num]);
         }
+        emit regStrSend(Reg->oneReg.sysStr);
     }
     else
     {
-        //须填
+        //须填 tcp传输
     }
 }
 
-void RegClass::getNewRegFromStr(QString &inStr, RegStr &backReg)
+bool RegClass::getNewRegFromStr(QString &inStr, RegStr &backReg)
 {
-    {
-        QString regStr="";//触发正则
-        int coldTime=0;//冷却时间？
-        QString color=0;//颜色触发？
-        QString parent="默认分组";//名字唯一
-        QString regName="";//组内唯一
-        int row=1;//这个触发器用户想让他匹配几行
-        bool oneStrOneReg=true;//一行仅触发一次
-        bool enable=true;
-
-        bool sysOrUser=true;//用户类则使用端口，系统类则使用关键词
-        int port=8080;//用户指定触发成功后发送给哪个tcp端口
-        QString sysStr="hp";
-    }//类，名字，触发，匹配行，是否开启，
-    QRegularExpression regStr("#newReg\(\"([\s\S]+)\",\"([\s\S]+)\",\"([\s\S]+)\",\)");
-    QRegularExpressionMatch regularmatch=regStr.match(inArray, index);
+    bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
+    //QString testStr="#newReg(\"lei\",\"name\",\"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$\",3,1,0,8080,1)";
+    QRegularExpression regStr("^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$");
+    QRegularExpressionMatch regularmatch=regStr.match(inStr);
     if(regularmatch.hasMatch())
     {
-        QByteArray checkStr=regularmatch.captured(0).toUtf8();
-        int row= -1, beginPoint= -1, length= -1;
-        getAllFromArray(inArray, checkStr, Reg->oneReg.row, row, beginPoint, length);
-        //qDebug()<<"checkStr--"<<checkStr;
-        if(row<Reg->row || (row=Reg->row && ((beginPoint>Reg->beginPoint) ||(beginPoint=Reg->beginPoint && length>Reg->strLength))))//有效匹配，判断是否循环
+        QStringList backList=regularmatch.capturedTexts();
+        if(backList.size()>=9)
         {
-            Reg->row=row;
-            Reg->beginPoint=beginPoint;
-            Reg->strLength=length;
-            //获取正常的结果 须填
-            if(Reg->oneReg.oneStrOneReg)//最新数据只匹配一次
-            {
-                //qDebug()<<"Reg->oneReg.oneStrOneReg true";
-                sendAllMessage(regularmatch, Reg);
-                break;
-            }
-            else//最新数据可匹配多次
-            {
-                sendAllMessage(regularmatch, Reg);
-                //qDebug()<<"Reg->oneReg.oneStrOneReg false";
-                index=inArray.indexOf(checkStr)+checkStr.length();
-            }
-        }
-        else//无效匹配，删除并开始再次判断
-        {
-            //qDebug()<<"row<Reg->row || (row=Reg->row && ((beginPoint>Reg->beginPoint) ||(beginPoint=Reg->beginPoint && leng";
-            index=inArray.indexOf(checkStr)+checkStr.length();
+            backReg.parent=backList[1];
+            backReg.regName=backList[2];
+            backReg.regStr=backList[3];
+            backReg.row=backList[4].toInt();
+            backReg.enable=backList[5].toInt()==1?true:false;
+            backReg.sysOrUser=backList[6].toInt()==1?true:false;
+            backReg.port=backList[7].toInt();
+            backReg.oneStrOneReg=backList[8].toInt()==1?true:false;
+            flag=true;
         }
     }
     else
     {
-        //qDebug()<<"regularmatch.hasMatch() false";
-        break;
+        //qDebug()<<"getNewRegFromStr.hasMatch() false";
     }
+    return flag;
 }
+
+bool RegClass::getDeleteRegFromStr(QString &inStr, QString &backParent, QString &backRegName)
+{
+    bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
+    //QString testStr="#deleteReg(\"asd\",\"asd\")";
+    QRegularExpression regStr("^#deleteReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$");
+    QRegularExpressionMatch regularmatch=regStr.match(inStr);
+    if(regularmatch.hasMatch())
+    {
+        QStringList backList=regularmatch.capturedTexts();
+        if(backList.size()>=3)
+        {
+            backParent=backList[1];
+            backRegName=backList[2];
+            flag=true;
+        }
+    }
+    else
+    {
+        //qDebug()<<"getDeleteRegFromStr.hasMatch() false";
+    }
+    return flag;
+}
+
+bool RegClass::getOpenOrCloseRegFromStr(QString &inStr, QString &backParent, QString &backRegName, bool &backflag)
+{
+    bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
+    //QString testStr="#changeReg(\"asd\",\"asd\",1)";
+    QRegularExpression regStr("^#changeReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+)\\)$");
+    QRegularExpressionMatch regularmatch=regStr.match(inStr);
+    if(regularmatch.hasMatch())
+    {
+        QStringList backList=regularmatch.capturedTexts();
+        if(backList.size()>=4)
+        {
+            backParent=backList[1];
+            backRegName=backList[2];
+            backflag=backList[3].toInt()==1?true:false;
+            flag=true;
+        }
+    }
+    else
+    {
+        //qDebug()<<"getOpenOrCloseRegFromStr.hasMatch() false";
+    }
+    return flag;
+}
+
+bool RegClass::removeColorFromArray(QByteArray &inArray)
+{
+    //QRegularExpression regular{"\\033\\[\\d+(;\\d+)*m"};//去除颜色
+    //\x1B
+    bool found=false;
+    int Num=0;
+    while(Num<inArray.size()-1)
+    {
+        if(inArray[Num]=='\x1B')
+        {
+            int key=Num+1;
+            if(key<inArray.size() && inArray[key]=='[')//\x1B 后必是 [
+            {
+                key++;
+                while(key<inArray.size())
+                {
+                    if(inArray[key]==';' || ('0'<=inArray[key] && inArray[key]<='9') || inArray[key]=='m')
+                    {
+                        if(inArray[key]=='m')//M结尾
+                        {
+                            found=true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        found=false;
+                        break;
+                    }
+                    key++;
+                }
+            }
+            if(found)//数组中移除
+            {
+                inArray.remove(Num,key-Num+1);
+            }
+        }
+        Num++;
+    }
+    return found;
+}
+

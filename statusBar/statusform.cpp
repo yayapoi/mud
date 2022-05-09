@@ -1,6 +1,7 @@
 #include "statusform.h"
 #include "ui_statusform.h"
 #include <statusBar/pointbar.h>
+#include <QRegularExpression>
 
 StatusForm::StatusForm(QWidget *parent) :
     QWidget(parent),
@@ -42,5 +43,17 @@ void StatusForm::setHpMpStatus(QStringList testList)
         ui->zhandou->setText("战斗:  "+zhandou);
         QString manglu(testList[17].toInt()==1?"是":"否");
         ui->mang->setText("忙碌:  "+manglu);
+    }
+}
+
+void StatusForm::setHpMpStatus(QString instr)
+{
+    QRegularExpression regStr("^#setHpBar\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$");
+    QRegularExpressionMatch regularmatch=regStr.match(instr);
+    if(regularmatch.hasMatch())
+    {
+        QStringList testList=regularmatch.capturedTexts();
+        testList.removeFirst();
+        setHpMpStatus(testList);
     }
 }

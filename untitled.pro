@@ -13,6 +13,7 @@ SOURCES += \
     cmdMessageControl/cmdcontrol.cpp \
     cmdMessageControl/cmddo.cpp \
     fontwidget.cpp \
+    globalhead.cpp \
     main.cpp \
     mainwindow.cpp \
     regClass/regclass.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     cmdMessageControl/cmdcontrol.h \
     cmdMessageControl/cmddo.h \
     fontwidget.h \
+    globalhead.h \
     mainwindow.h \
     regClass/regclass.h \
     statusBar/pointbar.h \

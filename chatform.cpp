@@ -3,6 +3,7 @@
 #include <QScrollBar>
 #include <QDebug>
 #include <QTime>
+#include <globalhead.h>
 
 ChatForm::ChatForm(QWidget *parent) :
     QWidget(parent),

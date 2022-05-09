@@ -25,7 +25,7 @@ public:
     /* @brief 外部告诉此窗口要滚动下去*/
     void setClickScrollBar();
     /* @brief 设置状态，血量*/
-    void setHpMpStatus(QStringList);
+    void setHpMpStatus(QString);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;

@@ -8,6 +8,8 @@
 #include "zlib.h"
 #include <qfile.h>
 #include <regClass/regclass.h>
+#include <cmdMessageControl/cmddo.h>
+#include <cmdMessageControl/cmdcontrol.h>
 
 /*
  * MCCP2 协议
@@ -43,9 +45,6 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-void appendMessage(QString inStr);//测试
-bool getMessageFrom(QString& inStr, QString& backStr);//测试
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -69,8 +68,6 @@ private:
     void checkStr(QByteArray);
     /* @brief 检查解压的大小，决定输出数组的大小*/
     int checkOutSize(int);
-    /* @brief 按行匹配分开【闲聊】【任务】【江湖】【求助】【谣言】【北侠QQ群】*/
-    void checkAlise(QByteArray&);
 
     z_stream mZstream;
     bool compressed=false;
@@ -85,55 +82,10 @@ private:
     bool tsetadf=false;
 
     RegClass testRegClass;
+    CmdDo cmdDo;
+    CmdControl cmdControl;
     QFile* messageFile;
     //QRegularExpression *regular=nullptr;//使用下面的正则表达式，不使用这段 ***
 };
 
-namespace Common // RFC854
-{
-// Commands
-const uchar CEOF  = 236;
-const uchar SUSP  = 237;
-const uchar ABORT = 238;
-
-const uchar SE    = 240; // SubnegotiationEnd
-const uchar NOP   = 241; // NoOperation
-const uchar DM    = 242; // DataMark
-const uchar BRK   = 243; // Break
-const uchar IP    = 244; // InterruptProcess
-const uchar AO    = 245; // AbortOutput
-const uchar AYT   = 246; // AreYouThere
-const uchar EC    = 247; // EraseCharacter
-const uchar EL    = 248; // EraseLine
-const uchar GA    = 249; // GoAhead
-const uchar SB    = 250; // SubnegotiationBegin
-
-// Negotiation
-const uchar WILL  = 251;
-const uchar WONT  = 252;
-const uchar DO    = 253;
-const uchar DONT  = 254;
-
-// Escape
-const uchar IAC   = 255;
-
-// Types
-const uchar IS     = 0;
-const uchar SEND   = 1;
-const uchar NAWS   = 31; // RFC1073, implemented
-
-// Types (MUD-specific)
-const uchar MSDP   = 69;
-const uchar MXP    = 91;
-const uchar MCCP1  = 85;
-const uchar MCCP2  = 86;
-const uchar MSP    = 90;
-
-const uchar DRAW_MAP = 91;
-const uchar CLR_MAP  = 92;
-
-// Formatting Command
-const uchar FORMAT = 100;
-};
-//255 250 86 255 240
 #endif // MAINWINDOW_H
