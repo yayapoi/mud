@@ -10,10 +10,11 @@ CmdControl::CmdControl(QObject *parent)
         {
             QQueue<QString> backMessageList;
             messageToList(backMessageList);
+            //qDebug()<<"backMessageList--"<<backMessageList;
             emit newMessage(backMessageList);
         }
     });
-    cmdTimer.start(25);
+    cmdTimer.start(20);
 }
 
 void CmdControl::appendMessage(QString inStr)//须填 ;
@@ -86,9 +87,10 @@ void CmdControl::messageToList(QQueue<QString> &backList)
     while (true) {
         if(!queueList.isEmpty())
         {
-            QString backstr=queueList.dequeue();
+            QString backstr=queueList.first();
             if(checkMessage(backstr))
             {
+                queueList.dequeue();
                 backList.append(backstr);
             }
             else

@@ -8,26 +8,26 @@ RegClass::RegClass(QObject *parent)
     //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
     newReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
     newReg->oneReg.regName="123";
-    newReg->oneReg.sysStr="#setHpBar(\"%1\",\"%2\",\"%3\",\"%4\",\"%5\",\"%6\",\"%7\",\"%8\",\"%9\",\"%10\",\"%11\",\"%12\",\"%13\",\"%14\",\"%15\",\"%16\",\"%17\",\"%18\")";
+    newReg->oneReg.sysStr="w;#setHpBar(\"%1\",\"%2\",\"%3\",\"%4\",\"%5\",\"%6\",\"%7\",\"%8\",\"%9\",\"%10\",\"%11\",\"%12\",\"%13\",\"%14\",\"%15\",\"%16\",\"%17\",\"%18\")";
     newReg->oneReg.row=3;
 
     RegPtr* fightReg=new RegPtr;//战斗  自用
     //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
     fightReg->oneReg.regStr="流氓头\\(Liumang tou\\)";
     fightReg->oneReg.regName="fight";
-    fightReg->oneReg.sysStr="fight liumang tou";
+    fightReg->oneReg.sysStr="fight liumang tou;look liumang tou";
     fightReg->oneReg.row=1;
 
     RegPtr* mapReg=new RegPtr;//  自用
-    mapReg->oneReg.regStr="不打了";
+    mapReg->oneReg.regStr="你终于完全从紧张地战斗氛围中解脱出来";
     mapReg->oneReg.regName="234";
-    mapReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0)";
+    mapReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);e";
     mapReg->oneReg.row=1;
 
     RegPtr* dontReg=new RegPtr;//  自用
     dontReg->oneReg.regStr="不想跟你较量";
     dontReg->oneReg.regName="345";
-    dontReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0)";
+    dontReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);e";
     dontReg->oneReg.row=1;
 
     QMap<QString, RegPtr*>* qqqqq=new QMap<QString, RegPtr*>;

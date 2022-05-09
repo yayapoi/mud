@@ -12,29 +12,29 @@ ChatForm::ChatForm(QWidget *parent) :
     ui->setupUi(this);
     this->setStyleSheet("QMenu\
                         {\
-                                color:black;\
-                                background-color:rgb(255,255,255);\
-                                border:none;\
+                            color:black;\
+                            background-color:rgb(255,255,255);\
+                            border:none;\
                         }"
                          "QMenu::item\
                         {\
-                                color:black;\
-                                background-color:rgb(255,255,255);\
+                            color:black;\
+                            background-color:rgb(255,255,255);\
                         }"
                          "QMenu::item:selected\
                         {\
-                                color:rgb(255,255,255);\
-                                background-color:#1a9b81;\
+                            color:rgb(255,255,255);\
+                            background-color:#1a9b81;\
                         }\
                         QMenu::separator\
                         {\
-                                height:1px;\
-                                background-color:rgba(255,255,255,1);\
-                                margin-left:5px;\
-                                margin-right:5px;\
+                            height:1px;\
+                            background-color:rgba(255,255,255,1);\
+                            margin-left:5px;\
+                            margin-right:5px;\
                         }");
-    ui->chatWidget->setTabText(0,"任务");
-    ui->chatWidget->setTabText(1,"谣言");
+                        ui->chatWidget->setTabText(0,"任务");
+            ui->chatWidget->setTabText(1,"谣言");
     ui->chatWidget->setTabText(2,"闲聊");
     ui->chatWidget->setTabText(3,"求助");
     ui->chatWidget->setTabText(4,"江湖");

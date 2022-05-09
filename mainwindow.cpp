@@ -617,7 +617,8 @@ int MainWindow::checkOutSize(int inSize)
 void MainWindow::on_cmdLE_returnPressed()
 {
     //qDebug()<<ui->cmdLE->text();
-    socketWrite(ui->cmdLE->text());
+    //socketWrite(ui->cmdLE->text());//暂时通过传送至命令中转来达到执行系统命令效果
+    cmdControl.appendMessage(ui->cmdLE->text());
     ui->cmdLE->selectAll();
 }
 
