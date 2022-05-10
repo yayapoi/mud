@@ -39,18 +39,18 @@ enum StrType{
 /* @brief 用户自定义的触发器*/
 struct RegStr
 {
-    QString regStr="";//触发正则
-    int coldTime=0;//冷却时间？
-    QString color=0;//颜色触发？
     QString parent="默认分组";//名字唯一
     QString regName="";//组内唯一
+    QString regStr="";//触发正则
     int row=1;//这个触发器用户想让他匹配几行
     bool oneStrOneReg=true;//一行仅触发一次
-    bool enable=true;
+    bool enable=true;//是否开启
+    bool sysOrUser=true;//用户类则使用端口，系统类则使用sysStr
+    int port=8080;//用户类触发后发送给哪个tcp端口
+    QString sysStr="";//系统类触发后执行的命令
 
-    bool sysOrUser=true;//用户类则使用端口，系统类则使用关键词
-    int port=8080;//用户指定触发成功后发送给哪个tcp端口
-    QString sysStr="hp";
+    int coldTime=0;//冷却时间？
+    QString color="";//颜色触发？
 };
 
 /* @brief 记录一个触发器，有触发器的已经触发行，开始点，和长度*/

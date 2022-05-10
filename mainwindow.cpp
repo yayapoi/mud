@@ -268,7 +268,7 @@ MainWindow::MainWindow(QWidget *parent)
     testSocket=new QTcpSocket;
     connect(testSocket,&QTcpSocket::connected,[&](){});
     connect(testSocket,&QTcpSocket::disconnected,[&](){});
-    connect(testSocket,&QTcpSocket::readyRead,[&](){//粘包问题，或者丢到触发处判断 须填
+    connect(testSocket,&QTcpSocket::readyRead,[&](){//粘包问题，或者丢到触发处判断
         /*{
             zbuffer.append(testSocket->readAll());
             if (compressed) {
@@ -426,52 +426,11 @@ MainWindow::MainWindow(QWidget *parent)
     {
 //qDebug()<<"error";
     }*/
-    /*QByteArray inArray;
-    inArray.append('1');
-    inArray.append('\x1B');
-    inArray.append('[');
-    inArray.append('m');
-    inArray.append(';');
-    inArray.append('3');
-    inArray.append('4');
-    inArray.append('m');
-    inArray.append('5');
-    bool found=false;
-    int Num=0;
-    while(Num<inArray.size()-1)
+    /*QFontDatabase database;
+    foreach(const QString &family, database.families(QFontDatabase::SimplifiedChinese))
     {
-        if(inArray[Num]=='\x1B')
-        {
-            int key=Num+1;
-            if(key<inArray.size() && inArray[key]=='[')//\x1B 后必是 [
-            {
-                key++;
-                while(key<inArray.size())
-                {
-                    if(inArray[key]==';' || ('0'<=inArray[key] && inArray[key]<='9') || inArray[key]=='m')
-                    {
-                        if(inArray[key]=='m')//M结尾
-                        {
-                            found=true;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        found=false;
-                        break;
-                    }
-                    key++;
-                }
-            }
-            if(found)//数组中移除
-            {
-                inArray.remove(Num,key-Num+1);
-            }
-        }
-        Num++;
-    }
-//qDebug()<<"inArray--"<<inArray;*/
+        qDebug() << family;
+    }*/
 }
 
 MainWindow::~MainWindow()

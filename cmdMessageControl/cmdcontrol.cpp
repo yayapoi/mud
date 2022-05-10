@@ -17,7 +17,7 @@ CmdControl::CmdControl(QObject *parent)
     cmdTimer.start(20);
 }
 
-void CmdControl::appendMessage(QString inStr)//须填 ;
+void CmdControl::appendMessage(QString inStr)//须填 ;;->;
 {
     int oldindex=0;
     int index=0;
@@ -59,7 +59,7 @@ void CmdControl::appendMessage(QByteArray inarray)
     appendMessage(QString(inarray));
 }
 
-bool CmdControl::getMessageFrom(QString& inStr, QString& backStr)//须填
+bool CmdControl::getMessageFrom(QString& inStr, QString& backStr)//须填  宏定义
 {
     bool flag=false;
     if(inStr=="123")

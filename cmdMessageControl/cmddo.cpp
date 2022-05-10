@@ -11,7 +11,7 @@ void CmdDo::newMessage(QQueue<QString> inList)
 {
     while (!inList.isEmpty()) {
         QString messageStr=inList.dequeue();
-        emit cmdShowInWindow("\r\ncmd命令:    "+messageStr);
+        emit cmdShowInWindow("\r\ncmd命令: "+messageStr+"\r\n");
         if(!checkMessage(messageStr))
         {
             //不是系统函数，则发送给tcp
