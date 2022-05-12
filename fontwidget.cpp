@@ -208,7 +208,7 @@ FontWidget::FontWidget(QWidget *parent) :
     insertTextCursor=ui->fightEdit->cursorForPosition(QPoint(0,0));
     insertTextCursor.movePosition(QTextCursor::End);
     blockFormat.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
-    font.setFamily("明黑等宽");//中文字体
+    font.setFamily("新宋体");//中文字体
     font.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
     fmt.setFont(font);
     //font.setLetterSpacing(QFont::AbsoluteSpacing,1);//字间距
@@ -416,7 +416,7 @@ void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCha
     switch (fontStyle) {
     case Colors::close_all:
     {
-        backFont.setFamily("明黑等宽");//字体
+        backFont.setFamily("新宋体");//字体
         backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
         backFont.setWeight(QFont::Normal);//设置粗体属性实际上就是将字体的粗细设为一个确定的值
         backFont.setUnderline(false);//下划线

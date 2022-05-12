@@ -7,6 +7,18 @@
 #include <QFontDatabase>
 #include <QTimer>
 
+void int2Bytes(int i, QByteArray& backArray, int off) {
+        backArray[0 + off] = (Byte) (i >> 16 & 0xFF);
+        backArray[1 + off] = (Byte) (i >> 8 & 0xFF);
+        backArray[2 + off] = (Byte) (i & 0xFF);
+    }
+int bytes2Int(QByteArray& backArray, int off) {
+        int b0 = backArray[0 + off] & 0xFF;
+        int b1 = backArray[1 + off] & 0xFF;
+        int b2 = backArray[2 + off] & 0xFF;
+        return (b0 << 16) | (b1 << 8) | b2;
+    }
+
 struct totalZlibStruct{
     int showNum=0;//出现几次
     int maxSize=0;//这种倍率下最大的包
@@ -396,7 +408,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         backArray.clear();
     });
-    testSocket->connectToHost("47.97.249.185",8081);
+    //testSocket->connectToHost("47.97.249.185",8081);
 
     QTimer* goTimer=new QTimer;
     connect(goTimer, &QTimer::timeout, [&](){
@@ -431,6 +443,16 @@ MainWindow::MainWindow(QWidget *parent)
     {
         qDebug() << family;
     }*/
+    QByteArray sdfgsdfgsd;
+    sdfgsdfgsd.append('B');
+    sdfgsdfgsd.append('e');
+    sdfgsdfgsd.append('G');
+    sdfgsdfgsd.append('i');
+    sdfgsdfgsd.append('N');
+    int2Bytes(65536, sdfgsdfgsd,5);
+    qDebug()<<"--"<<sdfgsdfgsd;
+    qDebug()<<"**"<<bytes2Int(sdfgsdfgsd,5);
+
 }
 
 MainWindow::~MainWindow()

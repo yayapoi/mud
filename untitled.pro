@@ -18,7 +18,8 @@ SOURCES += \
     mainwindow.cpp \
     regClass/regclass.cpp \
     statusBar/pointbar.cpp \
-    statusBar/statusform.cpp
+    statusBar/statusform.cpp \
+    tcpControl/tcpprotocoltrans.cpp
 
 HEADERS += \
     chatform.h \
@@ -30,6 +31,7 @@ HEADERS += \
     regClass/regclass.h \
     statusBar/pointbar.h \
     statusBar/statusform.h \
+    tcpControl/tcpprotocoltrans.h \
     zconf.h \
     zlib.h
 
