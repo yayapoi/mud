@@ -1,4 +1,5 @@
 #include "globalhead.h"
+#include <zconf.h>
 
 bool globalCheck::checkNewReg(QString &instr)
 {
@@ -42,4 +43,19 @@ bool globalCheck::checkSetHPBar(QString &instr)
         flag=true;
     }
     return flag;
+}
+
+void globalCheck::int2Bytes(int i, QByteArray &backArray, int off)
+{
+    backArray[0 + off] = (Byte) (i >> 16 & 0xFF);
+    backArray[1 + off] = (Byte) (i >> 8 & 0xFF);
+    backArray[2 + off] = (Byte) (i & 0xFF);
+}
+
+int globalCheck::bytes2Int(QByteArray &backArray, int off)
+{
+    int b0 = backArray[0 + off] & 0xFF;
+    int b1 = backArray[1 + off] & 0xFF;
+    int b2 = backArray[2 + off] & 0xFF;
+    return (b0 << 16) | (b1 << 8) | b2;
 }

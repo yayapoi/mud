@@ -3,8 +3,6 @@
 
 #include <QMainWindow>
 #include <qtcpsocket.h>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
 #include "zlib.h"
 #include <qfile.h>
 #include <regClass/regclass.h>

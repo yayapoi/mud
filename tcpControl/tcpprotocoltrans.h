@@ -9,10 +9,10 @@ public:
     TcpProtocolTrans();
 
     /* @brief 将触发信息组装成tcp信息发出 类 名字 触发信息 每条结果*/
-    bool regStrToTcp(QByteArray&, QString& lei, QString& name);
+    bool regStrToTcp(QByteArray&, QString& lei, QString& name, QStringList& inMatch);
 
     /* @brief 将tcp信息转化为命令*/
-    QString tcpToRegStr(QByteArray&);
+    bool tcpToRegStr(QByteArray &inStr, QList<QString>& backStr);
 private:
     /* @brief 存未完的字符串*/
     QByteArray moreStr;

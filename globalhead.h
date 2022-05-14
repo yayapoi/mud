@@ -125,6 +125,12 @@ bool checkEnableRegReg(QString &instr);
 
 /* @brief 系统函数设置血条状态，是则使用并返回true*/
 bool checkSetHPBar(QString &instr);
+
+/* @brief 在数组中指定位置插入指定数字，该数字必定占3字节*/
+void int2Bytes(int i, QByteArray& backArray, int off);
+
+/* @brief 从数组中指定位置读取数字，该数字必定占3字节*/
+int bytes2Int(QByteArray& backArray, int off);
 }
 
 #endif // GLOBALHEAD_H
