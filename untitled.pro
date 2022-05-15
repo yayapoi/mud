@@ -21,7 +21,8 @@ SOURCES += \
     statusBar/statusform.cpp \
     tcpControl/tcpconnect.cpp \
     tcpControl/tcpprotocoltrans.cpp \
-    tcpControl/tcpservercontrol.cpp
+    tcpControl/tcpservercontrol.cpp \
+    tcpControl/tcpserverform.cpp
 
 HEADERS += \
     chatform.h \
@@ -36,6 +37,7 @@ HEADERS += \
     tcpControl/tcpconnect.h \
     tcpControl/tcpprotocoltrans.h \
     tcpControl/tcpservercontrol.h \
+    tcpControl/tcpserverform.h \
     zconf.h \
     zlib.h
 
@@ -43,7 +45,8 @@ FORMS += \
     chatform.ui \
     fontwidget.ui \
     mainwindow.ui \
-    statusBar/statusform.ui
+    statusBar/statusform.ui \
+    tcpControl/tcpserverform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

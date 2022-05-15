@@ -1,7 +1,9 @@
 #include "tcpconnect.h"
+#include <QHostAddress>
+#include <QThread>
 
-TcpConnect::TcpConnect(QObject *parent)
-    : QObject{parent}
+TcpConnect::TcpConnect(qintptr Descriptor, QObject *parent)
+    : QObject{parent}, socketDescriptor11{Descriptor}
 {
 
 }
@@ -19,11 +21,16 @@ TcpConnect::~TcpConnect()
     }
 }
 
-void TcpConnect::connectToHost(QHostAddress &address, quint16 port)
+void TcpConnect::connectToHost()
 {
     privateTrans=new TcpProtocolTrans();
+
     tcpSocket=new QTcpSocket(this);
-    tcpSocket->connectToHost(address,port);
+    tcpSocket->setSocketDescriptor(socketDescriptor11);
+
+    qDebug() << tcpSocket->socketDescriptor() << " " << tcpSocket->peerAddress().toString()
+             << " " << tcpSocket->peerPort() << "myTcpSocket::myTcpSocket thread is " <<QThread::currentThreadId();
+
     //连接成功就会触发connected信号
     connect(tcpSocket,&QTcpSocket::connected,[&]()
     {});
@@ -40,13 +47,37 @@ void TcpConnect::connectToHost(QHostAddress &address, quint16 port)
     });
     //双方断开连接后就会触发disconnected信号
     connect(tcpSocket,&QTcpSocket::disconnected,[&]()
-    {});
+    {emit sockDisConnect(socketDescriptor11,"",thisPort);});
+    thisPort=tcpSocket->peerPort();
 }
 
-void TcpConnect::sendMessage(QString lei, QString name, QStringList regList)
+QHostAddress TcpConnect::peerAddress()
 {
-    QByteArray backStr;
-    privateTrans->regStrToTcp(backStr, lei, name, regList);
-    tcpSocket->write(backStr);
-    tcpSocket->flush();
+    return tcpSocket->peerAddress();
+}
+
+QString TcpConnect::peerName()
+{
+    return tcpSocket->peerName();
+}
+
+quint16 TcpConnect::peerPort()
+{
+    return thisPort;
+}
+
+qintptr TcpConnect::socketDescriptor()
+{
+    return socketDescriptor11;
+}
+
+void TcpConnect::sendMessage(int socketPort, QString lei, QString name, QStringList regList)
+{
+    if(socketPort==thisPort)
+    {
+        QByteArray backStr;
+        privateTrans->regStrToTcp(backStr, lei, name, regList);
+        tcpSocket->write(backStr);
+        tcpSocket->flush();
+    }
 }
