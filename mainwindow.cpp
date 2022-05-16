@@ -247,7 +247,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     zout.resize(zoutSize);
 
-    //connect(&testRegClass,&RegClass::getHp,[&](QList<QString> asdf){ui->fightTE->setHpMpStatus(asdf);});
+    /*
+    void getSendMessage(int port, QString lei, QString name, QStringList regList);
+signals:
+    void getMessage(QList<QString>);*/
+    connect(&(tcpServerForm.tcpServerControl),&TcpServerControl::getMessage,[&](QList<QString> StrList){cmdControl.appendMessage(StrList);});
+    connect(&testRegClass,&RegClass::regStrSendToTcp,&(tcpServerForm.tcpServerControl),&TcpServerControl::getSendMessage);
     connect(&testRegClass,&RegClass::regStrSend,[&](QString Str){cmdControl.appendMessage(Str);});
     connect(&cmdControl,&CmdControl::newMessage,[&](QQueue<QString> queueStr){cmdDo.newMessage(queueStr);});
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
@@ -394,7 +399,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         backArray.clear();
     });
-    //testSocket->connectToHost("47.97.249.185",8081);
+    testSocket->connectToHost("47.97.249.185",8081);
 
     QTimer* goTimer=new QTimer;
     connect(goTimer, &QTimer::timeout, [&](){
@@ -427,7 +432,7 @@ MainWindow::MainWindow(QWidget *parent)
     /*QFontDatabase database;
     foreach(const QString &family, database.families(QFontDatabase::SimplifiedChinese))
     {
-        qDebug() << family;
+//qDebug() << family;
     }*/
     /*QJsonObject sendObj;
     sendObj.insert("Class","哈哈哈");
@@ -440,8 +445,8 @@ MainWindow::MainWindow(QWidget *parent)
     strListArray.append("333");
     sendObj.insert("RegStrList",strListArray);
     QJsonDocument backdocu(sendObj);
-    qDebug()<<"backdocu Compact size--"<<backdocu.toJson(QJsonDocument::Compact).size();
-    qDebug()<<"backdocu Indented size--"<<backdocu.toJson(QJsonDocument::Indented).size();*/
+//qDebug()<<"backdocu Compact size--"<<backdocu.toJson(QJsonDocument::Compact).size();
+//qDebug()<<"backdocu Indented size--"<<backdocu.toJson(QJsonDocument::Indented).size();*/
 }
 
 MainWindow::~MainWindow()
@@ -596,3 +601,9 @@ void MainWindow::on_toolButton_clicked()
 {
     ui->fightTE->setClickScrollBar();
 }
+
+void MainWindow::on_actionTCP_triggered()
+{
+    tcpServerForm.show();
+}
+

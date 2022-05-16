@@ -8,7 +8,7 @@ RegClass::RegClass(QObject *parent)
     //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
     newReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
     newReg->oneReg.regName="123";
-    newReg->oneReg.sysStr="w;#setHpBar(\"%1\",\"%2\",\"%3\",\"%4\",\"%5\",\"%6\",\"%7\",\"%8\",\"%9\",\"%10\",\"%11\",\"%12\",\"%13\",\"%14\",\"%15\",\"%16\",\"%17\",\"%18\")";
+    newReg->oneReg.sysStr="#setHpBar(\"%1\",\"%2\",\"%3\",\"%4\",\"%5\",\"%6\",\"%7\",\"%8\",\"%9\",\"%10\",\"%11\",\"%12\",\"%13\",\"%14\",\"%15\",\"%16\",\"%17\",\"%18\")";
     newReg->oneReg.row=3;
 
     RegPtr* fightReg=new RegPtr;//战斗  自用
@@ -21,20 +21,28 @@ RegClass::RegClass(QObject *parent)
     RegPtr* mapReg=new RegPtr;//  自用
     mapReg->oneReg.regStr="你终于完全从紧张地战斗氛围中解脱出来";
     mapReg->oneReg.regName="234";
-    mapReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);e";
+    mapReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);";
     mapReg->oneReg.row=1;
 
     RegPtr* dontReg=new RegPtr;//  自用
     dontReg->oneReg.regStr="不想跟你较量";
     dontReg->oneReg.regName="345";
-    dontReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);e";
+    dontReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);";
     dontReg->oneReg.row=1;
+
+    RegPtr* tcpReg=new RegPtr;//tcp触发  自用
+    tcpReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
+    tcpReg->oneReg.regName="tcp";
+    tcpReg->oneReg.row=3;
+    tcpReg->oneReg.sysOrUser=false;
 
     QMap<QString, RegPtr*>* qqqqq=new QMap<QString, RegPtr*>;
     qqqqq->insert(newReg->oneReg.regName,newReg);
     qqqqq->insert(fightReg->oneReg.regName,fightReg);
     qqqqq->insert(mapReg->oneReg.regName,mapReg);
     qqqqq->insert(dontReg->oneReg.regName,dontReg);
+    qqqqq->insert(tcpReg->oneReg.regName,tcpReg);
+
     regMap.insert(newReg->oneReg.parent,qqqqq);
 }
 
@@ -400,9 +408,9 @@ void RegClass::getAllFromArray(QByteArray &inArray, QByteArray &regArray, int ma
 
 void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
 {
+    QStringList backList=matchReg.capturedTexts();
     if(Reg->oneReg.sysOrUser)
     {
-        QStringList backList=matchReg.capturedTexts();
         backList.pop_front();
         //qDebug()<<"backList--"<<backList;
         for(int Num=0; Num<backList.size(); Num++)
@@ -413,7 +421,8 @@ void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
     }
     else
     {
-        //须填 tcp传输
+        //tcp传输
+        emit regStrSendToTcp(Reg->oneReg.port, Reg->oneReg.parent, Reg->oneReg.regName, backList);
     }
 }
 

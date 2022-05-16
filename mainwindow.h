@@ -8,6 +8,7 @@
 #include <regClass/regclass.h>
 #include <cmdMessageControl/cmddo.h>
 #include <cmdMessageControl/cmdcontrol.h>
+#include <tcpControl/tcpserverform.h>
 
 /*
  * MCCP2 协议
@@ -56,6 +57,7 @@ private slots:
 
     void on_toolButton_clicked();
 
+    void on_actionTCP_triggered();
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;
@@ -83,6 +85,7 @@ private:
     CmdDo cmdDo;
     CmdControl cmdControl;
     QFile* messageFile;
+    TcpServerForm tcpServerForm;
     //QRegularExpression *regular=nullptr;//使用下面的正则表达式，不使用这段 ***
 };
 

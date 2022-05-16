@@ -16,12 +16,12 @@ public:
     explicit TcpServerForm(QWidget *parent = nullptr);
     ~TcpServerForm();
 
+    TcpServerControl tcpServerControl;
 private slots:
     void on_listenPortBT_clicked(bool checked);
 
 private:
     Ui::TcpServerForm *ui;
-    TcpServerControl tcpServerControl;
 };
 
 #endif // TCPSERVERFORM_H

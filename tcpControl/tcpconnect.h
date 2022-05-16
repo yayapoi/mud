@@ -25,6 +25,7 @@ signals:
     /* @brief 从tcp中获取命令*/
     void getMessage(QList<QString>);
     void sockDisConnect(const int ,const QString &,const quint16 );//断开连接的用户信息
+    void connectClient(const int , const QString & ,const quint16 );//发送新用户连接信息
 private:
     TcpProtocolTrans* privateTrans=nullptr;
     QTcpSocket* tcpSocket=nullptr;

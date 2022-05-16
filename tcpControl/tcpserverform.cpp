@@ -9,10 +9,16 @@ TcpServerForm::TcpServerForm(QWidget *parent) :
     ui->listenPortLE->setValidator(new QRegExpValidator(QRegExp("[1-9][0-9]{0,4}"), this));
     ui->listenPortBT->setCheckable(true);
     connect(&tcpServerControl,&TcpServerControl::connectClient,[&](int , QString ip, quint16 newport){
+        //qDebug()<<"TcpServerForm::connectClient ip--"<<ip<<"  newport--"<<newport;
         ui->portListWidget->addItem(QString::number(newport));
     });
     connect(&tcpServerControl,&TcpServerControl::sockDisConnect,[&](int , QString ip, quint16 newport){
+        //qDebug()<<"TcpServerForm::sockDisConnect ip--"<<ip<<"  newport--"<<newport;
         QList<QListWidgetItem *> asdf=ui->portListWidget->findItems(QString::number(newport),Qt::MatchFixedString);
+        for(auto oneItem:asdf)
+        {
+            ui->portListWidget->removeItemWidget(oneItem);
+        }
     });
 }
 

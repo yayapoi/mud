@@ -33,6 +33,8 @@ public:
 signals:
     /* @brief 发给命令解析类*/
     void regStrSend(QString);
+    /* @brief 发给tcp*/
+    void regStrSendToTcp(int port, QString lei, QString name, QStringList regList);
 public slots:
     void newRegStr(QString);
     void deleteRegStr(QString);
