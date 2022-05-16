@@ -18,6 +18,7 @@ TcpServerForm::TcpServerForm(QWidget *parent) :
         for(auto oneItem:asdf)
         {
             ui->portListWidget->removeItemWidget(oneItem);
+            delete oneItem;
         }
     });
 }

@@ -700,3 +700,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
     this->hide();
     event->ignore();
 }
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_QuoteLeft))
+    {
+        //qDebug()<<"MainWindow::keyPressEvent";
+        this->hide();
+    }
+    QMainWindow::keyPressEvent(event);
+}
