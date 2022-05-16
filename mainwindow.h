@@ -9,6 +9,7 @@
 #include <cmdMessageControl/cmddo.h>
 #include <cmdMessageControl/cmdcontrol.h>
 #include <tcpControl/tcpserverform.h>
+#include <QSystemTrayIcon>
 
 /*
  * MCCP2 协议
@@ -58,6 +59,9 @@ private slots:
     void on_toolButton_clicked();
 
     void on_actionTCP_triggered();
+
+    void on_showMainAction();
+    void on_exitAppAction();
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;
@@ -86,7 +90,20 @@ private:
     CmdControl cmdControl;
     QFile* messageFile;
     TcpServerForm tcpServerForm;
-    //QRegularExpression *regular=nullptr;//使用下面的正则表达式，不使用这段 ***
+
+
+
+    QSystemTrayIcon *m_sysTrayIcon; //系统托盘
+    QMenu *m_menu;                  //菜单
+    QAction *m_showMainAction;      //动作
+    QAction *m_exitAppAction;       //动作
+
+    void createActions();
+    void createMenu();
+    void initSysTrayIcon();
+
+protected:
+    void closeEvent (QCloseEvent *event) override;
 };
 
 #endif // MAINWINDOW_H
