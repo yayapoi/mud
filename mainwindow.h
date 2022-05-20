@@ -6,6 +6,7 @@
 #include "zlib.h"
 #include <qfile.h>
 #include <regClass/regclass.h>
+#include "regClass/regform.h"
 #include <cmdMessageControl/cmddo.h>
 #include <cmdMessageControl/cmdcontrol.h>
 #include <tcpControl/tcpserverform.h>
@@ -62,6 +63,13 @@ private slots:
 
     void on_showMainAction();
     void on_exitAppAction();
+
+    void on_actionRegShow_triggered();
+
+    void on_actionRegIn_triggered();
+
+    void on_actionRegOut_triggered();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;
@@ -86,6 +94,7 @@ private:
     bool tsetadf=false;
 
     RegClass testRegClass;
+    RegForm regForm;
     CmdDo cmdDo;
     CmdControl cmdControl;
     QFile* messageFile;

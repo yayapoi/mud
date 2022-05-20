@@ -5,6 +5,10 @@
 #include <iostream>
 #include <QFontDatabase>
 #include <QTimer>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFileDialog>
+#include <QFile>
 
 struct totalZlibStruct{
     int showNum=0;//出现几次
@@ -710,3 +714,102 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     QMainWindow::keyPressEvent(event);
 }
+
+void MainWindow::on_actionRegShow_triggered()
+{
+    regForm.setRegMapPtr(&testRegClass.regMap);
+    regForm.show();
+}
+
+void MainWindow::on_actionRegIn_triggered()
+{
+    QFileDialog fileD;
+    QStringList filters;
+    filters << "dat files(*.json)";
+    fileD.setNameFilters(filters);//过滤文件
+    if(fileD.exec() == QFileDialog::Accepted){
+        QString filePa = fileD.selectedFiles().first();
+        //qDebug() << "filePa:" << filePa;
+        QFile file(filePa);
+        //qDebug()<<"??????";
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QJsonParseError json_error;
+            QJsonDocument inFile = QJsonDocument::fromJson(file.readAll(), &json_error);
+            QJsonObject allJson=inFile.object();
+            int allNum=allJson.count();
+            //qDebug()<<"begin--"<<allNum;
+            int Num=0;
+            while (Num<allNum) {
+                QJsonObject oneRegJson=allJson.value(QString::number(Num)).toObject();
+                RegStr oneReg;
+                oneReg.parent=oneRegJson.value("parent").toString();
+                oneReg.regName=oneRegJson.value("regName").toString();
+                oneReg.regStr=oneRegJson.value("regStr").toString();
+                oneReg.row=oneRegJson.value("row").toInt();
+                oneReg.oneStrOneReg=oneRegJson.value("oneStrOneReg").toBool();
+                oneReg.enable=oneRegJson.value("enable").toBool();
+                oneReg.sysOrUser=oneRegJson.value("sysOrUser").toBool();
+                oneReg.port=oneRegJson.value("port").toInt();
+                oneReg.sysStr=oneRegJson.value("sysStr").toString();
+                testRegClass.newReg(oneReg);
+                Num++;
+            }
+        }
+        else
+        {
+            //qDebug()<<"error--"<<file.errorString();
+        }
+        file.close();
+    }
+}
+
+void MainWindow::on_actionRegOut_triggered()
+{
+    QFileDialog fileD;
+    QStringList filters;
+    filters << "dat files(*.json)";
+    fileD.setNameFilters(filters);//过滤文件
+    if(fileD.exec() == QFileDialog::Accepted){
+        QString filePa = fileD.selectedFiles().first();
+        //qDebug() << "filePa:" << filePa;
+        QFile file(filePa);
+        if(file.open(QIODevice::WriteOnly))
+        {
+            //qDebug()<<"begin--";
+            int Num=0;
+            QJsonObject backobj;
+            QMap<QString, QMap<QString, RegPtr*>*>::Iterator firstMapIter=testRegClass.regMap.begin();
+            while (firstMapIter!=testRegClass.regMap.end()) {
+                //qDebug()<<"firstMapIter.key()--"<<firstMapIter.key();
+                QMap<QString, RegPtr*>::Iterator secondMapIter=firstMapIter.value()->begin();
+                while (secondMapIter!=firstMapIter.value()->end()) {
+                    //qDebug()<<"secondMapIter.key()--"<<secondMapIter.key();
+                    QJsonObject oneReg;
+                    oneReg.insert("parent",secondMapIter.value()->oneReg.parent);
+                    oneReg.insert("regName",secondMapIter.value()->oneReg.regName);
+                    oneReg.insert("regStr",secondMapIter.value()->oneReg.regStr);
+                    oneReg.insert("row",secondMapIter.value()->oneReg.row);
+                    oneReg.insert("oneStrOneReg",secondMapIter.value()->oneReg.oneStrOneReg);
+                    oneReg.insert("enable",secondMapIter.value()->oneReg.enable);
+                    oneReg.insert("sysOrUser",secondMapIter.value()->oneReg.sysOrUser);
+                    oneReg.insert("port",secondMapIter.value()->oneReg.port);
+                    oneReg.insert("sysStr",secondMapIter.value()->oneReg.sysStr);
+                    backobj.insert(QString::number(Num),oneReg);
+                    secondMapIter++;
+                    Num++;
+                }
+                firstMapIter++;
+            }
+            QJsonDocument inFile(backobj);
+            //qDebug()<<"--"<<inFile;
+            file.write(inFile.toJson());
+        }
+        else
+        {
+            //qDebug()<<"error--"<<file.errorString();
+        }
+        file.close();
+    }
+}
+

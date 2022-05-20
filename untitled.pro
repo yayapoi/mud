@@ -16,7 +16,10 @@ SOURCES += \
     globalhead.cpp \
     main.cpp \
     mainwindow.cpp \
+    regClass/parentwidget.cpp \
     regClass/regclass.cpp \
+    regClass/regform.cpp \
+    regClass/regwidget.cpp \
     statusBar/pointbar.cpp \
     statusBar/statusform.cpp \
     tcpControl/tcpconnect.cpp \
@@ -31,7 +34,10 @@ HEADERS += \
     fontwidget.h \
     globalhead.h \
     mainwindow.h \
+    regClass/parentwidget.h \
     regClass/regclass.h \
+    regClass/regform.h \
+    regClass/regwidget.h \
     statusBar/pointbar.h \
     statusBar/statusform.h \
     tcpControl/tcpconnect.h \
@@ -45,6 +51,9 @@ FORMS += \
     chatform.ui \
     fontwidget.ui \
     mainwindow.ui \
+    regClass/parentwidget.ui \
+    regClass/regform.ui \
+    regClass/regwidget.ui \
     statusBar/statusform.ui \
     tcpControl/tcpserverform.ui
 

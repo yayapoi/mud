@@ -45,12 +45,36 @@
     </property>
     <addaction name="actionTCP"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>触发器</string>
+    </property>
+    <addaction name="actionRegShow"/>
+    <addaction name="actionRegIn"/>
+    <addaction name="actionRegOut"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionTCP">
    <property name="text">
     <string>TCP服务器</string>
+   </property>
+  </action>
+  <action name="actionRegShow">
+   <property name="text">
+    <string>触发器管理</string>
+   </property>
+  </action>
+  <action name="actionRegIn">
+   <property name="text">
+    <string>导入触发器</string>
+   </property>
+  </action>
+  <action name="actionRegOut">
+   <property name="text">
+    <string>导出触发器</string>
    </property>
   </action>
  </widget>

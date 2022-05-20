@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RegWidget</class>
+ <widget class="QWidget" name="RegWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>455</width>
+    <height>487</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="sysOrUserCB">
+     <property name="toolTip">
+      <string>假若一句话可以被一句触发多次触发，比如：123456可以被'\d'触发6次。勾选上后仅触发一次就停止触发，不勾选上则会连续触发6次</string>
+     </property>
+     <property name="text">
+      <string>发送给tcp</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="rowLabel">
+       <property name="toolTip">
+        <string>由用户填入该触发语句触发几行，触发时会拿出对应数量的句子进行匹配，可填比实际行数多的数值</string>
+       </property>
+       <property name="text">
+        <string>被触发的句子有几行：</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="rowLE">
+       <property name="toolTip">
+        <string>由用户填入该触发语句触发几行，触发时会拿出对应数量的句子进行匹配，可填比实际行数多的数值</string>
+       </property>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="oneStrOneRegCB">
+       <property name="toolTip">
+        <string>假若一句话可以被一句触发多次触发，比如：123456可以被'\d'触发6次。勾选上后仅触发一次就停止触发，不勾选上则会连续触发6次</string>
+       </property>
+       <property name="text">
+        <string>每次被触发语句仅触发一次</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="newBT">
+       <property name="text">
+        <string>新增</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeBT">
+       <property name="text">
+        <string>关闭</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="leiLabel">
+       <property name="toolTip">
+        <string>全局必定唯一的名字，用于快捷开关一整组触发语句</string>
+       </property>
+       <property name="text">
+        <string>类名：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="leiLE">
+       <property name="toolTip">
+        <string>全局必定唯一的名字，用于快捷开关一整组触发语句</string>
+       </property>
+       <property name="text">
+        <string>默认分组</string>
+       </property>
+       <property name="placeholderText">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QCheckBox" name="enableCB">
+       <property name="toolTip">
+        <string>勾上则开启触发，不勾则关闭触发</string>
+       </property>
+       <property name="text">
+        <string>开启</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="nameLabel">
+       <property name="toolTip">
+        <string>类内唯一的名字，不同类可以有同样名字的触发语句</string>
+       </property>
+       <property name="text">
+        <string>名字：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="nameLE">
+       <property name="toolTip">
+        <string>类内唯一的名字，不同类可以有同样名字的触发语句</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="regStrLabel">
+       <property name="toolTip">
+        <string>必须是正则表达式，也只严格支持正则表达式</string>
+       </property>
+       <property name="text">
+        <string>触发语句：</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="regStrLE">
+       <property name="toolTip">
+        <string>必须是正则表达式，也只严格支持正则表达式</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QStackedWidget" name="sysOrUserWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="userPage">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="userPortLabel">
+             <property name="toolTip">
+              <string>类内唯一的名字，不同类可以有同样名字的触发语句</string>
+             </property>
+             <property name="text">
+              <string>用户端口：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="userPortLE">
+             <property name="toolTip">
+              <string>必须是正则表达式，也只严格支持正则表达式</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="sysPage">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="cmdLabel">
+             <property name="toolTip">
+              <string>类内唯一的名字，不同类可以有同样名字的触发语句</string>
+             </property>
+             <property name="text">
+              <string>执行命令：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="cmdLE">
+             <property name="toolTip">
+              <string>必须是正则表达式，也只严格支持正则表达式</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -4,7 +4,7 @@
 RegClass::RegClass(QObject *parent)
     : QObject{parent}
 {
-    RegPtr* newReg=new RegPtr;//血量触发  自用
+    /*RegPtr* newReg=new RegPtr;//血量触发  自用
     //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
     newReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
     newReg->oneReg.regName="123";
@@ -43,7 +43,7 @@ RegClass::RegClass(QObject *parent)
     qqqqq->insert(dontReg->oneReg.regName,dontReg);
     qqqqq->insert(tcpReg->oneReg.regName,tcpReg);
 
-    regMap.insert(newReg->oneReg.parent,qqqqq);
+    regMap.insert(newReg->oneReg.parent,qqqqq);*/
 }
 
 void RegClass::getMessage(QByteArray inArray)
@@ -64,6 +64,10 @@ void RegClass::getMessage(QByteArray inArray)
             removeColorFromArray(oneStr);
             //消息list中加入最新的一行
             messageList.push_front(oneStr);
+            if(messageList.size()>500)
+            {
+                messageList.pop_back();
+            }
             //遍历所有触发器行数+1
             /*for(int Num=0; Num<regList.size(); Num++)
             {

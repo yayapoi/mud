@@ -12,6 +12,8 @@ class RegClass : public QObject
 public:
     explicit RegClass(QObject *parent = nullptr);
 
+    QMap<QString, QMap<QString, RegPtr*>*> regMap;
+
     /* @brief 从tcp中获取最新的消息，将其分解为一句句话放入链表*/
     void getMessage(QByteArray inArray);
     /* @brief 获取一个新的触发器，加入进来*/
@@ -42,7 +44,6 @@ public slots:
     void enableRegStr(QString);
 private:
     QList<QByteArray> messageList;
-    QMap<QString, QMap<QString, RegPtr*>*> regMap;
     QRegularExpression enableRegregStr{"^#enableReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+)\\)$"};
     QRegularExpression DeleteRegregStr{"^#deleteReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$"};
     QRegularExpression NewRegregStr{"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$"};
