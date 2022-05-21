@@ -22,10 +22,10 @@ RegWidget::~RegWidget()
     delete ui;
 }
 
-void RegWidget::clearAll(QMap<QString, QMap<QString, RegPtr *> *> *nowregMap)
+void RegWidget::clearAll(QMap<QString, QMap<QString, RegPtr *> *> *nowregMap, QString leiname)
 {
     regMap=nowregMap;
-    ui->leiLE->setText("默认分组");
+    ui->leiLE->setText(leiname);
     ui->nameLE->clear();
     ui->regStrLE->clear();
     ui->rowLE->setText("1");

@@ -43,7 +43,27 @@ RegForm::RegForm(QWidget *parent) :
     treeMenu.addAction(regaction);
     connect(regaction,&QAction::triggered,this,[&]() mutable{
         //qDebug()<<"新增触发器";
-        regWidget.clearAll(regMap);
+        QTreeWidgetItem* currentItem=ui->regTrre->currentItem();
+        if(currentItem==nullptr)
+        {
+            //qDebug()<<"currentItem==nullptr  "<<currentItem;
+            regWidget.clearAll(regMap, "默认分组");
+        }
+        else
+        {
+            //qDebug()<<"currentItem!=nullptr  "<<currentItem;
+            QTreeWidgetItem * phItem = currentItem->parent();    //获取当前item的父item
+            if(!phItem)//说明是根节点
+            {
+                //qDebug()<<"gen "<<phItem;
+                regWidget.clearAll(regMap, currentItem->text(0));
+            }
+            else
+            {
+                //qDebug()<<"zi "<<ui->leiLE->text();
+                regWidget.clearAll(regMap, ui->leiLE->text());
+            }
+        }
         regWidget.show();
     });
 
@@ -61,59 +81,6 @@ RegForm::RegForm(QWidget *parent) :
     connect(ui->regTrre,&QTreeWidget::customContextMenuRequested,[&](QPoint pos){
         treeMenu.exec(QCursor::pos());
     });
-
-    RegPtr* newReg=new RegPtr;//血量触发  自用
-    //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
-    newReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
-    newReg->oneReg.regName="123";
-    newReg->oneReg.sysStr="#setHpBar(\"%1\",\"%2\",\"%3\",\"%4\",\"%5\",\"%6\",\"%7\",\"%8\",\"%9\",\"%10\",\"%11\",\"%12\",\"%13\",\"%14\",\"%15\",\"%16\",\"%17\",\"%18\")";
-    newReg->oneReg.row=3;
-
-    RegPtr* fightReg=new RegPtr;//战斗  自用
-    //newReg->oneReg.regStr="^#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n$";
-    fightReg->oneReg.regStr="流氓头\\(Liumang tou\\)";
-    fightReg->oneReg.regName="fight";
-    fightReg->oneReg.sysStr="fight liumang tou;look liumang tou";
-    fightReg->oneReg.row=1;
-
-    RegPtr* mapReg=new RegPtr;//  自用
-    mapReg->oneReg.regStr="你终于完全从紧张地战斗氛围中解脱出来";
-    mapReg->oneReg.regName="234";
-    mapReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);";
-    mapReg->oneReg.row=1;
-
-    RegPtr* dontReg=new RegPtr;//  自用
-    dontReg->oneReg.regStr="不想跟你较量";
-    dontReg->oneReg.regName="345";
-    dontReg->oneReg.sysStr="#enableReg(\"默认分组\",\"fight\",0);";
-    dontReg->oneReg.row=1;
-
-    RegPtr* tcpReg=new RegPtr;//tcp触发  自用
-    tcpReg->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
-    tcpReg->oneReg.regName="tcp";
-    tcpReg->oneReg.row=3;
-    tcpReg->oneReg.sysOrUser=false;
-
-    QMap<QString, RegPtr*>* qqqqq=new QMap<QString, RegPtr*>;
-    qqqqq->insert(newReg->oneReg.regName,newReg);
-    qqqqq->insert(fightReg->oneReg.regName,fightReg);
-    qqqqq->insert(mapReg->oneReg.regName,mapReg);
-    qqqqq->insert(dontReg->oneReg.regName,dontReg);
-    qqqqq->insert(tcpReg->oneReg.regName,tcpReg);
-
-    RegPtr* tcpReg1=new RegPtr;//tcp触发  自用
-    tcpReg1->oneReg.parent="奇怪";
-    tcpReg1->oneReg.regStr="^#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n#([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+),([A-Za-z0-9.-]+)\\r\\n$";
-    tcpReg1->oneReg.regName="tcp";
-    tcpReg1->oneReg.row=3;
-    tcpReg1->oneReg.sysOrUser=false;
-
-    QMap<QString, RegPtr*>* qqqqq1=new QMap<QString, RegPtr*>;
-    qqqqq1->insert(tcpReg1->oneReg.regName,tcpReg1);
-
-    regMap=new QMap<QString, QMap<QString, RegPtr*>*>();
-    regMap->insert(newReg->oneReg.parent,qqqqq);
-    regMap->insert(tcpReg1->oneReg.parent,qqqqq1);
 }
 
 RegForm::~RegForm()

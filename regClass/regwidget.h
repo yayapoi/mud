@@ -17,7 +17,7 @@ public:
     ~RegWidget();
 
     /** @brief 显示此窗口时，应该调用此函数再显示*/
-    void clearAll(QMap<QString, QMap<QString, RegPtr*>*>*);
+    void clearAll(QMap<QString, QMap<QString, RegPtr*>*>*, QString leiname);
     /** @brief 当此窗口关闭时，返回用户是否想要添加，并返回一个指针*/
     bool getRegPtr(RegPtr &backPtr);
 private slots:

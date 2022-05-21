@@ -53,7 +53,7 @@ void RegClass::getMessage(QByteArray inArray)
     //遍历所有触发器行数+1
     //循环触发器
 
-    QString testStr(inArray);
+    //QString testStr(inArray);
     //qDebug()<<lowNum++<<"****"<<testStr;
     //qDebug()<<lowNum++<<"****"<<backArray;
 
@@ -64,7 +64,7 @@ void RegClass::getMessage(QByteArray inArray)
             removeColorFromArray(oneStr);
             //消息list中加入最新的一行
             messageList.push_front(oneStr);
-            if(messageList.size()>500)
+            if(messageList.size()>150)
             {
                 messageList.pop_back();
             }
