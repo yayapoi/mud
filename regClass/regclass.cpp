@@ -417,11 +417,12 @@ void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
     {
         backList.pop_front();
         //qDebug()<<"backList--"<<backList;
+        QString backStr=Reg->oneReg.sysStr;
         for(int Num=0; Num<backList.size(); Num++)
         {
-            Reg->oneReg.sysStr = Reg->oneReg.sysStr.arg(backList[Num]);
+            backStr = backStr.arg(backList[Num]);
         }
-        emit regStrSend(Reg->oneReg.sysStr);
+        emit regStrSend(backStr);
     }
     else
     {

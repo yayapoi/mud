@@ -90,7 +90,7 @@ ChatForm::ChatForm(QWidget *parent) :
 
 
     blockFormat1.setLineHeight(3, QTextBlockFormat::LineDistanceHeight);
-    font1.setFamily("新宋体");//中文字体
+    font1.setFamily("明黑等宽");//中文字体
     font1.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
     fmt1.setFont(font1);
     fmt1.setForeground(Qt::lightGray);//设置选中行的字体颜色
@@ -314,7 +314,7 @@ void ChatForm::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharF
     switch (fontStyle) {
     case Colors::close_all:
     {
-        backFont.setFamily("新宋体");//字体
+        backFont.setFamily("明黑等宽");//字体
         backFont.setPointSize(11);//点大小  如果指定了点大小，则像素大小属性的值就是 -1
         backFont.setWeight(QFont::Normal);//设置粗体属性实际上就是将字体的粗细设为一个确定的值
         backFont.setUnderline(false);//下划线
