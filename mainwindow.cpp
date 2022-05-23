@@ -243,6 +243,7 @@ void inittotalZlibNum()
     totalZlibNum.insert(19.999,new totalZlibStruct);
     totalZlibNum.insert(29.999,new totalZlibStruct);
     totalZlibNum.insert(39.999,new totalZlibStruct);
+    totalZlibNum.insert(49.999,new totalZlibStruct);
 }
 
 MainWindow::MainWindow(QWidget *parent)
