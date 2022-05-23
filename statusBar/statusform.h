@@ -18,6 +18,10 @@ public:
     void setHpMpStatus(int hpMax, int hped, int hpNow, int mpMax, int mped, int mpNow);
     void setHpMpStatus(QStringList);
     void setHpMpStatus(QString);
+    void hideAll(bool flag);
+private slots:
+    void on_resizeBT_clicked(bool checked);
+
 private:
     Ui::StatusForm *ui;
 };

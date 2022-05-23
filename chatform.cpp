@@ -10,6 +10,7 @@ ChatForm::ChatForm(QWidget *parent) :
     ui(new Ui::ChatForm)
 {
     ui->setupUi(this);
+    ui->resizeBT->setCheckable(true);
     this->setStyleSheet("QMenu\
                         {\
                             color:black;\
@@ -457,5 +458,12 @@ void ChatForm::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
         outArray.append(inArray);
         inArray.clear();
     }
+}
+
+
+void ChatForm::on_resizeBT_clicked(bool checked)
+{
+    ui->chatWidget->setHidden(checked);
+    ui->resetBT->setHidden(checked);
 }
 

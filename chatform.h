@@ -35,6 +35,8 @@ private slots:
 
     void on_resetBT_clicked();
 
+    void on_resizeBT_clicked(bool checked);
+
 private:
     Ui::ChatForm *ui;
     bool renWuEditScrollBar=false;

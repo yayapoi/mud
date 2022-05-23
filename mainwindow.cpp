@@ -252,6 +252,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     zout.resize(zoutSize);
+    ui->statusbar->hide();
+    ui->cmdLE->setStyleSheet("background-color: rgb(0, 0, 0);color:lightGray;");
     initSysTrayIcon();
 
     /*

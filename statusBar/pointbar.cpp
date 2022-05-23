@@ -22,9 +22,23 @@ void PointBar::setPointStatus(int statur)
 void PointBar::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
+    bool nowMaxFlag=false;//有可能现在的数值超过最大值
     QRect maxRect = QRect(0, 0, width(), height());
     QRect lastRect = QRect(0, 0, width()*lastMaxNum/maxNum, height());
-    QRect nowRect = QRect(0, 0, width()*nowNum/maxNum, height());
+
+    QRect nowMax,nowRect;
+    if(nowNum>maxNum)
+    {
+        nowMax = QRect(0, 0, width()*(nowNum-maxNum)/maxNum, height());
+        nowRect = QRect(0, 0, width(), height());
+        nowMaxFlag=true;
+    }
+    else
+    {
+        nowRect = QRect(0, 0, width()*nowNum/maxNum, height());
+    }
+
+
 
     //线性渐变
     // 反走样
@@ -53,7 +67,14 @@ void PointBar::paintEvent(QPaintEvent *e)
     painter.setBrush(linear);
     painter.drawRect(nowRect);
 
-    painter.setPen(QPen(Qt::magenta, 2));
+    if(nowMaxFlag)
+    {
+        linear.setColorAt(1, Qt::cyan);
+        painter.setBrush(linear);
+        painter.drawRect(nowMax);
+    }
+
+    painter.setPen(QPen(Qt::red, 2));
     QString showStr=QString(" %1% ( %2 / %3 / %4 )").arg(QString::number(100.0*nowNum/maxNum, 'f', 2)).arg(nowNum).arg(lastMaxNum).arg(maxNum);
     painter.drawText(maxRect,Qt::AlignCenter,showStr);
     QLabel::paintEvent(e);
