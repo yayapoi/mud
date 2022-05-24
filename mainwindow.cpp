@@ -281,42 +281,6 @@ signals:
     connect(testSocket,&QTcpSocket::connected,[&](){});
     connect(testSocket,&QTcpSocket::disconnected,[&](){});
     connect(testSocket,&QTcpSocket::readyRead,[&](){//粘包问题，或者丢到触发处判断
-        /*{
-            zbuffer.append(testSocket->readAll());
-            if (compressed) {
-                    int rc;
-                    do {
-                        zstrm.next_in = (Bytef*)(zbuffer.data());
-                        zstrm.avail_in = zbuffer.size();
-                        zout.resize(zstrm.total_out + 2000);
-                        zstrm.next_out = (Bytef*)(zout.data() + zstrm.total_out);
-                        zstrm.avail_out = 2000;
-                        rc = inflate(&zstrm, Z_SYNC_FLUSH);
-//qDebug()<<"size--"<<zstrm.next_in - (Bytef*)zbuffer.data()<<" rc-"<<rc;
-                        zbuffer.remove(0, zstrm.next_in - (Bytef*)zbuffer.data());
-                    } while (rc == Z_OK && zstrm.avail_out == 0);
-                    if (rc == Z_OK) {
-                        zout.truncate(zstrm.total_out);
-                        buffer.append(zout);
-                        zout.clear();
-                        buffer.append(zbuffer);
-                        zbuffer.clear();
-                        inflateEnd(&zstrm);
-//qDebug()<<"str---"<<QString(buffer);
-                        buffer.clear();
-                    }
-                    else if (rc != Z_OK) {
-                        // ERROR!  look at zstrm.msg
-//qDebug()<<"rc != Z_OK---"<<rc;
-                    }
-                }
-            else
-            {
-                checkStr(zbuffer);
-                zbuffer.clear();
-                return ;
-            }
-        }*/
         //假如使用了mccp2协议，则以下需要解压
         zbuffer.append(testSocket->readAll());
         //qDebug()<<"zbuffer size---"<<zbuffer.size();
@@ -371,32 +335,6 @@ signals:
             backArray.append(zbuffer);
             zbuffer.clear();
         }
-
-        /*{
-            QRegularExpression regular("\\033\\[\\d+(;\\d+)*m");
-            QRegularExpression regular1("4\\d+");
-            int index=0;
-            do{
-                QRegularExpressionMatch regularmatch=regular.match(testStr, index);
-                if(regularmatch.hasMatch())
-                {
-                    index=regularmatch.capturedEnd();
-                    //qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<regularmatch.captured(0);
-                    QString checkStr=regularmatch.captured(0);
-                    QRegularExpressionMatch regularmatch1=regular1.match(checkStr);
-                    if(regularmatch1.hasMatch())
-                    {
-                        //qDebug()<<regularmatch1.captured(0);
-                        messageFile->write(regularmatch1.captured(0).toUtf8());
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }while (index < testStr.length());
-        }*/
         messageFile->write(backArray);
 
         //QString testStr(backArray);

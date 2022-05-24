@@ -59,3 +59,14 @@ int globalCheck::bytes2Int(QByteArray &backArray, int off)
     int b2 = backArray[2 + off] & 0xFF;
     return (b0 << 16) | (b1 << 8) | b2;
 }
+
+bool globalCheck::checkTimer(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#Timer(");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}

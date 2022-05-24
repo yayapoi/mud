@@ -114,21 +114,23 @@ const uchar FORMAT = 100;
 
 namespace globalCheck {
 
+
+
 /* @brief 系统函数新增Reg，是则使用并返回true*/
 bool checkNewReg(QString &instr);
-
 /* @brief 系统函数删除Reg，是则使用并返回true*/
 bool checkDeleteReg(QString &instr);
-
 /* @brief 系统函数开关Reg，是则使用并返回true*/
 bool checkEnableRegReg(QString &instr);
-
 /* @brief 系统函数设置血条状态，是则使用并返回true*/
 bool checkSetHPBar(QString &instr);
+/* @brief 系统函数定时器，是则使用并返回true*/
+bool checkTimer(QString &instr);
+
+
 
 /* @brief 在数组中指定位置插入指定数字，该数字必定占3字节*/
 void int2Bytes(int i, QByteArray& backArray, int off);
-
 /* @brief 从数组中指定位置读取数字，该数字必定占3字节*/
 int bytes2Int(QByteArray& backArray, int off);
 }
