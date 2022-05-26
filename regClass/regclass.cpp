@@ -54,14 +54,18 @@ void RegClass::getMessage(QByteArray inArray)
     //循环触发器
 
     //QString testStr(inArray);
-    //qDebug()<<lowNum++<<"****"<<testStr;
-    //qDebug()<<lowNum++<<"****"<<backArray;
+    //qDebug()<<"testStr****"<<testStr;
+    //qDebug()<<"inArray****"<<inArray;
 
     while (inArray.size()>0) {//循环截取出要打印的字符串  一行的那种
         QByteArray oneStr;
         getOneStrFromArray(inArray, oneStr);//截取出要打印的字符串  一行的那种
         {
+            //qDebug()<<"str=="<<QString(oneStr);
+            //qDebug()<<"inArray=="<<oneStr;
             removeColorFromArray(oneStr);
+            //qDebug()<<"str=="<<QString(oneStr);
+            //qDebug()<<"inArray=="<<oneStr;
             //消息list中加入最新的一行
             messageList.push_front(oneStr);
             if(messageList.size()>150)
@@ -276,7 +280,7 @@ void RegClass::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
     {
         outArray=inArray.mid(0, charNum+1);
         inArray=inArray.mid(charNum+1);
-        //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<QString(backArray);
+        //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<outArray;
     }
     else
     {
@@ -284,7 +288,7 @@ void RegClass::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
         {
             outArray=inArray;
             inArray=inArray.mid(charNum+1);
-            //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<QString(backArray);
+            //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<outArray;
         }
         else
         {
@@ -325,6 +329,7 @@ void RegClass::regFromArray(QByteArray &inArray, RegPtr *Reg)
     //更新行数
     //}
     int index=0;
+    //qDebug()<<"RegClass::inArray--"<<inArray;
     //qDebug()<<"RegClass::regFromArray--"<<QString(inArray);
     //qDebug()<<"Reg->oneReg.regStr--"<<Reg->oneReg.regStr;
     while(index<inArray.size())
@@ -539,6 +544,7 @@ bool RegClass::removeColorFromArray(QByteArray &inArray)
             if(found)//数组中移除
             {
                 inArray.remove(Num,key-Num+1);
+                Num--;
             }
         }
         Num++;

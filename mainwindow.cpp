@@ -394,6 +394,82 @@ signals:
     QJsonDocument backdocu(sendObj);
 //qDebug()<<"backdocu Compact size--"<<backdocu.toJson(QJsonDocument::Compact).size();
 //qDebug()<<"backdocu Indented size--"<<backdocu.toJson(QJsonDocument::Indented).size();*/
+
+
+
+    /*str== "\u001B[36m冲虚道长\u001B[2;37;0m\u001B[36m说道：「已经帮你取消了诵经任务。\u001B[2;37;0m\u001B[36m」\r\n"
+    inArray== "\x1B[36m\xE5\x86\xB2\xE8\x99\x9A\xE9\x81\x93\xE9\x95\xBF\x1B[2;37;0m\x1B[36m\xE8\xAF\xB4\xE9\x81\x93\xEF\xBC\x9A\xE3\x80\x8C\xE5\xB7\xB2\xE7\xBB\x8F\xE5\xB8\xAE\xE4\xBD\xA0\xE5\x8F\x96\xE6\xB6\x88\xE4\xBA\x86\xE8\xAF\xB5\xE7\xBB\x8F\xE4\xBB\xBB\xE5\x8A\xA1\xE3\x80\x82\x1B[2;37;0m\x1B[36m\xE3\x80\x8D\r\n"
+    QByteArray inArray;
+    inArray.append('\xE5');
+    inArray.append('\x86');
+    inArray.append('\xB2');
+    inArray.append('\xE8');
+    inArray.append('\x99');
+    inArray.append('\x9A');
+    inArray.append('\xE9');
+    inArray.append('\x81');
+    inArray.append('\x93');
+    inArray.append('\xE9');
+    inArray.append('\x95');
+    inArray.append('\xBF');
+    inArray.append('\x1B');
+    inArray.append('[');
+    inArray.append('3');
+    inArray.append('6');
+    inArray.append('m');
+    inArray.append('\xE8');
+    inArray.append('\xAF');
+    inArray.append('\xB4');
+    inArray.append('\xE9');
+    inArray.append('\x81');
+    inArray.append('\x93');
+    inArray.append('\xEF');
+    inArray.append('\xBC');
+    inArray.append('\x9A');
+    inArray.append('\xE3');
+    inArray.append('\x80');
+    inArray.append('\x8C');
+
+
+//qDebug()<<"str=="<<QString(inArray);
+//qDebug()<<"inArray=="<<inArray;
+    bool found=false;
+    int Num=0;
+    while(Num<inArray.size()-1)
+    {
+        if(inArray[Num]=='\x1B')
+        {
+            int key=Num+1;
+            if(key<inArray.size() && inArray[key]=='[')//\x1B 后必是 [
+            {
+                key++;
+                while(key<inArray.size())
+                {
+                    if(inArray[key]==';' || ('0'<=inArray[key] && inArray[key]<='9') || inArray[key]=='m')
+                    {
+                        if(inArray[key]=='m')//M结尾
+                        {
+                            found=true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        found=false;
+                        break;
+                    }
+                    key++;
+                }
+            }
+            if(found)//数组中移除
+            {
+                inArray.remove(Num,key-Num+1);
+            }
+        }
+        Num++;
+    }
+//qDebug()<<"str=="<<QString(inArray);
+//qDebug()<<"inArray=="<<inArray;*/
 }
 
 MainWindow::~MainWindow()

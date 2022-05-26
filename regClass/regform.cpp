@@ -470,9 +470,10 @@ void RegForm::showEvent(QShowEvent *event)
     ui->regTrre->clear();
     if(regMap!=nullptr)
     {
+        QTreeWidgetItem *topItem;
         QMap<QString, QMap<QString, RegPtr*>*>::Iterator firstMapIter=regMap->begin();
         while (firstMapIter!=regMap->end()) {
-            QTreeWidgetItem *topItem = new QTreeWidgetItem(ui->regTrre);
+            topItem = new QTreeWidgetItem(ui->regTrre);
             topItem->setText(0,firstMapIter.key());
             ui->regTrre->addTopLevelItem(topItem);
             QMap<QString, RegPtr*>* secondMapPtr=firstMapIter.value();
@@ -486,6 +487,7 @@ void RegForm::showEvent(QShowEvent *event)
             }
             firstMapIter++;
         }
+        ui->regTrre->setCurrentItem(topItem);
     }
     QWidget::showEvent(event);
 }

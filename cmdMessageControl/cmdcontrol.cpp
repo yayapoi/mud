@@ -18,7 +18,7 @@ CmdControl::CmdControl(QObject *parent)
             }
         }
     });
-    cmdTimer.start(20);
+    cmdTimer.start(30);
 }
 
 void CmdControl::appendMessage(QString inStr)//须填 ;;->;
