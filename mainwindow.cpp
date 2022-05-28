@@ -830,3 +830,9 @@ void MainWindow::on_actionRegOut_triggered()
     }
 }
 
+
+void MainWindow::on_actionYuanWen_triggered(bool checked)
+{
+    ui->fightTE->setShowText(checked);
+}
+

@@ -177,6 +177,9 @@ FontWidget::FontWidget(QWidget *parent) :
                         ui->fightEdit->setReadOnly(true);
             ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
     ui->fightEdit->document()->setMaximumBlockCount(2000);
+    ui->allFightEdit->setReadOnly(true);
+    ui->allFightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
+    ui->allFightEdit->document()->setMaximumBlockCount(2000);
     ui->tmpEdit->setEnabled(false);
     ui->tmpEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
     ui->tmpEdit->document()->setMaximumBlockCount(100);
@@ -204,6 +207,20 @@ FontWidget::FontWidget(QWidget *parent) :
             ui->tmpEdit->show();
         }
     });
+    connect(ui->allFightEdit->verticalScrollBar(),&QScrollBar::rangeChanged,[&](int mixNum, int maxnum){
+        //鼠标滚动或者向上拉滚动条时，开启滚动条不滚动
+        //qDebug()<<"mixNum--"<<mixNum<<"  maxnum--"<<maxnum;
+        allLowNum=maxnum;
+    });
+    connect(ui->allFightEdit->verticalScrollBar(),&QScrollBar::valueChanged,[&](int testnum){
+        //鼠标滚动或者向上拉滚动条时，开启滚动条不滚动
+        //qDebug()<<"testnum--"<<testnum<<"  lowNum--"<<lowNum;
+        if(testnum<allLowNum)
+        {
+            clickScrollBar=true;
+            ui->tmpEdit->show();
+        }
+    });
 
     insertTextCursor=ui->fightEdit->cursorForPosition(QPoint(0,0));
     insertTextCursor.movePosition(QTextCursor::End);
@@ -220,6 +237,11 @@ FontWidget::FontWidget(QWidget *parent) :
     tmpInsertTextCursor.movePosition(QTextCursor::End);
     tmpInsertTextCursor.mergeCharFormat(fmt);//应用字体
     tmpInsertTextCursor.setBlockFormat(blockFormat);//应用行间距
+
+    allInsertTextCursor=ui->allFightEdit->cursorForPosition(QPoint(0,0));
+    allInsertTextCursor.movePosition(QTextCursor::End);
+    allInsertTextCursor.mergeCharFormat(fmt);//应用字体
+    allInsertTextCursor.setBlockFormat(blockFormat);//应用行间距
 }
 
 FontWidget::~FontWidget()
@@ -315,6 +337,7 @@ void FontWidget::setClickScrollBar()
     ui->tmpEdit->hide();
     ui->tmpEdit->clear();
     ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+    ui->allFightEdit->verticalScrollBar()->setValue(ui->allFightEdit->verticalScrollBar()->maximum());
 }
 
 void FontWidget::setHpMpStatus(QString sdfa)
@@ -322,11 +345,24 @@ void FontWidget::setHpMpStatus(QString sdfa)
     myStatusForm->setHpMpStatus(sdfa);
 }
 
+void FontWidget::setShowText(bool flag)
+{
+    if(flag)
+    {
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+}
+
 void FontWidget::resizeEvent(QResizeEvent *event)
 {
     if(clickScrollBar==false)
     {
         ui->fightEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+        ui->allFightEdit->verticalScrollBar()->setValue(ui->allFightEdit->verticalScrollBar()->maximum());
     }
     chatForm->setGeometry(this->width()/2,this->height()/2,this->width()/2-20,this->height()/2);
     myStatusForm->setGeometry(this->width()-300-20,10,300,170);
@@ -368,11 +404,13 @@ void FontWidget::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
     }
 }
 
-void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
+bool FontWidget::getCursorStyleFromArray(QByteArray &inArray, QString &backColorStr)
 {
+    bool findColorFlag=false;
     QRegularExpressionMatch regularmatch=regular.match(inArray);
     if(regularmatch.hasMatch())//字符串一开始就是颜色设置
     {
+        findColorFlag=true;
         //qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<regularmatch.captured(0);
         //int end=regularmatch.capturedEnd();
         //int start=regularmatch.capturedStart();
@@ -384,6 +422,7 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
         if(regularmatch.capturedStart()==0)
         {
             QString checkStr=regularmatch.captured(0);
+            backColorStr=checkStr;
             inArray.remove(regularmatch.capturedStart(),regularmatch.capturedLength());
             checkStr.remove(QRegularExpression("\\033\\["));
             //qDebug()<<"checkStr--"<<checkStr;
@@ -401,6 +440,7 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
                     //insertTextCursor.setBlockFormat(blockFormat);//应用行间距
                     tmpInsertTextCursor.mergeCharFormat(fmt);//应用字体
                     insertTextCursor.mergeCharFormat(fmt);//应用字体
+                    allInsertTextCursor.mergeCharFormat(fmt);//应用字体
                 }
                 else
                 {
@@ -409,6 +449,7 @@ void FontWidget::getCursorStyleFromArray(QByteArray &inArray)
             }
         }
     }
+    return findColorFlag;
 }
 
 void FontWidget::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharFormat& backCharFormat)
@@ -564,7 +605,8 @@ void FontWidget::getShowStrFromArray(QByteArray &inArray, QByteArray &outArray)
 void FontWidget::showStrThisWidget(QByteArray &inArray)
 {
     while (inArray.size()>0) {
-        getCursorStyleFromArray(inArray);//设置光标颜色
+        QString backColorStr;
+        bool findColorFlag=getCursorStyleFromArray(inArray,backColorStr);//设置光标颜色
         QByteArray showStr;
         getShowStrFromArray(inArray, showStr);//从数组中获取 当前光标颜色下应该显示的文字
 
@@ -577,6 +619,10 @@ void FontWidget::showStrThisWidget(QByteArray &inArray)
             tmpInsertTextCursor.insertText(showStrStr);//插入字符
         }
         insertTextCursor.insertText(showStrStr);//插入字符
+        //if(findColorFlag)
+        {
+            allInsertTextCursor.insertText(backColorStr+showStr);
+        }
     }
 }
 
@@ -604,5 +650,14 @@ void FontWidget::on_fightEdit_textChanged()
 void FontWidget::on_tmpEdit_textChanged()
 {
     ui->tmpEdit->verticalScrollBar()->setValue(ui->fightEdit->verticalScrollBar()->maximum());
+}
+
+
+void FontWidget::on_allFightEdit_textChanged()
+{
+    if(clickScrollBar==false)
+    {
+        ui->allFightEdit->verticalScrollBar()->setValue(ui->allFightEdit->verticalScrollBar()->maximum());
+    }
 }
 

@@ -63,12 +63,17 @@ void RegClass::getMessage(QByteArray inArray)
         {
             //qDebug()<<"str=="<<QString(oneStr);
             //qDebug()<<"inArray=="<<oneStr;
+            allmessageList.push_front(oneStr);
+            if(allmessageList.size()>200)
+            {
+                allmessageList.pop_back();
+            }
             removeColorFromArray(oneStr);
             //qDebug()<<"str=="<<QString(oneStr);
             //qDebug()<<"inArray=="<<oneStr;
             //消息list中加入最新的一行
             messageList.push_front(oneStr);
-            if(messageList.size()>150)
+            if(messageList.size()>200)
             {
                 messageList.pop_back();
             }
@@ -301,14 +306,29 @@ void RegClass::getregfromList(RegPtr *Reg)
 {
     if(Reg->oneReg.enable==true)//开启触发器
     {
-        if(Reg->oneReg.row<=messageList.size())
+        if(Reg->oneReg.color)//颜色触发则用全文模式
         {
-            QByteArray regArray;
-            for(int Num=Reg->oneReg.row-1; Num>-1; Num--)
+            if(Reg->oneReg.row<=allmessageList.size())
             {
-                regArray.append(messageList[Num]);
+                QByteArray regArray;
+                for(int Num=Reg->oneReg.row-1; Num>-1; Num--)
+                {
+                    regArray.append(allmessageList[Num]);
+                }
+                regFromArray(regArray, Reg);
             }
-            regFromArray(regArray, Reg);
+        }
+        else
+        {
+            if(Reg->oneReg.row<=messageList.size())
+            {
+                QByteArray regArray;
+                for(int Num=Reg->oneReg.row-1; Num>-1; Num--)
+                {
+                    regArray.append(messageList[Num]);
+                }
+                regFromArray(regArray, Reg);
+            }
         }
     }
 }

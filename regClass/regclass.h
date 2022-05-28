@@ -44,6 +44,7 @@ public slots:
     void enableRegStr(QString);
 private:
     QList<QByteArray> messageList;
+    QList<QByteArray> allmessageList;
     QRegularExpression enableRegregStr{"^#enableReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+)\\)$"};
     QRegularExpression DeleteRegregStr{"^#deleteReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$"};
     QRegularExpression NewRegregStr{"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$"};

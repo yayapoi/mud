@@ -26,6 +26,8 @@ public:
     void setClickScrollBar();
     /* @brief 设置状态，血量*/
     void setHpMpStatus(QString);
+    /* @brief 切换原始文本和显示文本*/
+    void setShowText(bool);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;
@@ -34,6 +36,8 @@ private slots:
     void on_fightEdit_textChanged();
 
     void on_tmpEdit_textChanged();
+
+    void on_allFightEdit_textChanged();
 
 private:
     Ui::FontWidget *ui;
@@ -52,6 +56,7 @@ private:
     QRegularExpression regular6{"\\033\\[37m【北侠QQ群】"};
 
     QTextCursor insertTextCursor;
+    QTextCursor allInsertTextCursor;//给带颜色的信息界面看的
     QTextCursor tmpInsertTextCursor;
     QTextCharFormat fmt;//字体背景色
     QFont font;//字体
@@ -60,11 +65,13 @@ private:
     bool clickScrollBar=false;
     /* @brief 记录有几行滚动条*/
     int lowNum=0;
+    /* @brief 记录allmessage有几行滚动条*/
+    int allLowNum=0;
 
     /* @brief 从输入数组中，截取出一行放入输出数组中*/
     void getOneStrFromArray(QByteArray &inArray, QByteArray &outArray);
-    /* @brief 从输入数组中，设置当前光标的背景颜色*/
-    void getCursorStyleFromArray(QByteArray &inArray);
+    /* @brief 从输入数组中，设置当前光标的背景颜色并返回颜色字符串*/
+    bool getCursorStyleFromArray(QByteArray &inArray, QString& backColorStr);
     /* @brief 从输入数组中，设置当前光标的背景颜色*/
     void setTextCursorFromArray(int, QFont&, QTextCharFormat&);
     /* @brief 从输入数组中获取 当前光标颜色下应该显示的文字*/

@@ -48,9 +48,9 @@ struct RegStr
     bool sysOrUser=true;//用户类则使用端口，系统类则使用sysStr
     int port=8080;//用户类触发后发送给哪个tcp端口
     QString sysStr="";//系统类触发后执行的命令
+    bool color=false;//颜色触发
 
     int coldTime=0;//冷却时间？
-    QString color="";//颜色触发？
 };
 
 /* @brief 记录一个触发器，有触发器的已经触发行，开始点，和长度*/

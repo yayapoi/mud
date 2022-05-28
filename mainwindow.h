@@ -70,6 +70,8 @@ private slots:
 
     void on_actionRegOut_triggered();
 
+    void on_actionYuanWen_triggered(bool checked);
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;

@@ -81,8 +81,15 @@
     <addaction name="actionRegIn"/>
     <addaction name="actionRegOut"/>
    </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>设置</string>
+    </property>
+    <addaction name="actionYuanWen"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionTCP">
@@ -103,6 +110,17 @@
   <action name="actionRegOut">
    <property name="text">
     <string>导出触发器</string>
+   </property>
+  </action>
+  <action name="actionYuanWen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>将原文解析</string>
    </property>
   </action>
  </widget>
