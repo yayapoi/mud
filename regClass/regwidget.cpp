@@ -35,7 +35,7 @@ void RegWidget::clearAll(QMap<QString, QMap<QString, RegPtr *> *> *nowregMap, QS
     ui->enableCB->setEnabled(true);
     ui->cmdLE->clear();
     ui->userPortLE->clear();
-    ui->colorRegCB->setChecked(false);
+    ui->serverTextRegCB->setChecked(false);
 }
 
 bool RegWidget::getRegPtr(RegPtr &backPtr)
@@ -47,7 +47,7 @@ bool RegWidget::getRegPtr(RegPtr &backPtr)
     backPtr.oneReg.oneStrOneReg=ui->oneStrOneRegCB->isChecked();
     backPtr.oneReg.enable=ui->enableCB->isChecked();
     backPtr.oneReg.sysOrUser=!ui->sysOrUserCB->isChecked();
-    backPtr.oneReg.color=ui->colorRegCB->isChecked();
+    backPtr.oneReg.serverText=ui->serverTextRegCB->isChecked();
     if(ui->sysOrUserCB->isChecked())
         backPtr.oneReg.port=ui->userPortLE->text().toInt();
     else

@@ -306,7 +306,7 @@ void RegClass::getregfromList(RegPtr *Reg)
 {
     if(Reg->oneReg.enable==true)//开启触发器
     {
-        if(Reg->oneReg.color)//颜色触发则用全文模式
+        if(Reg->oneReg.serverText)//颜色触发则用全文模式
         {
             if(Reg->oneReg.row<=allmessageList.size())
             {

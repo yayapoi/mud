@@ -769,6 +769,7 @@ void MainWindow::on_actionRegIn_triggered()
                 oneReg.sysOrUser=oneRegJson.value("sysOrUser").toBool();
                 oneReg.port=oneRegJson.value("port").toInt();
                 oneReg.sysStr=oneRegJson.value("sysStr").toString();
+                oneReg.serverText=oneRegJson.value("serverText").toBool();
                 testRegClass.newReg(oneReg);
                 Num++;
             }
@@ -812,6 +813,7 @@ void MainWindow::on_actionRegOut_triggered()
                     oneReg.insert("sysOrUser",secondMapIter.value()->oneReg.sysOrUser);
                     oneReg.insert("port",secondMapIter.value()->oneReg.port);
                     oneReg.insert("sysStr",secondMapIter.value()->oneReg.sysStr);
+                    oneReg.insert("serverText",secondMapIter.value()->oneReg.serverText);
                     backobj.insert(QString::number(Num),oneReg);
                     secondMapIter++;
                     Num++;

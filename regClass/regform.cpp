@@ -110,7 +110,7 @@ void RegForm::enableReg(bool flag)
     ui->sysOrUserCB->setEnabled(flag);
     ui->sysOrUserWidget->setEnabled(flag);
     ui->enableCB->setEnabled(flag);
-    ui->colorRegCB->setEnabled(flag);
+    ui->serverTextRegCB->setEnabled(flag);
 }
 
 RegPtr *RegForm::getRegPtrFromMap(QString parent, QString name)
@@ -197,7 +197,7 @@ void RegForm::setRegInForm(RegPtr *nowReg)
     ui->rowLE->setText(QString::number(nowReg->oneReg.row));
     ui->oneStrOneRegCB->setChecked(nowReg->oneReg.oneStrOneReg);
     ui->sysOrUserCB->setChecked(!nowReg->oneReg.sysOrUser);
-    ui->colorRegCB->setChecked(nowReg->oneReg.color);
+    ui->serverTextRegCB->setChecked(nowReg->oneReg.serverText);
     if(ui->sysOrUserCB->isChecked())
     {
         ui->sysOrUserWidget->setCurrentIndex(0);
@@ -570,7 +570,7 @@ void RegForm::on_saveBT_clicked()
                 backPtr.oneReg.oneStrOneReg=ui->oneStrOneRegCB->isChecked();
                 backPtr.oneReg.enable=ui->enableCB->isChecked();
                 backPtr.oneReg.sysOrUser=!ui->sysOrUserCB->isChecked();
-                backPtr.oneReg.color=ui->colorRegCB->isChecked();
+                backPtr.oneReg.serverText=ui->serverTextRegCB->isChecked();
                 if(ui->sysOrUserCB->isChecked())
                     backPtr.oneReg.port=ui->userPortLE->text().toInt();
                 else

@@ -162,9 +162,9 @@
             </widget>
            </item>
            <item row="1" column="2">
-            <widget class="QCheckBox" name="colorRegCB">
+            <widget class="QCheckBox" name="serverTextRegCB">
              <property name="text">
-              <string>颜色触发</string>
+              <string>原文触发</string>
              </property>
             </widget>
            </item>
