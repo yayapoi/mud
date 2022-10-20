@@ -382,9 +382,9 @@ void ChatForm::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharF
         backCharFormat.setForeground(Qt::magenta);
         break;
     }
-    case Colors::font_darkgrren:
+    case Colors::font_blue:
     {
-        backCharFormat.setForeground(Qt::darkGreen);
+        backCharFormat.setForeground(Qt::blue);
         break;
     }
     case Colors::font_white:
@@ -422,9 +422,9 @@ void ChatForm::setTextCursorFromArray(int fontStyle, QFont& backFont, QTextCharF
         backCharFormat.setBackground(Qt::magenta);
         break;
     }
-    case Colors::back_darkgrren:
+    case Colors::back_blue:
     {
-        backCharFormat.setBackground(Qt::darkGreen);
+        backCharFormat.setBackground(Qt::blue);
         break;
     }
     case Colors::back_white:

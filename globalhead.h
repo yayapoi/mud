@@ -14,17 +14,17 @@ enum Colors { close_all=0,//关闭所有属性
               font_red,
               font_green,
               font_yellow,//【任务】
-              font_cyan,
+              font_blue,
               font_magenta,//【谣言】
-              font_darkgrren,//【闲聊】【本地】
+              font_cyan,//【闲聊】【本地】
               font_white,//【求助】【江湖】【北侠QQ群】
               back_darkgray = 40,
               back_red,
               back_green,
               back_yellow,
-              back_cyan,
+              back_blue,
               back_magenta,
-              back_darkgrren,
+              back_cyan,
               back_white};
 
 enum StrType{
