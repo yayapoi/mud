@@ -1,10 +1,152 @@
 #include "mainwindow.h"
+#include "globalhead.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QHostAddress>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+
+enum NanDu{
+    jiandan=0,
+    putong=1,
+    tiaozhan=2,
+    kunnan=4
+};
+struct jueweiRenwuXinxi{
+    QString bianhao;
+    QString renwu;
+    int nandu=NanDu::jiandan;
+};
+int nandu(QString nandu)
+{
+    if(nandu=="简单")
+    {
+        return NanDu::jiandan;
+    }
+    else if(nandu=="普通")
+    {
+        return NanDu::putong;
+    }
+    else if(nandu=="挑战")
+    {
+        return NanDu::tiaozhan;
+    }
+    else
+    {
+        return NanDu::kunnan;
+    }
+}
+bool operator<(const jueweiRenwuXinxi& A, const jueweiRenwuXinxi& B) {//小于
+    bool backbool=true;
+    switch (A.nandu) {
+    case NanDu::jiandan:
+    {
+        switch (B.nandu) {
+        case NanDu::jiandan:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::putong:
+        {
+            backbool=true;
+            break;
+        }
+        case NanDu::tiaozhan:
+        {
+            backbool=true;
+            break;
+        }
+        case NanDu::kunnan:
+        {
+            backbool=true;
+            break;
+        }
+        }
+        break;
+    }
+    case NanDu::putong:
+    {
+        switch (B.nandu) {
+        case NanDu::jiandan:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::putong:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::tiaozhan:
+        {
+            backbool=true;
+            break;
+        }
+        case NanDu::kunnan:
+        {
+            backbool=true;
+            break;
+        }
+        }
+        break;
+    }
+    case NanDu::tiaozhan:
+    {
+        switch (B.nandu) {
+        case NanDu::jiandan:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::putong:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::tiaozhan:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::kunnan:
+        {
+            backbool=true;
+            break;
+        }
+        }
+        break;
+    }
+    case NanDu::kunnan:
+    {
+        switch (B.nandu) {
+        case NanDu::jiandan:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::putong:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::tiaozhan:
+        {
+            backbool=false;
+            break;
+        }
+        case NanDu::kunnan:
+        {
+            backbool=false;
+            break;
+        }
+        }
+        break;
+    }
+    }
+    return backbool;
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -72,12 +214,8 @@ void MainWindow::on_qingkong_clicked()
         allmaniter++;
     }
     allman.clear();
-    messageFile->write("==================================");
-    messageFile->write("                                     ");
-    messageFile->write("                                     ");
-    messageFile->write("                                     ");
-    messageFile->write("                                     ");
-    messageFile->write("                                     ");
+    messageFile->write("\r\n==================================\r\n");
+    messageFile->write("\r\n\r\n\r\n");
     //qDebug()<<":on_qingkong_clicked--"<<allman.count();
 }
 
@@ -127,13 +265,15 @@ void MainWindow::on_kaishi_clicked()
         allmaniter++;
     }
     ui->lineEdit->setText(daozeo);
+    messageFile->write("\r\n");
     messageFile->write(daozeo.toUtf8());
+    messageFile->write("\r\n");
 }
 
 
 void MainWindow::xieru(QString RegStr, QJsonArray& allmiaoshu)
 {
-    qDebug()<<"MainWindow::on_xieru_clicked()  asdf--"<<allmiaoshu;
+    qDebug()<<"MainWindow::xieru()  asdf--"<<allmiaoshu;
     //qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<regularmatch.captured(0);
     //int end=regularmatch.capturedEnd();
     //int start=regularmatch.capturedStart();
@@ -259,7 +399,7 @@ void MainWindow::xieru(QString RegStr, QJsonArray& allmiaoshu)
 
 void MainWindow::xinxi(QString RegStr, QJsonArray &allmiaoshu)
 {
-    qDebug()<<"MainWindow::on_xinxi_clicked()  asdf--"<<allmiaoshu;
+    qDebug()<<"MainWindow::xinxi()  asdf--"<<allmiaoshu;
     //qDebug()<<"("<<regularmatch.capturedStart()<<","<<index<<")"<<regularmatch.captured(0);
     //int end=regularmatch.capturedEnd();
     //int start=regularmatch.capturedStart();
@@ -360,6 +500,50 @@ void MainWindow::xinxi(QString RegStr, QJsonArray &allmiaoshu)
             }
             allman.remove(name);
         }
+    }
+}
+
+void MainWindow::lingrenwu(QString RegStr, QJsonArray &value)
+{
+    /*目前15个值  编号 难度(简单|普通|困难|挑战) 接受人(没接受为0) 5排*/
+    qDebug()<<"MainWindow::lingrenwu()  value--"<<value;
+
+    QList<jueweiRenwuXinxi> aaaList;
+    for(int num=0; num<5; num++)
+    {
+        jueweiRenwuXinxi firstone;
+        firstone.bianhao=value[0+num*3].toString();
+        firstone.nandu=nandu(value[1+num*3].toString());
+        firstone.renwu=value[2+num*3].toString();
+        if(firstone.renwu=="0")
+        {
+            aaaList.append(firstone);
+        }
+    }
+    if(aaaList.count()>0)
+    {
+        int nownum=0;
+        for(int num=0; num<aaaList.count(); num++)
+        {
+            if(aaaList[nownum]<aaaList[num])
+            {
+                nownum=num;
+            }
+        }
+
+        QByteArray backArray;
+        backArray.append('B');
+        backArray.append('e');
+        backArray.append('G');
+        backArray.append('i');
+        backArray.append('N');
+        backArray.append('0');
+        backArray.append('0');
+        backArray.append('0');
+        backArray.append("record 1_"+aaaList[nownum].bianhao);
+        globalCheck::int2Bytes(backArray.size()-8, backArray,5);
+
+        clientSocket.write(backArray);
     }
 }
 
@@ -679,9 +863,9 @@ void MainWindow::tcpgetall(QString jsonstr)
         {
             xinxi(RegStr, RegStrList);
         }
-        else
+        else if(classname=="爵位" && regName=="领任务")
         {
-            ;
+            lingrenwu(RegStr, RegStrList);
         }
     }
 }

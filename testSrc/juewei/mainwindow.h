@@ -28,9 +28,14 @@ private slots:
 
     void on_kaishi_clicked();
 
+    /** @brief 爵位人物描述*/
     void xieru(QString RegStr, QJsonArray&);
 
+    /** @brief 每个人证据*/
     void xinxi(QString RegStr, QJsonArray&);
+
+    /** @brief 接任务啦*/
+    void lingrenwu(QString RegStr, QJsonArray& value);
 
     void on_connectbt_clicked();
 
