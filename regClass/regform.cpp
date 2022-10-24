@@ -166,16 +166,16 @@ QTreeWidgetItem *RegForm::getItemFromTree(QString parent, QString name, itemPtr 
         QTreeWidgetItemIterator iterator(ui->regTrre);
         while (*iterator) {
             if ((*iterator)->text(0) == parent && !(*iterator)->parent()) {
-                    int childNum=(*iterator)->childCount();
-                    while (childNum!=0) {
-                        //qDebug()<<"name--"<<(parentItem->child(childNum-1))->text(0);
-                        if (((*iterator)->child(childNum-1))->text(0) == name) {
-                            //qDebug()<<"find  name--"<<(parentItem->child(childNum-1))->text(0);
-                            backItem=((*iterator)->child(childNum-1));
-                            break;
-                        }
-                        childNum--;
+                int childNum=(*iterator)->childCount();
+                while (childNum!=0) {
+                    //qDebug()<<"name--"<<(parentItem->child(childNum-1))->text(0);
+                    if (((*iterator)->child(childNum-1))->text(0) == name) {
+                        //qDebug()<<"find  name--"<<(parentItem->child(childNum-1))->text(0);
+                        backItem=((*iterator)->child(childNum-1));
+                        break;
                     }
+                    childNum--;
+                }
                 break;
             }
             ++iterator;
@@ -391,15 +391,19 @@ int RegForm::checkChildMessage()
                     }
                     else
                     {
+                        //qDebug()<<"checkChildMessage()  1";
                         if(oldRegPtr!=nullptr)
                         {
                             if(oldRegPtr->oneReg.parent==parent)//同类
                             {
+                                //qDebug()<<"checkChildMessage()  1-1";
                                 if(oldRegPtr->oneReg.regName!=name)//不同名
                                 {
+                                    //qDebug()<<"checkChildMessage()  1-1-1";
                                     RegPtr* backPtr=getRegPtrFromMap(parent, name);
                                     if(backPtr!=nullptr)
                                     {
+                                        //qDebug()<<"checkChildMessage()  1-1-1-1";
                                         QMessageBox::StandardButton backButton=QMessageBox::information(this,"重名触发器","类中有同样名字的触发器，是否覆盖它",QMessageBox::Ok | QMessageBox::Cancel);
                                         if(backButton==QMessageBox::Cancel)
                                         {
@@ -422,9 +426,11 @@ int RegForm::checkChildMessage()
                             }
                             else
                             {
+                                //qDebug()<<"checkChildMessage()  1-2";
                                 RegPtr* backPtr=getRegPtrFromMap(parent, name);
                                 if(backPtr!=nullptr)//-1有问题，0正常，1同一组内原来名字，2同一组内非原来名字，3同一组内非原来名字有触发器，4不同组内名字有触发器
                                 {
+                                    //qDebug()<<"checkChildMessage()  1-2-1";
                                     QMessageBox::StandardButton backButton=QMessageBox::information(this,"重名触发器","移到的类中有同样名字的触发器，是否覆盖它",QMessageBox::Ok | QMessageBox::Cancel);
                                     if(backButton==QMessageBox::Cancel)
                                     {
@@ -505,7 +511,7 @@ void RegForm::on_closeBT_clicked()
 void RegForm::on_saveBT_clicked()
 {
     QList<QTreeWidgetItem *> selectItem=ui->regTrre->selectedItems();
-    //qDebug()<<""<<selectItem;
+    //qDebug()<<" RegForm::on_saveBT_clicked  11111111";
     //判断父子
     //数据校验格式
     //数据查重
@@ -557,9 +563,12 @@ void RegForm::on_saveBT_clicked()
         }
         else//子
         {
+            //qDebug()<<" RegForm::on_saveBT_clicked  2---1";
             int backint=checkChildMessage();
+            //qDebug()<<" RegForm::on_saveBT_clicked  2---11<<"<<backint;
             if(backint!=-1)
             {
+                //qDebug()<<" RegForm::on_saveBT_clicked  2---2";
                 QString oldName=selectItem[0]->text(0);
                 QString oldparentName=parentItem->text(0);
                 RegPtr backPtr;
@@ -571,16 +580,20 @@ void RegForm::on_saveBT_clicked()
                 backPtr.oneReg.enable=ui->enableCB->isChecked();
                 backPtr.oneReg.sysOrUser=!ui->sysOrUserCB->isChecked();
                 backPtr.oneReg.serverText=ui->serverTextRegCB->isChecked();
+                //qDebug()<<" RegForm::on_saveBT_clicked  2---3";
                 if(ui->sysOrUserCB->isChecked())
                     backPtr.oneReg.port=ui->userPortLE->text().toInt();
                 else
                     backPtr.oneReg.sysStr=ui->cmdLE->text();
+                //qDebug()<<" RegForm::on_saveBT_clicked  2---4";
                 if(regMap!=nullptr)
                 {
                     //qDebug()<<"-------";-1有问题，0正常，1同一组内原来名字，2同一组内非原来名字，3同一组内非原来名字有触发器，4不同组内名字有触发器
+                    //qDebug()<<" RegForm::on_saveBT_clicked  2---4---1";
                     deleteOneReg(oldparentName, oldName);
                     deleteOneReg(backPtr.oneReg.parent, backPtr.oneReg.regName);
                     newReg(backPtr.oneReg);
+                    //qDebug()<<" RegForm::on_saveBT_clicked  2---4---2";
                     switch (backint) {
                     case 5:
                     {
@@ -619,13 +632,23 @@ void RegForm::on_saveBT_clicked()
                         selectItem[0]->setText(0, backPtr.oneReg.regName);
                         break;
                     }
+                    case 1:
+                    {
+                        //同一组内非原来名字 没有重名触发器
+                        selectItem[0]->setText(1, backPtr.oneReg.regStr);
+                        break;
+                    }
                     default:
                         break;
                     }
+                    //更新旧注册器
+                    RegPtr* newPtr=getRegPtrFromMap(backPtr.oneReg.parent, backPtr.oneReg.regName);
+                    oldRegPtr=newPtr;
                 }
             }
         }
     }
+    //qDebug()<<" RegForm::on_saveBT_clicked  222222222";
     adsfadsfa();
 }
 
@@ -695,6 +718,7 @@ void RegForm::on_regTrre_currentItemChanged(QTreeWidgetItem *current, QTreeWidge
             ui->parentStackedWidget->setCurrentIndex(0);
             oldParentStr=current->text(0);
             ui->parentLE->setText(oldParentStr);
+            //qDebug()<<"on_regTrre_currentItemChanged  !phItem";
             oldRegPtr=nullptr;
             ui->saveBT->setEnabled(true);
         }
@@ -706,6 +730,7 @@ void RegForm::on_regTrre_currentItemChanged(QTreeWidgetItem *current, QTreeWidge
             RegPtr* backPtr=getRegPtrFromMap(phItem->text(0), current->text(0));
             if(backPtr!=nullptr)//若是找到了则加载界面
             {
+                //qDebug()<<"on_regTrre_currentItemChanged  phItem  111";
                 enableReg(true);
                 oldRegPtr=backPtr;
                 setRegInForm(oldRegPtr);
@@ -713,6 +738,7 @@ void RegForm::on_regTrre_currentItemChanged(QTreeWidgetItem *current, QTreeWidge
             }
             else//若是没找到，则全部不能点击
             {
+                //qDebug()<<"on_regTrre_currentItemChanged  phItem  22222";
                 oldRegPtr=nullptr;
                 enableReg(false);
                 ui->saveBT->setEnabled(false);
