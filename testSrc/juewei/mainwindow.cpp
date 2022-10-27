@@ -866,6 +866,7 @@ void MainWindow::tcpgetall(QString jsonstr)
         else if(classname=="爵位" && regName=="领任务")
         {
             lingrenwu(RegStr, RegStrList);
+            on_qingkong_clicked();
         }
     }
 }
