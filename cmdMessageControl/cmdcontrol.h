@@ -35,6 +35,8 @@ private:
     void messageToList(QQueue<QString>& backList);
     /* @brief 检查是否系统函数，是则返回0,吞掉则返回1,不是则返回-1*/
     int checkMessage(QString& instr);
+    /* @brief 检查是否括号匹配，例如#T(1,"c;#T(1,"c");c");,有完整句子返回句子尾端,没有完整句子返回-1*/
+    int backStringIndex(QString& instr, int& from, int& kuohaoend);
 };
 
 #endif // CMDCONTROL_H

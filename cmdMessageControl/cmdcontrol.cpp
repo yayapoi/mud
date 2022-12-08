@@ -23,14 +23,18 @@ CmdControl::CmdControl(QObject *parent)
 
 void CmdControl::appendMessage(QString inStr)//须填 ;;->;
 {
+    //qDebug()<<"CmdControl::appendMessage  inStr--"<<inStr;
     int oldindex=0;
     int index=0;
+    ///现在句子里有很多括号，要知道现在括号已经到哪里了
+    int kuohaoend=-1;
     while (index<inStr.length()) {
-        index=inStr.indexOf(";",oldindex);//系统使用了 ";"，用户使用 ";"时自动替换为";;"
+        //系统使用了 ";"，用户使用 ";"时自动替换为";;"
+        index=backStringIndex(inStr,oldindex,kuohaoend);
         if(index!=-1)
         {
             QString appendStr=inStr.mid(oldindex,index-oldindex);
-            //qDebug()<<"--"<<appendStr;
+            //qDebug()<<"index!=-1  --"<<appendStr;
             QString backStr;
             bool flag=getMessageFrom(appendStr, backStr);
             if(flag==true)
@@ -43,7 +47,7 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
         else
         {
             QString appendStr=inStr.mid(oldindex);
-            //qDebug()<<"--"<<appendStr;
+            //qDebug()<<"index==-1 --"<<appendStr;
             QString backStr;
             bool flag=getMessageFrom(appendStr, backStr);
             if(flag==true)
@@ -82,8 +86,11 @@ void CmdControl::appendMessage(QString inStr, QStringList &backList)
 {
     int oldindex=0;
     int index=0;
+    ///现在句子里有很多括号，要知道现在括号已经到哪里了
+    int kuohaoend=-1;
     while (index<inStr.length()) {
-        index=inStr.indexOf(";",oldindex);//系统使用了 ";"，用户使用 ";"时自动替换为";;"
+        //index=inStr.indexOf(";",oldindex);//系统使用了 ";"，用户使用 ";"时自动替换为";;"
+        index=backStringIndex(inStr,oldindex,kuohaoend);
         if(index!=-1)
         {
             QString appendStr=inStr.mid(oldindex,index-oldindex);
@@ -187,6 +194,7 @@ void CmdControl::messageToList(QQueue<QString> &backList)
 
 int CmdControl::checkMessage(QString &instr)
 {
+    //qDebug()<<"CmdControl::checkMessage--"<<instr;
     int flag=-1;
     if(globalCheck::checkNewReg(instr))
     {
@@ -251,6 +259,54 @@ int CmdControl::checkMessage(QString &instr)
         }
     }
     return flag;
+}
+
+int CmdControl::backStringIndex(QString &instr, int &from, int &kuohaoend)
+{
+    int backint=-1;
+    //左括号还有几个没匹配,发现一个右括号，此值减一。一个左括号，此值加一
+    int kuohaovalue=0;
+    //qDebug()<<"kuohaoend---"<<kuohaoend;
+    int kuohaocunzai=instr.indexOf("(",kuohaoend);
+    if(kuohaocunzai!=-1)
+    {
+        kuohaovalue++;
+        backint=instr.indexOf(";",from);
+        //比较左括号是否在;之前之后
+        if(kuohaocunzai<backint)//左括号在;之前
+        {
+            kuohaoend=kuohaocunzai+1;
+            //qDebug()<<"reset kuohaoend---"<<kuohaoend;
+            for(;kuohaoend<instr.length(); kuohaoend++)
+            {
+                //qDebug()<<"kuohaovalue--"<<kuohaoend<<"   .at(kuohaovalue)---"<<instr.at(kuohaoend);
+                if(kuohaovalue==0)
+                {
+                    break;
+                }
+                else
+                {
+                    if(instr.at(kuohaoend)=="(")
+                    {
+                        kuohaovalue++;
+                    }
+                    else if(instr.at(kuohaoend)==")")
+                    {
+                        kuohaovalue--;
+                    }
+                }
+            }
+            backint=instr.indexOf(";",kuohaoend);
+        }
+        //左括号在;之后,那backint就正常返回
+    }
+    else
+    {
+        kuohaoend=instr.length();
+        //就没有左括号，那就直接查句子
+        backint=instr.indexOf(";",from);
+    }
+    return backint;
 }
 
 void CmdControl::appendMessage(QStringList inlist)
