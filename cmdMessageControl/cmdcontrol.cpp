@@ -10,11 +10,11 @@ CmdControl::CmdControl(QObject *parent)
         sendmessage++;
         if(sendmessage>360000)
         {
-            sendmessage=0;
             queueList.enqueue("say 2");
         }
         if(!queueList.isEmpty())
         {
+            sendmessage=0;
             QQueue<QString> backMessageList;
             messageToList(backMessageList);
             //qDebug()<<"backMessageList--"<<backMessageList;
