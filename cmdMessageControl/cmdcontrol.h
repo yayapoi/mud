@@ -27,6 +27,8 @@ private:
     QQueue<QString> queueList;
     QTimer cmdTimer;
     QMap<QTimer*, QString> timerMap;
+    //1ms加一
+    int sendmessage=0;
 
 private:
     /* @brief 检查是否存在宏，并将宏要替代的东西替换*/

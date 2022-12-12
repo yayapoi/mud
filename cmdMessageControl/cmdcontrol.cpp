@@ -7,6 +7,12 @@ CmdControl::CmdControl(QObject *parent)
     : QObject{parent}
 {
     connect(&cmdTimer,&QTimer::timeout,[&](){
+        sendmessage++;
+        if(sendmessage>360000)
+        {
+            sendmessage=0;
+            queueList.enqueue("say 2");
+        }
         if(!queueList.isEmpty())
         {
             QQueue<QString> backMessageList;
@@ -18,7 +24,7 @@ CmdControl::CmdControl(QObject *parent)
             }
         }
     });
-    cmdTimer.start(30);
+    cmdTimer.start(5);
 }
 
 void CmdControl::appendMessage(QString inStr)//须填 ;;->;
