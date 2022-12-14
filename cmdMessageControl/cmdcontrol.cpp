@@ -33,7 +33,7 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
     int oldindex=0;
     int index=0;
     ///现在句子里有很多括号，要知道现在括号已经到哪里了
-    int kuohaoend=-1;
+    int kuohaoend=0;
     while (index<inStr.length()) {
         //系统使用了 ";"，用户使用 ";"时自动替换为";;"
         index=backStringIndex(inStr,oldindex,kuohaoend);
@@ -93,7 +93,7 @@ void CmdControl::appendMessage(QString inStr, QStringList &backList)
     int oldindex=0;
     int index=0;
     ///现在句子里有很多括号，要知道现在括号已经到哪里了
-    int kuohaoend=-1;
+    int kuohaoend=0;
     while (index<inStr.length()) {
         //index=inStr.indexOf(";",oldindex);//系统使用了 ";"，用户使用 ";"时自动替换为";;"
         index=backStringIndex(inStr,oldindex,kuohaoend);
@@ -269,6 +269,8 @@ int CmdControl::checkMessage(QString &instr)
 
 int CmdControl::backStringIndex(QString &instr, int &from, int &kuohaoend)
 {
+    //#Timer(3000,"say 1;say 2;say 3");
+    //#Timer(2000,"say 1;#Timer(3000,"say 1;say 2;say 3");say 3");
     int backint=-1;
     //左括号还有几个没匹配,发现一个右括号，此值减一。一个左括号，此值加一
     int kuohaovalue=0;
