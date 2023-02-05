@@ -458,8 +458,8 @@ void RegClass::sendAllMessage(QRegularExpressionMatch &matchReg, RegPtr *Reg)
 
 bool RegClass::getNewRegFromStr(QString &inStr, RegStr &backReg)
 {
-    bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int
-    //QString testStr="#newReg(\"lei\",\"name\",\"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$\",3,1,0,8080,1)";
+    bool flag=false;//类string，名字string，触发string，匹配行int，是否开启int，系统或者用户int，端口int，一行仅触一次int,干的事string
+    //QString testStr="#newReg(\"lei\",\"name\",\"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$\",3,1,0,8080,1,"aaa")";
     QRegularExpressionMatch regularmatch=NewRegregStr.match(inStr);
     if(regularmatch.hasMatch())
     {
@@ -474,6 +474,7 @@ bool RegClass::getNewRegFromStr(QString &inStr, RegStr &backReg)
             backReg.sysOrUser=backList[6].toInt()==1?true:false;
             backReg.port=backList[7].toInt();
             backReg.oneStrOneReg=backList[8].toInt()==1?true:false;
+            backReg.sysStr=backList[9];
             flag=true;
         }
     }

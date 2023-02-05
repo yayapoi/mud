@@ -47,7 +47,7 @@ private:
     QList<QByteArray> allmessageList;
     QRegularExpression enableRegregStr{"^#enableReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+)\\)$"};
     QRegularExpression DeleteRegregStr{"^#deleteReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\"\\)$"};
-    QRegularExpression NewRegregStr{"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+)\\)$"};
+    QRegularExpression NewRegregStr{"^#newReg\\(\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",\"([\\s\\S]+?)\",([\\d]+),([\\d]+),([\\d]+),([\\d]+),([\\d]+),\"([\\s\\S]+?)\"\\)$"};
 
     /* @brief 从输入数组中，截取出一行放入输出数组中*/
     void getOneStrFromArray(QByteArray &inArray, QByteArray &outArray);
