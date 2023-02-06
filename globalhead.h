@@ -101,6 +101,7 @@ const uchar MXP    = 91;
 const uchar MCCP1  = 85;
 const uchar MCCP2  = 86;
 const uchar MSP    = 90;
+const uchar GMCP   = 201;
 
 const uchar DRAW_MAP = 91;
 const uchar CLR_MAP  = 92;

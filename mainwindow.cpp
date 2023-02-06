@@ -337,10 +337,10 @@ signals:
         }
         messageFile->write(backArray);
 
-        //QString testStr(backArray);
+        QString testStr(backArray);
         //lowNum++;
-        //qDebug()<<lowNum<<"****"<<backArray;
-        //qDebug()<<lowNum<<"****"<<testStr;
+        qDebug()<<lowNum<<"****"<<backArray;
+        qDebug()<<lowNum<<"****"<<testStr;
         ui->fightTE->appendNewText(backArray);
         testRegClass.getMessage(backArray);
 
@@ -533,9 +533,9 @@ void MainWindow::checkStr(QByteArray testArray)
                 {
                     if(uchar(secondChar)==Common::WILL)//WILL  :IAC WILL MCCP2
                     {
-                        backArray.append(Common::IAC);//DO  :IAC DO MCCP2
+                        backArray.append(Common::IAC);
                         backArray.append(Common::DO);
-                        backArray.append(Common::MCCP2);
+                        backArray.append(Common::IAC);
                         backWrite=true;
                     }
                     else if(uchar(secondChar)==Common::SB)//se    :IAC SB MCCP2 IAC SE
@@ -550,6 +550,25 @@ void MainWindow::checkStr(QByteArray testArray)
                         compressed = true;
                     }
                     else if(uchar(secondChar)==Common::DONT)//DONT   :IAC DONT MCCP2
+                    {
+                        //qDebug()<<"MainWindow::checkStr Common::DONT";
+                        compressed = false;
+                    }
+                }
+                else if(uchar(endChar)==Common::GMCP)//GMCP
+                {
+                    if(uchar(secondChar)==Common::WILL)//WILL  :IAC DO GMCP
+                    {
+                        backArray.append(Common::IAC);
+                        backArray.append(Common::DO);
+                        backArray.append(Common::GMCP);
+                        backWrite=true;
+                    }
+                    else if(uchar(secondChar)==Common::SB)//se    :IAC SB GMCP IAC SE
+                    {
+                        //qDebug()<<"MainWindow::checkStr Common::SB";
+                    }
+                    else if(uchar(secondChar)==Common::DONT)//DONT   :IAC DONT GMCP
                     {
                         //qDebug()<<"MainWindow::checkStr Common::DONT";
                         compressed = false;
