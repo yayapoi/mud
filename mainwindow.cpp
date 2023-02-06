@@ -337,10 +337,10 @@ signals:
         }
         messageFile->write(backArray);
 
-        QString testStr(backArray);
+        //QString testStr(backArray);
         //lowNum++;
-        qDebug()<<lowNum<<"****"<<backArray;
-        qDebug()<<lowNum<<"****"<<testStr;
+        //qDebug()<<lowNum<<"****"<<backArray;
+        //qDebug()<<lowNum<<"****"<<testStr;
         ui->fightTE->appendNewText(backArray);
         testRegClass.getMessage(backArray);
 
@@ -519,7 +519,7 @@ void MainWindow::checkStr(QByteArray testArray)
     //qDebug()<<"MainWindow::checkStr begin";
     bool backWrite=false;//需要写回服务器
     QByteArray backArray;//返回给服务器的mccp2请求
-    //qDebug()<<"MainWindow::checkStr checkStr--"<<testArray;
+    //qDebug()<<"MainWindow::checkStr checkStr--"<<testArray.toInt();
     for(int num=0; num<testArray.size(); num=num+3)
     {
         char firstChar=testArray[0];
