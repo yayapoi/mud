@@ -62,6 +62,14 @@ struct RegPtr
     int strLength=-1;//触发长度
 };
 
+enum GMCPType{
+    none,
+    combat,
+    status,
+    move,
+    buff
+};
+
 namespace Common // RFC854
 {
 // Commands

@@ -145,17 +145,32 @@ void RegClass::deleteReg(QString &parentName, QString &itemName)
     if(firstMap!=regMap.end())//主分类存在
     {
         QMap<QString, RegPtr*>* secondMap=firstMap.value();
-        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
-        if(secondMapIter!=secondMap->end())//该名字存在
+        if(itemName=="")
         {
-            RegPtr* asdf=secondMapIter.value();
-            secondMap->remove(itemName);
-            delete asdf;
+            QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->begin();
+            while(secondMapIter!=secondMap->end())//该名字存在
+            {
+                RegPtr* asdf=secondMapIter.value();
+                delete asdf;
+                secondMapIter++;
+            }
+            secondMap->clear();
+        }
+        else
+        {
+            QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
+            if(secondMapIter!=secondMap->end())//该名字存在
+            {
+                RegPtr* asdf=secondMapIter.value();
+                secondMap->remove(itemName);
+                delete asdf;
+            }
         }
     }
     firstMap = regMap.begin();
     QStringList deleteList;
     while (firstMap!=regMap.end()) {
+        //qDebug()<<"RegClass::deleteReg  begin--"<<firstMap.key()<<"   size--"<<firstMap.value()->size();
         if(firstMap.value()->size()==0)
         {
             deleteList.append(firstMap.key());
@@ -168,6 +183,11 @@ void RegClass::deleteReg(QString &parentName, QString &itemName)
         regMap.remove(firstStr);
         deleteList.pop_front();
     }
+    /*firstMap = regMap.begin();
+    while (firstMap!=regMap.end()) {
+        qDebug()<<"RegClass::deleteReg  end--"<<firstMap.key()<<"   size--"<<firstMap.value()->size();
+        firstMap++;
+    }*/
 }
 
 void RegClass::changeReg(RegStr oldReg, RegStr newreg)
@@ -182,17 +202,31 @@ bool RegClass::enableReg(QString &parentName, QString &itemName, bool &flag)
     QMap<QString, QMap<QString, RegPtr*>*>::const_iterator firstMap = regMap.find(parentName);
     if(firstMap!=regMap.end())//主分类存在
     {
-        QMap<QString, RegPtr*>* secondMap=firstMap.value();
-        QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
-        if(secondMapIter!=secondMap->end())//该名字存在
+        if(itemName=="")
         {
-            secondMapIter.value()->oneReg.enable=flag;
-            backflag=true;
+            QMap<QString, RegPtr*>* secondMap=firstMap.value();
+            QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->begin();
+            while (secondMapIter!=secondMap->end()) {
+                secondMapIter.value()->oneReg.enable=flag;
+                secondMapIter++;
+            }
             //qDebug()<<"RegClass::enableReg--";
+            backflag=true;
         }
-        else//该名字不存在
+        else
         {
-            backflag=false;
+            QMap<QString, RegPtr*>* secondMap=firstMap.value();
+            QMap<QString, RegPtr*>::const_iterator secondMapIter = secondMap->find(itemName);
+            if(secondMapIter!=secondMap->end())//该名字存在
+            {
+                secondMapIter.value()->oneReg.enable=flag;
+                backflag=true;
+                //qDebug()<<"RegClass::enableReg--";
+            }
+            else//该名字不存在
+            {
+                backflag=false;
+            }
         }
     }
     else//主分类不存在

@@ -271,8 +271,8 @@ signals:
     connect(&cmdDo,&CmdDo::sendToServer,[&](QString sendToServerStr){socketWrite(sendToServerStr);});//发送给服务器
     connect(&cmdDo,&CmdDo::cmdShowInWindow,[&](QString cmdShowInWindowStr){ui->fightTE->appendNewText(cmdShowInWindowStr.toUtf8());});//发送给显示界面
 
-    messageFile=new QFile("D:/sdfgsdfg.txt");
-    if(messageFile->open(QIODevice::WriteOnly))
+    //messageFile=new QFile("D:/sdfgsdfg.txt");
+    //if(messageFile->open(QIODevice::WriteOnly))
     {
         //qDebug()<<"open";
     }
@@ -308,24 +308,24 @@ signals:
             if(rc == Z_OK)
             {
                 backArray.append(zout.mid(0,zstrm.total_out));
-                /*if(zstrm.total_out>5)
-                {
-                    QString babababa;//十六进制查看
-                    for(int num=zstrm.total_out-5; num<zstrm.total_out; num++)
-                    {
-                        babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
-                    }
-//qDebug()<<"**----"<<babababa;
-                }
-                else
-                {
-                    QString babababa;//十六进制查看
-                    for(int num=0; num<zstrm.total_out; num++)
-                    {
-                        babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
-                    }
-//qDebug()<<"**----"<<babababa;
-                }*/
+//                if(zstrm.total_out>5)
+//                {
+//                    QString babababa;//十六进制查看
+//                    for(int num=zstrm.total_out-5; num<zstrm.total_out; num++)
+//                    {
+//                        babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
+//                    }
+////qDebug()<<"**----"<<babababa;
+//                }
+//                else
+//                {
+//                    QString babababa;//十六进制查看
+//                    for(int num=0; num<zstrm.total_out; num++)
+//                    {
+//                        babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
+//                    }
+////qDebug()<<"**----"<<babababa;
+//                }
             }
         }
         else
@@ -335,32 +335,19 @@ signals:
             backArray.append(zbuffer);
             zbuffer.clear();
         }
-        messageFile->write(backArray);
+        //messageFile->write(backArray);
 
         //QString testStr(backArray);
         //lowNum++;
         //qDebug()<<lowNum<<"****"<<backArray;
         //qDebug()<<lowNum<<"****"<<testStr;
+        checkGMCP();
         ui->fightTE->appendNewText(backArray);
         testRegClass.getMessage(backArray);
 
         backArray.clear();
     });
     testSocket->connectToHost("47.97.249.185",8081);
-
-    QTimer* goTimer=new QTimer;
-    connect(goTimer, &QTimer::timeout, [&](){
-        if(tsetadf)
-        {
-            socketWrite("go west");
-        }
-        else
-        {
-            socketWrite("go east");
-        }
-        tsetadf=tsetadf?false:true;
-    });
-    //goTimer->start(60000);
 
     /*QString testStr="#4.89M,3463,5260,5260,5260,5260\r\n#2517,2517,2517,1794,1794,1764\r\n#0,101,0,-1,0,0";
     QRegularExpression regular("#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*\\r\\n#([A-Za-z0-9.-]+)(?:,([A-Za-z0-9.-]+))*");
@@ -470,11 +457,41 @@ signals:
     }
 //qDebug()<<"str=="<<QString(inArray);
 //qDebug()<<"inArray=="<<inArray;*/
+
+    /*backArray.append('\xFF');
+    backArray.append('\xFF');
+    backArray.append('\xFA');
+    backArray.append('\xC9');
+    backArray.append('G');
+    backArray.append('M');
+    backArray.append('C');
+    backArray.append('P');
+    backArray.append('.');
+    backArray.append('B');
+    backArray.append('u');
+    backArray.append('f');
+    backArray.append('f');
+    backArray.append('\xFF');
+    backArray.append('\xF0');
+    backArray.append('\xFF');
+    backArray.append('\xFA');
+    backArray.append('\xC9');
+    backArray.append('G');
+    backArray.append('M');
+    backArray.append('C');
+    backArray.append('P');
+    backArray.append('.');
+    backArray.append('S');
+    backArray.append('\xFF');
+    backArray.append('\xF0');
+    backArray.append('\xFF');
+    checkGMCP();
+    ui->fightTE->appendNewText(backArray);*/
 }
 
 MainWindow::~MainWindow()
 {
-    messageFile->close();
+    //messageFile->close();
     showtotalZlibNum();
     delete ui;
 }
@@ -693,6 +710,311 @@ void MainWindow::initSysTrayIcon()
     createMenu();
     //在系统托盘显示此对象
     m_sysTrayIcon->show();
+}
+
+void MainWindow::checkGMCP()
+{
+    bool backflag=true;
+    QList<GMCPType> GMCPTypeList;
+    QByteArrayList GMCPArrayList;
+    while(backflag)
+    {
+        GMCPType GMCPType=GMCPType::none;
+        QByteArray GMCPArray;
+        backflag=slipeBackArray(GMCPType, GMCPArray);
+        if(backflag)
+        {
+            GMCPTypeList.push_back(GMCPType);
+            GMCPArrayList.push_back(GMCPArray);
+        }
+    }
+    if(GMCPTypeList.size()>0)
+    {
+        for(int begin=0; begin<GMCPTypeList.size(); begin++)
+        {
+            GMCPType aa=GMCPTypeList.at(begin);
+            QByteArray bb=GMCPArrayList.at(begin);
+            switch (aa) {
+            case GMCPType::buff:
+            {
+                if(true/*发送到端口*/)
+                {
+                    //须填
+                }
+                if(true/*显示*/)
+                {
+                    if(true/*颜色*/)
+                    {
+                        QByteArray colorByte;
+                        colorByte.append('\x1b');
+                        colorByte.append('[');
+                        colorByte.append('1');
+                        colorByte.append(';');
+                        colorByte.append('3');
+                        colorByte.append('1');
+                        colorByte.append('m');
+
+                        QByteArray endcolorByte;
+                        endcolorByte.append('\x1b');
+                        endcolorByte.append('[');
+                        endcolorByte.append('2');
+                        endcolorByte.append(';');
+                        endcolorByte.append('3');
+                        endcolorByte.append('7');
+                        endcolorByte.append(';');
+                        endcolorByte.append('0');
+                        endcolorByte.append('m');
+
+                        bb=colorByte+bb+endcolorByte;
+                    }
+                    if(true/*换行*/)
+                    {
+                        bb=bb+'\r'+'\n';
+                    }
+                    backArray=bb+backArray;
+                }
+            }
+                break;
+            case GMCPType::move:
+            {
+                if(true/*发送到端口*/)
+                {
+                    //须填
+                }
+                if(true/*显示*/)
+                {
+                    if(true/*颜色*/)
+                    {
+                        QByteArray colorByte;
+                        colorByte.append('\x1b');
+                        colorByte.append('[');
+                        colorByte.append('1');
+                        colorByte.append(';');
+                        colorByte.append('3');
+                        colorByte.append('2');
+                        colorByte.append('m');
+
+                        QByteArray endcolorByte;
+                        endcolorByte.append('\x1b');
+                        endcolorByte.append('[');
+                        endcolorByte.append('2');
+                        endcolorByte.append(';');
+                        endcolorByte.append('3');
+                        endcolorByte.append('7');
+                        endcolorByte.append(';');
+                        endcolorByte.append('0');
+                        endcolorByte.append('m');
+
+                        bb=colorByte+bb+endcolorByte;
+                    }
+                    if(true/*换行*/)
+                    {
+                        bb=bb+'\r'+'\n';
+                    }
+                    backArray=bb+backArray;
+                }
+            }
+                break;
+            case GMCPType::combat:
+            {
+                if(true/*发送到端口*/)
+                {
+                    //须填
+                }
+                if(true/*显示*/)
+                {
+                    if(true/*颜色*/)
+                    {
+                        QByteArray colorByte;
+                        colorByte.append('\x1b');
+                        colorByte.append('[');
+                        colorByte.append('1');
+                        colorByte.append(';');
+                        colorByte.append('3');
+                        colorByte.append('3');
+                        colorByte.append('m');
+
+                        QByteArray endcolorByte;
+                        endcolorByte.append('\x1b');
+                        endcolorByte.append('[');
+                        endcolorByte.append('2');
+                        endcolorByte.append(';');
+                        endcolorByte.append('3');
+                        endcolorByte.append('7');
+                        endcolorByte.append(';');
+                        endcolorByte.append('0');
+                        endcolorByte.append('m');
+
+                        bb=colorByte+bb+endcolorByte;
+                    }
+                    if(true/*换行*/)
+                    {
+                        bb=bb+'\r'+'\n';
+                    }
+                    backArray=bb+backArray;
+                }
+            }
+                break;
+            case GMCPType::status:
+            {
+                if(true/*发送到端口*/)
+                {
+                    //须填
+                }
+                if(true/*显示*/)
+                {
+                    if(true/*颜色*/)
+                    {
+                        QByteArray colorByte;
+                        colorByte.append('\x1b');
+                        colorByte.append('[');
+                        colorByte.append('1');
+                        colorByte.append(';');
+                        colorByte.append('3');
+                        colorByte.append('4');
+                        colorByte.append('m');
+
+                        QByteArray endcolorByte;
+                        endcolorByte.append('\x1b');
+                        endcolorByte.append('[');
+                        endcolorByte.append('2');
+                        endcolorByte.append(';');
+                        endcolorByte.append('3');
+                        endcolorByte.append('7');
+                        endcolorByte.append(';');
+                        endcolorByte.append('0');
+                        endcolorByte.append('m');
+
+                        bb=colorByte+bb+endcolorByte;
+                    }
+                    if(true/*换行*/)
+                    {
+                        bb=bb+'\r'+'\n';
+                    }
+                    backArray=bb+backArray;
+                }
+            }
+                break;
+            default:
+                break;
+            }
+        }
+        /*int a=backArray.size();
+        if(!(a>=2 && backArray[a-2]=='\r' && backArray[a-1]=='\n'))
+        {
+            backArray=backArray+'\r'+'\n';
+        }*/
+    }
+}
+
+bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
+{
+    bool findFlag=false;
+    int beginInt=0;//gcmp的起点,从0开始
+    int endInt=0;//gcmp的终点,从0开始
+    for(int begin=0; begin<backArray.size()-10; )
+    {
+        if(backArray[begin]=='\xFF')
+        {
+            if(backArray[begin+1]=='\xFA')
+            {
+                if(backArray[begin+2]=='\xC9')
+                {
+                    if(backArray[begin+3]=='G')
+                    {
+                        if(backArray[begin+4]=='M')
+                        {
+                            if(backArray[begin+5]=='C')
+                            {
+                                if(backArray[begin+6]=='P')
+                                {
+                                    if(backArray[begin+7]=='.')
+                                    {
+                                        beginInt=begin;
+                                        for(int endint=begin+8; endint<backArray.size()-1; endint++)
+                                        {
+                                            if(backArray[endint]=='\xFF')
+                                            {
+                                                if(backArray[endint+1]=='\xF0')
+                                                {
+                                                    endInt=endint+1;
+                                                    findFlag=true;
+                                                    if(backArray[begin+8]=='S')
+                                                    {
+                                                        GMCPType=GMCPType::status;
+                                                    }
+                                                    else if(backArray[begin+8]=='M')
+                                                    {
+                                                        GMCPType=GMCPType::move;
+                                                    }
+                                                    else if(backArray[begin+8]=='C')
+                                                    {
+                                                        GMCPType=GMCPType::combat;
+                                                    }
+                                                    else if(backArray[begin+8]=='B')
+                                                    {
+                                                        GMCPType=GMCPType::buff;
+                                                    }
+                                                    if(beginInt==0)
+                                                    {
+                                                        GMCPArray=backArray.mid(0,endInt-beginInt+1);
+                                                        backArray=backArray.mid(endInt+1);
+                                                    }
+                                                    else
+                                                    {
+                                                        QByteArray beginArray;
+                                                        beginArray=backArray.mid(0,beginInt);
+                                                        GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
+                                                        backArray=backArray.mid(endInt+1);
+                                                        backArray=beginArray+backArray;
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        begin=begin+7;
+                                    }
+                                    else
+                                    {
+                                        begin=begin+7;
+                                    }
+                                }
+                                else
+                                {
+                                    begin=begin+6;
+                                }
+                            }
+                            else
+                            {
+                                begin=begin+5;
+                            }
+                        }
+                        else
+                        {
+                            begin=begin+4;
+                        }
+                    }
+                    else
+                    {
+                        begin=begin+3;
+                    }
+                }
+                else
+                {
+                    begin=begin+2;
+                }
+            }
+            else
+            {
+                begin=begin+1;
+            }
+        }
+        else
+        {
+            begin=begin+1;
+        }
+    }
+    return findFlag;
 }
 
 //创建动作

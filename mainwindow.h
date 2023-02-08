@@ -113,6 +113,10 @@ private:
     void createMenu();
     void initSysTrayIcon();
 
+    /* @brief 检查gmcp,截取gmcp,发送gmcp至指定端口*/
+    void checkGMCP();
+    /* @brief 检查gmcp,截取gmcp，只有一条，返回gmcp类型和内容 返回值bool：true:有gmcp  false:没有*/
+    bool slipeBackArray(GMCPType& GMCPType, QByteArray& GMCPArray);
 protected:
     void closeEvent (QCloseEvent *event) override;
     void keyPressEvent (QKeyEvent *event) override;
