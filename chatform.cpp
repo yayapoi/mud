@@ -125,6 +125,7 @@ ChatForm::ChatForm(QWidget *parent) :
     beiXiaQQQunEditinsertTextCursor.movePosition(QTextCursor::End);
     beiXiaQQQunEditinsertTextCursor.mergeCharFormat(fmt1);//应用字体
     beiXiaQQQunEditinsertTextCursor.setBlockFormat(blockFormat1);//应用行间距
+    //on_resizeBT_clicked(true);
 }
 
 ChatForm::~ChatForm()
@@ -135,6 +136,17 @@ ChatForm::~ChatForm()
 void ChatForm::appendOneStr(int Num, QByteArray& inarray, QTextCharFormat& inFmt, QFont& inFont)
 {
     showStrThisWidget(Num, inarray, inFmt, inFont);
+}
+
+void ChatForm::setSizes(int Width, int Height)
+{
+    width=Width;
+    height=Height;
+}
+
+bool ChatForm::getHideStatus()
+{
+    return ui->resetBT->isHidden();
 }
 
 void ChatForm::on_renWuEdit_textChanged()
@@ -465,5 +477,14 @@ void ChatForm::on_resizeBT_clicked(bool checked)
 {
     ui->chatWidget->setHidden(checked);
     ui->resetBT->setHidden(checked);
+    if(checked)
+    {
+        resize(30,30);
+    }
+    else
+    {
+        resize(width,height);
+    }
+    emit ChatFormHide(checked);
 }
 

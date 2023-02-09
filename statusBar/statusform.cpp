@@ -12,6 +12,7 @@ StatusForm::StatusForm(QWidget *parent) :
     ui->mpBar->setPointStatus(pointStatus::mp);
     ui->jingliBar->setPointStatus(pointStatus::mp);
     setStyleSheet("background-color: rgb(255,255,255);");
+    //on_resizeBT_clicked(true);
 }
 
 StatusForm::~StatusForm()
@@ -79,8 +80,28 @@ void StatusForm::hideAll(bool flag)
     ui->mang->setHidden(flag);
 }
 
+void StatusForm::setSizes(int Width, int Height)
+{
+    width=Width;
+    height=Height;
+}
+
+bool StatusForm::getHideStatus()
+{
+    return ui->hpHead->isHidden();
+}
+
 void StatusForm::on_resizeBT_clicked(bool checked)
 {
     hideAll(checked);
+    if(checked)
+    {
+        resize(20,20);
+    }
+    else
+    {
+        resize(width,height);
+    }
+    emit StatusFormHide(checked);
 }
 

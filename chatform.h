@@ -20,6 +20,10 @@ public:
     ~ChatForm();
 
     void appendOneStr(int Num, QByteArray& inarray, QTextCharFormat& inFmt, QFont& inFont);
+    ///界面隐藏至只剩按钮时，界面依旧占用很大面积，不能点击主界面，所以记录下宽高，改变本界面大小
+    void setSizes(int Width, int Height);
+    ///主界面获取这界面是否缩小状态 true:隐藏  false:不隐藏
+    bool getHideStatus();
 private slots:
     void on_renWuEdit_textChanged();
 
@@ -39,6 +43,10 @@ private slots:
 
 private:
     Ui::ChatForm *ui;
+    ///隐藏后的宽高
+    int width=0;
+    ///隐藏后的宽高
+    int height=0;
     bool renWuEditScrollBar=false;
     bool yaoYanEditScrollBar=false;
     bool xianLiaoEditScrollBar=false;
@@ -74,6 +82,9 @@ private:
     void setTextCursorFromArray(int, QFont&, QTextCharFormat&);
     /* @brief 从输入数组中获取 当前光标颜色下应该显示的文字*/
     void getShowStrFromArray(QByteArray &inArray, QByteArray &outArray);
+signals:
+    /* @brief 告诉主界面自己是否隐藏，挪动自己*/
+    void ChatFormHide(bool);
 };
 
 #endif // CHATFORM_H
