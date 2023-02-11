@@ -19,6 +19,21 @@ void PointBar::setPointStatus(int statur)
     status=statur;
 }
 
+void PointBar::setPointNowNum(int now)
+{
+    nowNum=now;
+}
+
+void PointBar::setPointEndNum(int end)
+{
+    lastMaxNum=end;
+}
+
+void PointBar::setPointMaxNum(int max)
+{
+    maxNum=max<=0?1:max;
+}
+
 void PointBar::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);

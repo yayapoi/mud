@@ -67,7 +67,8 @@ enum GMCPType{
     combat,
     status,
     move,
-    buff
+    buff,
+    message
 };
 
 namespace Common // RFC854

@@ -18,6 +18,9 @@ public:
 
     void setPointNum(int now, int end, int max);
     void setPointStatus(int);
+    void setPointNowNum(int now);
+    void setPointEndNum(int end);
+    void setPointMaxNum(int max);
 protected:
     void paintEvent(QPaintEvent *) override;
 

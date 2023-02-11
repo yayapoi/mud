@@ -28,6 +28,8 @@ public:
     void setHpMpStatus(QString);
     /* @brief 切换原始文本和显示文本*/
     void setShowText(bool);
+    ///传入新的status或者buff字符串
+    void setStatus(QByteArray& newstring, GMCPType type);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;

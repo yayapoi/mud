@@ -271,8 +271,8 @@ signals:
     connect(&cmdDo,&CmdDo::sendToServer,[&](QString sendToServerStr){socketWrite(sendToServerStr);});//发送给服务器
     connect(&cmdDo,&CmdDo::cmdShowInWindow,[&](QString cmdShowInWindowStr){ui->fightTE->appendNewText(cmdShowInWindowStr.toUtf8());});//发送给显示界面
 
-    //messageFile=new QFile("D:/sdfgsdfg.txt");
-    //if(messageFile->open(QIODevice::WriteOnly))
+    messageFile=new QFile("D:/gmcp.txt");
+    if(messageFile->open(QIODevice::WriteOnly))
     {
         //qDebug()<<"open";
     }
@@ -335,7 +335,6 @@ signals:
             backArray.append(zbuffer);
             zbuffer.clear();
         }
-        //messageFile->write(backArray);
 
         //QString testStr(backArray);
         //lowNum++;
@@ -491,7 +490,7 @@ signals:
 
 MainWindow::~MainWindow()
 {
-    //messageFile->close();
+    messageFile->close();
     showtotalZlibNum();
     delete ui;
 }
@@ -741,7 +740,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(true/*显示*/)
+                if(false/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -781,7 +780,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(true/*显示*/)
+                if(false/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -821,7 +820,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(true/*显示*/)
+                if(false/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -861,7 +860,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(true/*显示*/)
+                if(false/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -938,36 +937,100 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
                                                 if(backArray[endint+1]=='\xF0')
                                                 {
                                                     endInt=endint+1;
-                                                    findFlag=true;
                                                     if(backArray[begin+8]=='S')
                                                     {
                                                         GMCPType=GMCPType::status;
+                                                        findFlag=true;
+                                                        if(beginInt==0)
+                                                        {
+                                                            GMCPArray=backArray.mid(0,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                        }
+                                                        else
+                                                        {
+                                                            QByteArray beginArray;
+                                                            beginArray=backArray.mid(0,beginInt);
+                                                            GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                            backArray=beginArray+backArray;
+                                                        }
+                                                        ui->fightTE->setStatus(GMCPArray, GMCPType);
                                                     }
-                                                    else if(backArray[begin+8]=='M')
+                                                    else if(backArray[begin+8]=='M' && backArray[begin+9]=='o')
                                                     {
                                                         GMCPType=GMCPType::move;
+                                                        findFlag=true;
+                                                        if(beginInt==0)
+                                                        {
+                                                            GMCPArray=backArray.mid(0,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                        }
+                                                        else
+                                                        {
+                                                            QByteArray beginArray;
+                                                            beginArray=backArray.mid(0,beginInt);
+                                                            GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                            backArray=beginArray+backArray;
+                                                        }
+                                                    }
+                                                    else if(backArray[begin+8]=='M' && backArray[begin+9]=='e')
+                                                    {
+                                                        GMCPType=GMCPType::message;
+                                                        findFlag=true;
+                                                        if(beginInt==0)
+                                                        {
+                                                            GMCPArray=backArray.mid(0,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                        }
+                                                        else
+                                                        {
+                                                            QByteArray beginArray;
+                                                            beginArray=backArray.mid(0,beginInt);
+                                                            GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                            backArray=beginArray+backArray;
+                                                        }
                                                     }
                                                     else if(backArray[begin+8]=='C')
                                                     {
                                                         GMCPType=GMCPType::combat;
+                                                        findFlag=true;
+                                                        if(beginInt==0)
+                                                        {
+                                                            GMCPArray=backArray.mid(0,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                        }
+                                                        else
+                                                        {
+                                                            QByteArray beginArray;
+                                                            beginArray=backArray.mid(0,beginInt);
+                                                            GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                            backArray=beginArray+backArray;
+                                                        }
                                                     }
                                                     else if(backArray[begin+8]=='B')
                                                     {
                                                         GMCPType=GMCPType::buff;
+                                                        findFlag=true;
+                                                        if(beginInt==0)
+                                                        {
+                                                            GMCPArray=backArray.mid(0,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                        }
+                                                        else
+                                                        {
+                                                            QByteArray beginArray;
+                                                            beginArray=backArray.mid(0,beginInt);
+                                                            GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
+                                                            backArray=backArray.mid(endInt+1);
+                                                            backArray=beginArray+backArray;
+                                                        }
+                                                        ui->fightTE->setStatus(GMCPArray, GMCPType);
                                                     }
-                                                    if(beginInt==0)
-                                                    {
-                                                        GMCPArray=backArray.mid(0,endInt-beginInt+1);
-                                                        backArray=backArray.mid(endInt+1);
-                                                    }
-                                                    else
-                                                    {
-                                                        QByteArray beginArray;
-                                                        beginArray=backArray.mid(0,beginInt);
-                                                        GMCPArray=backArray.mid(beginInt,endInt-beginInt+1);
-                                                        backArray=backArray.mid(endInt+1);
-                                                        backArray=beginArray+backArray;
-                                                    }
+                                                    //qDebug()<<"messageFile->write  --"<<GMCPArray;
+                                                    messageFile->write(GMCPArray);
                                                     break;
                                                 }
                                             }

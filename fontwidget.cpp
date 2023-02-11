@@ -176,10 +176,10 @@ FontWidget::FontWidget(QWidget *parent) :
                         }");
                         ui->fightEdit->setReadOnly(true);
             ui->fightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
-    ui->fightEdit->document()->setMaximumBlockCount(2000);
+    ui->fightEdit->document()->setMaximumBlockCount(4000);
     ui->allFightEdit->setReadOnly(true);
     ui->allFightEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
-    ui->allFightEdit->document()->setMaximumBlockCount(2000);
+    ui->allFightEdit->document()->setMaximumBlockCount(4000);
     ui->tmpEdit->setEnabled(false);
     ui->tmpEdit->setStyleSheet("background-color: rgb(0, 0, 0);");
     ui->tmpEdit->document()->setMaximumBlockCount(100);
@@ -200,7 +200,7 @@ FontWidget::FontWidget(QWidget *parent) :
     });
 
     myStatusForm=new StatusForm(this);
-    myStatusForm->setGeometry(1000,0,300,170);
+    myStatusForm->setGeometry(1000,0,300,310);
     myStatusForm->show();
     connect(myStatusForm, &StatusForm::StatusFormHide, this,[this](bool checkBool){
         if(checkBool)
@@ -209,7 +209,7 @@ FontWidget::FontWidget(QWidget *parent) :
         }
         else
         {
-            this->myStatusForm->setGeometry(this->width()-300-20,10,300,170);
+            this->myStatusForm->setGeometry(this->width()-300-20,10,300,310);
         }
     });
 
@@ -377,6 +377,11 @@ void FontWidget::setShowText(bool flag)
     }
 }
 
+void FontWidget::setStatus(QByteArray &newstring, GMCPType type)
+{
+    myStatusForm->setStatus(newstring, type);
+}
+
 void FontWidget::resizeEvent(QResizeEvent *event)
 {
     if(clickScrollBar==false)
@@ -397,12 +402,12 @@ void FontWidget::resizeEvent(QResizeEvent *event)
     if(myStatusForm->getHideStatus())
     {
         myStatusForm->move(this->width()-20,10);
-        myStatusForm->setSizes(300,170);
+        myStatusForm->setSizes(300,310);
     }
     else
     {
-        myStatusForm->setGeometry(this->width()-300-20,10,300,170);
-        myStatusForm->setSizes(300,170);
+        myStatusForm->setGeometry(this->width()-300-20,10,300,310);
+        myStatusForm->setSizes(300,310);
     }
     QWidget::resizeEvent(event);
 }
