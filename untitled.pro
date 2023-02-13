@@ -12,6 +12,7 @@ SOURCES += \
     chatform.cpp \
     cmdMessageControl/cmdcontrol.cpp \
     cmdMessageControl/cmddo.cpp \
+    configWidget/configform.cpp \
     fontwidget.cpp \
     globalhead.cpp \
     main.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     chatform.h \
     cmdMessageControl/cmdcontrol.h \
     cmdMessageControl/cmddo.h \
+    configWidget/configform.h \
     fontwidget.h \
     globalhead.h \
     mainwindow.h \
@@ -49,6 +51,7 @@ HEADERS += \
 
 FORMS += \
     chatform.ui \
+    configWidget/configform.ui \
     fontwidget.ui \
     mainwindow.ui \
     regClass/parentwidget.ui \

@@ -83,9 +83,10 @@
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
-     <string>设置</string>
+     <string>软件设置</string>
     </property>
     <addaction name="actionYuanWen"/>
+    <addaction name="actiongmcp"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -121,6 +122,11 @@
    </property>
    <property name="text">
     <string>将原文解析</string>
+   </property>
+  </action>
+  <action name="actiongmcp">
+   <property name="text">
+    <string>gmcp设置</string>
    </property>
   </action>
  </widget>

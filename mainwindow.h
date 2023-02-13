@@ -11,6 +11,7 @@
 #include <cmdMessageControl/cmdcontrol.h>
 #include <tcpControl/tcpserverform.h>
 #include <QSystemTrayIcon>
+#include <configWidget/configform.h>
 
 /*
  * MCCP2 协议
@@ -72,6 +73,8 @@ private slots:
 
     void on_actionYuanWen_triggered(bool checked);
 
+    void on_actiongmcp_triggered();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;
@@ -94,8 +97,11 @@ private:
     int zoutSize=10000;//废弃
     int lowNum=0;
     bool tsetadf=false;
+    /* @brief 设置玩家id，通过此id显示血条*/
+    QString id="";
 
     RegClass testRegClass;
+    ConfigForm configForm;
     RegForm regForm;
     CmdDo cmdDo;
     CmdControl cmdControl;

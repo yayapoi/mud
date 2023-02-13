@@ -26,12 +26,16 @@ public:
     void setSizes(int Width, int Height);
     ///主界面获取这界面是否缩小状态 true:隐藏  false:不隐藏
     bool getHideStatus();
+    ///传入玩家自己的名字和id
+    void setMyId(QString name, QString id);
 private slots:
     void on_resizeBT_clicked(bool checked);
 
 private:
     Ui::StatusForm *ui;
 
+    /* @brief 记录自己的ID*/
+    QString ID="yayamingjiao";
     ///隐藏后的宽高
     int width=100;
     ///隐藏后的宽高

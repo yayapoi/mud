@@ -264,6 +264,11 @@ signals:
     connect(&testRegClass,&RegClass::regStrSendToTcp,&(tcpServerForm.tcpServerControl),&TcpServerControl::getSendMessage);
     connect(&testRegClass,&RegClass::regStrSend,[&](QString Str){cmdControl.appendMessage(Str);});
     connect(&cmdControl,&CmdControl::newMessage,[&](QQueue<QString> queueStr){cmdDo.newMessage(queueStr);});
+    connect(&configForm,&ConfigForm::closeWidget,this,[this](){
+        QString name;
+        this->configForm.getNameAndID(name,this->id);
+        this->ui->fightTE->setMyId(name, this->id);
+    });
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
     connect(&cmdDo,&CmdDo::newRegStr,[&](QString newRegStr){testRegClass.newRegStr(newRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::deleteRegStr,[&](QString deleteRegStr){testRegClass.deleteRegStr(deleteRegStr);});//发送给触发类
@@ -1240,5 +1245,11 @@ void MainWindow::on_actionRegOut_triggered()
 void MainWindow::on_actionYuanWen_triggered(bool checked)
 {
     ui->fightTE->setShowText(checked);
+}
+
+
+void MainWindow::on_actiongmcp_triggered()
+{
+    configForm.show();
 }
 

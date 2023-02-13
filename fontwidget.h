@@ -30,7 +30,8 @@ public:
     void setShowText(bool);
     ///传入新的status或者buff字符串
     void setStatus(QByteArray& newstring, GMCPType type);
-
+    ///传入玩家自己的名字和id
+    void setMyId(QString name, QString id);
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;
 private slots:

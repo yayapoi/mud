@@ -382,6 +382,11 @@ void FontWidget::setStatus(QByteArray &newstring, GMCPType type)
     myStatusForm->setStatus(newstring, type);
 }
 
+void FontWidget::setMyId(QString name, QString id)
+{
+    myStatusForm->setMyId(name, id);
+}
+
 void FontWidget::resizeEvent(QResizeEvent *event)
 {
     if(clickScrollBar==false)
