@@ -405,12 +405,12 @@ signals:
                     }
                 }
                 //qDebug()<<"zbuffer22--"<<zbuffer;
-                if(zbuffer.size()!=0)
+                /*if(zbuffer.size()!=0)
                 {
                     qDebug()<<"zbuffer--"<<QString(zbuffer);
                     //messageFile->write(zbuffer);
                     //messageFile->write("\r\n");
-                }
+                }*/
             }
             //backArray.append(backArray);
         }
@@ -1226,7 +1226,7 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
                                                         ui->fightTE->setStatus(GMCPArray, GMCPType);
                                                     }
                                                     //qDebug()<<"messageFile->write  --"<<GMCPArray;
-                                                    //messageFile->write(GMCPArray);
+                                                    messageFile->write(GMCPArray);
                                                     break;
                                                 }
                                             }
