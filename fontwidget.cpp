@@ -271,7 +271,7 @@ FontWidget::~FontWidget()
 
 void FontWidget::appendNewText(QByteArray backArray)
 {
-    QString testStr(backArray);
+    //QString testStr(backArray);
     //qDebug()<<lowNum++<<"****"<<testStr;
     //qDebug()<<lowNum++<<"****"<<backArray;
 
@@ -349,6 +349,12 @@ void FontWidget::appendNewText(QByteArray backArray)
             }
         }
     }
+}
+
+void FontWidget::appendNewText(QString sstring)
+{
+    QByteArray showss=sstring.toUtf8();
+    showStrThisWidget(showss);
 }
 
 void FontWidget::setClickScrollBar()

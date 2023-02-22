@@ -24,6 +24,9 @@ signals:
     /* @brief 发送给显示界面*/
     void cmdShowInWindow(QString);
 
+    /* @brief 发送给主界面显示并触发*/
+    void pritf(QString);
+
     /* @brief 发送给血条*/
     void setHPBar(QString);
 public slots:

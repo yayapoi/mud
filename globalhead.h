@@ -102,6 +102,7 @@ const uchar IAC   = 255;
 // Types
 const uchar IS     = 0;
 const uchar SEND   = 1;
+const uchar TYPE   = 24; // 终端类型
 const uchar NAWS   = 31; // RFC1073, implemented
 
 // Types (MUD-specific)
@@ -136,7 +137,8 @@ bool checkEnableRegReg(QString &instr);
 bool checkSetHPBar(QString &instr);
 /* @brief 系统函数定时器，是则使用并返回true*/
 bool checkTimer(QString &instr);
-
+/* @brief 系统显示并触发，不发送服务器，是则使用并返回true*/
+bool checkPritf(QString &instr);
 
 
 /* @brief 在数组中指定位置插入指定数字，该数字必定占3字节*/

@@ -70,3 +70,14 @@ bool globalCheck::checkTimer(QString &instr)
     }
     return flag;
 }
+
+bool globalCheck::checkPritf(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#Pritf(");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}

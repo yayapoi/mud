@@ -21,6 +21,8 @@ public:
 
     /* @brief 外部告诉此窗口要添加文本*/
     void appendNewText(QByteArray);
+    /* @brief 外部告诉此窗口要添加 纯粹系统显示*/
+    void appendNewText(QString);
 
     /* @brief 外部告诉此窗口要滚动下去*/
     void setClickScrollBar();

@@ -99,6 +99,10 @@ private:
     bool tsetadf=false;
     /* @brief 设置玩家id，通过此id显示血条*/
     QString id="";
+    /* @brief 超过10不再检测IAC*/
+    int closeNum=0;
+    /* @brief 超过10不再检测IAC*/
+    bool closeNumBool=false;
 
     RegClass testRegClass;
     ConfigForm configForm;
@@ -107,6 +111,8 @@ private:
     CmdControl cmdControl;
     QFile* messageFile;
     TcpServerForm tcpServerForm;
+
+    QRegularExpression regStr{"^#Pritf\\(\"([\\s\\S]*)\"\\)$"};
 
 
 

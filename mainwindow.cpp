@@ -270,6 +270,16 @@ signals:
         this->ui->fightTE->setMyId(name, this->id);
     });
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
+    connect(&cmdDo,&CmdDo::pritf,[&](QString pritfStr){
+        QRegularExpressionMatch regularmatch=regStr.match(pritfStr, 0);
+        if(regularmatch.hasMatch())
+        {
+            QString pritfStrstr=regularmatch.captured(1);
+            ui->fightTE->appendNewText(pritfStrstr);
+            testRegClass.getMessage(pritfStrstr.toUtf8());
+            //qDebug()<<"checkStr--";
+        }
+    });
     connect(&cmdDo,&CmdDo::newRegStr,[&](QString newRegStr){testRegClass.newRegStr(newRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::deleteRegStr,[&](QString deleteRegStr){testRegClass.deleteRegStr(deleteRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::enableRegStr,[&](QString enableRegStr){testRegClass.enableRegStr(enableRegStr);});//发送给触发类
@@ -286,11 +296,19 @@ signals:
     connect(testSocket,&QTcpSocket::connected,[&](){});
     connect(testSocket,&QTcpSocket::disconnected,[&](){});
     connect(testSocket,&QTcpSocket::readyRead,[&](){//粘包问题，或者丢到触发处判断
-        //假如使用了mccp2协议，则以下需要解压
-        zbuffer.append(testSocket->readAll());
+        if(!closeNumBool)
+        {
+            closeNum++;
+            if(closeNum==10)
+            {
+                closeNumBool=true;
+            }
+        }
         //qDebug()<<"zbuffer size---"<<zbuffer.size();
         if (compressed)
         {
+            //假如使用了mccp2协议，则以下需要解压
+            zbuffer.append(testSocket->readAll());
             int rc;
             int total_Size=checkOutSize(zbuffer.size());
             zstrm.next_in = (Bytef*)(zbuffer.data());
@@ -309,6 +327,128 @@ signals:
             //qDebug()<<"size--"<<zstrm.next_in - (Bytef*)zbuffer.data()<<" rc-"<<rc;
             zbuffer.remove(0, zstrm.next_in - (Bytef*)zbuffer.data());
             //qDebug()<<"avail_out--"<<zstrm.avail_out<<"  total_out--"<<zstrm.total_out<<"  total_in--"<<zstrm.total_in<<"  rc--"<<rc;
+            testtotalZlibNum(zstrm.total_out, zstrm.total_in);
+            if(rc == Z_OK)
+            {
+                backArray.append(zout.mid(0,zstrm.total_out));
+                //                if(zstrm.total_out>5)
+                //                {
+                //                    QString babababa;//十六进制查看
+                //                    for(int num=zstrm.total_out-5; num<zstrm.total_out; num++)
+                //                    {
+                //                        babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
+                //                    }
+                //qDebug()<<"**----"<<babababa;
+                //                }
+                //                else
+                //                {
+                //                    QString babababa;//十六进制查看
+                //                    for(int num=0; num<zstrm.total_out; num++)
+                //                    {
+                //                        babababa=babababa+tr("0x%1,").arg((quint8)zout.at(num),2,16,QLatin1Char('0')).toUpper();
+                //                    }
+                //qDebug()<<"**----"<<babababa;
+                //                }
+            }
+        }
+        else
+        {
+            zbuffer.append(testSocket->readAll());
+            //QString testStr(zbuffer);
+            //qDebug()<<lowNum<<"****"<<zbuffer;
+            //qDebug()<<lowNum<<"****"<<testStr;
+            //最先收到时候，若第一字节为255，则可能是服务器申请使用mccp2,需要判断。也有可能是对方中止连接，需要判断。
+            if(!closeNumBool)//假如依旧过了10条信息，就没必要看IAC了
+            {
+                backArray=zbuffer;
+                checkStr(backArray);
+                zbuffer.clear();
+            }
+            else
+            {
+                int num=zbuffer.size()-1;
+                //qDebug()<<"zbuffer11--"<<zbuffer;
+                for(; num-1>=0; num--)
+                {
+                    if(zbuffer[num]=='\n' && zbuffer[num-1]=='\r')
+                    {
+                        break;
+                    }
+                    else if(zbuffer[num]=='\xF0' && zbuffer[num-1]=='\xFF')
+                    {
+                        break;
+                    }
+                    else if(zbuffer[num]=='\xF9' && zbuffer[num-1]=='\xFF')
+                    {
+                        break;
+                    }
+                    else if(zbuffer[num]=='m' && zbuffer[num-1]=='0')
+                    {
+                        break;
+                    }
+                    else if (zbuffer[num]=='\r')
+                    {
+                        break;
+                    }
+                }
+                if(num!=0)
+                {
+                    backArray=zbuffer.mid(0,num+1);
+                    //qDebug()<<"backArray--"<<backArray;
+                    if(num!=zbuffer.size()-1)
+                    {
+                        zbuffer=zbuffer.mid(num+1);
+                    }
+                    else
+                    {
+                        zbuffer.clear();
+                    }
+                }
+                //qDebug()<<"zbuffer22--"<<zbuffer;
+                if(zbuffer.size()!=0)
+                {
+                    qDebug()<<"zbuffer--"<<QString(zbuffer);
+                    //messageFile->write(zbuffer);
+                    //messageFile->write("\r\n");
+                }
+            }
+            //backArray.append(backArray);
+        }
+
+        //QString testStr(backArray);
+        //qDebug()<<lowNum<<"****"<<backArray;
+        //qDebug()<<lowNum<<"****"<<testStr;
+        checkGMCP();
+        ui->fightTE->appendNewText(backArray);
+        testRegClass.getMessage(backArray);
+
+        backArray.clear();
+
+
+
+        //假如使用了mccp2协议，则以下需要解压
+        /*zbuffer.append(testSocket->readAll());
+//qDebug()<<"zbuffer size---"<<zbuffer.size();
+        if (compressed)
+        {
+            int rc;
+            int total_Size=checkOutSize(zbuffer.size());
+            zstrm.next_in = (Bytef*)(zbuffer.data());
+            zstrm.avail_in = zbuffer.size();
+            zstrm.total_in=0;
+            if(total_Size>zoutSize)
+            {
+                zoutSize=total_Size;
+                zout.resize(zoutSize);
+            }
+            //zout.resize(total_Size);
+            zstrm.next_out = (Bytef*)(zout.data());
+            zstrm.avail_out = zoutSize;
+            zstrm.total_out=0;
+            rc = inflate(&zstrm, Z_SYNC_FLUSH);
+//qDebug()<<"size--"<<zstrm.next_in - (Bytef*)zbuffer.data()<<" rc-"<<rc;
+            zbuffer.remove(0, zstrm.next_in - (Bytef*)zbuffer.data());
+//qDebug()<<"avail_out--"<<zstrm.avail_out<<"  total_out--"<<zstrm.total_out<<"  total_in--"<<zstrm.total_in<<"  rc--"<<rc;
             testtotalZlibNum(zstrm.total_out, zstrm.total_in);
             if(rc == Z_OK)
             {
@@ -343,13 +483,13 @@ signals:
 
         //QString testStr(backArray);
         //lowNum++;
-        //qDebug()<<lowNum<<"****"<<backArray;
-        //qDebug()<<lowNum<<"****"<<testStr;
+//qDebug()<<lowNum<<"****"<<backArray;
+//qDebug()<<lowNum<<"****"<<testStr;
         checkGMCP();
         ui->fightTE->appendNewText(backArray);
         testRegClass.getMessage(backArray);
 
-        backArray.clear();
+        backArray.clear();*/
     });
     testSocket->connectToHost("47.97.249.185",8081);
 
@@ -540,10 +680,11 @@ void MainWindow::checkStr(QByteArray testArray)
     //qDebug()<<"MainWindow::checkStr begin";
     bool backWrite=false;//需要写回服务器
     QByteArray backArray;//返回给服务器的mccp2请求
-    //qDebug()<<"MainWindow::checkStr checkStr--"<<testArray.toInt();
+    //qDebug()<<"MainWindow::checkStr testArray.size()--"<<testArray.size();
+    //qDebug()<<"MainWindow::checkStr checkStr--"<<testArray.toHex();
     for(int num=0; num<testArray.size(); num=num+3)
     {
-        char firstChar=testArray[0];
+        char firstChar=testArray[num];
         if(num<testArray.size() && uchar(firstChar)==Common::IAC)
         {
             if(num+2 < testArray.size())
@@ -554,6 +695,7 @@ void MainWindow::checkStr(QByteArray testArray)
                 {
                     if(uchar(secondChar)==Common::WILL)//WILL  :IAC WILL MCCP2
                     {
+                        //qDebug()<<"MainWindow::checkStr IAC WILL MCCP2";
                         backArray.append(Common::IAC);
                         backArray.append(Common::DO);
                         backArray.append(Common::IAC);
@@ -561,7 +703,7 @@ void MainWindow::checkStr(QByteArray testArray)
                     }
                     else if(uchar(secondChar)==Common::SB)//se    :IAC SB MCCP2 IAC SE
                     {
-                        //qDebug()<<"MainWindow::checkStr Common::SB";
+                        //qDebug()<<"MainWindow::checkStr IAC SB MCCP2 IAC SE";
                         zstrm.next_in = Z_NULL;
                         zstrm.avail_in = 0;
                         zstrm.zalloc = Z_NULL;
@@ -580,6 +722,7 @@ void MainWindow::checkStr(QByteArray testArray)
                 {
                     if(uchar(secondChar)==Common::WILL)//WILL  :IAC DO GMCP
                     {
+                        //qDebug()<<"MainWindow::checkStr IAC DO GMCP";
                         backArray.append(Common::IAC);
                         backArray.append(Common::DO);
                         backArray.append(Common::GMCP);
@@ -595,6 +738,53 @@ void MainWindow::checkStr(QByteArray testArray)
                         compressed = false;
                     }
                 }
+                /*else if(uchar(endChar)==Common::TYPE)//TYPE
+                {
+                    if(uchar(secondChar)==Common::WILL)//WILL  :IAC WILL TYPE
+                    {
+//qDebug()<<"MainWindow::checkStr IAC WILL TYPE";
+                        backArray.append(Common::IAC);
+                        backArray.append(Common::DO);
+                        backArray.append(Common::TYPE);
+                        backWrite=true;
+                    }
+                    else if(uchar(secondChar)==Common::SB)//se    :IAC，SB，TYPE，SEND，IAC，SE
+                    {
+//qDebug()<<"MainWindow::checkStr IAC，SB，TYPE，SEND，IAC，SE";
+                        backArray.append(Common::IAC);
+                        backArray.append(Common::SB);
+                        backArray.append(Common::TYPE);
+                        backArray.append(Common::IS);
+                        backArray.append('Q');
+                        backArray.append('T');
+                        backArray.append('M');
+                        backArray.append('U');
+                        backArray.append('D');
+                        backArray.append(Common::IAC);
+                        backArray.append(Common::SE);
+                        backWrite=true;
+                    }
+                    else if(uchar(secondChar)==Common::DO)//DONT   :IAC DO MCCP2
+                    {
+                        ////qDebug()<<"MainWindow::checkStr IAC，SB，TYPE，SEND，IAC，SE";
+                        //                        backArray.append(Common::IAC);
+                        //                        backArray.append(Common::SB);
+                        //                        backArray.append(Common::TYPE);
+                        //                        backArray.append(Common::IS);
+                        //                        backArray.append('Q');
+                        //                        backArray.append('t');
+                        //                        backArray.append('M');
+                        //                        backArray.append('u');
+                        //                        backArray.append('d');
+                        //                        backArray.append(Common::IAC);
+                        //                        backArray.append(Common::SE);
+                        //                        backWrite=true;
+                        backArray.append(Common::IAC);
+                        backArray.append(Common::WILL);
+                        backArray.append(Common::TYPE);
+                        backWrite=true;
+                    }
+                }*/
                 else
                 {
                     if(uchar(secondChar)==Common::DO)//do
@@ -621,7 +811,7 @@ void MainWindow::checkStr(QByteArray testArray)
     }
     if(backWrite)
     {
-        //qDebug()<<"MainWindow::checkStr--"<<backArray;
+        //qDebug()<<"MainWindow::checkStr  back--"<<backArray.toHex();
         testSocket->write(backArray.data());
     }
 }
@@ -916,6 +1106,7 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
     bool findFlag=false;
     int beginInt=0;//gcmp的起点,从0开始
     int endInt=0;//gcmp的终点,从0开始
+    //qDebug()<<"messageFile->all   --"<<backArray;
     for(int begin=0; begin<backArray.size()-10; )
     {
         if(backArray[begin]=='\xFF')
@@ -1035,12 +1226,12 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
                                                         ui->fightTE->setStatus(GMCPArray, GMCPType);
                                                     }
                                                     //qDebug()<<"messageFile->write  --"<<GMCPArray;
-                                                    messageFile->write(GMCPArray);
+                                                    //messageFile->write(GMCPArray);
                                                     break;
                                                 }
                                             }
                                         }
-                                        begin=begin+7;
+                                        begin=begin+8;
                                     }
                                     else
                                     {
@@ -1082,6 +1273,7 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
             begin=begin+1;
         }
     }
+    //qDebug()<<"messageFile->write  backArray--"<<backArray;
     return findFlag;
 }
 

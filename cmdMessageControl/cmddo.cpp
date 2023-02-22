@@ -25,6 +25,22 @@ bool CmdDo::checkMessage(QString &instr)
     bool flag=false;
     if(flag==false)
     {
+        flag=globalCheck::checkEnableRegReg(instr);
+        if(flag==true)
+        {
+            emit enableRegStr(instr);
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkPritf(instr);
+        if(flag==true)
+        {
+            emit pritf(instr);
+        }
+    }
+    if(flag==false)
+    {
         flag=globalCheck::checkNewReg(instr);
         if(flag==true)
         {
@@ -37,14 +53,6 @@ bool CmdDo::checkMessage(QString &instr)
         if(flag==true)
         {
             emit deleteRegStr(instr);
-        }
-    }
-    if(flag==false)
-    {
-        flag=globalCheck::checkEnableRegReg(instr);
-        if(flag==true)
-        {
-            emit enableRegStr(instr);
         }
     }
     if(flag==false)

@@ -1,6 +1,7 @@
 #ifndef CMDCONTROL_H
 #define CMDCONTROL_H
 
+#include "qregularexpression.h"
 #include <QObject>
 #include <QQueue>
 #include <QTimer>
@@ -30,6 +31,7 @@ private:
     //1ms加一
     int sendmessage=0;
 
+    QRegularExpression regStr{"^#Timer\\((\\d+),\"([\\s\\S]*)\"\\)$"};
 private:
     /* @brief 检查是否存在宏，并将宏要替代的东西替换*/
     bool getMessageFrom(QString& inStr, QString& backStr);

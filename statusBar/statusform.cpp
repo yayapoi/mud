@@ -80,7 +80,7 @@ void StatusForm::setStatus(QByteArray &newstring, GMCPType type)
         return;
         break;
     }
-    qDebug()<<"StatusForm::setStatus  ---"<<newstr;
+    //qDebug()<<"StatusForm::setStatus  ---"<<newstr;
     stringToJson(newstr, type);
 }
 
@@ -353,7 +353,7 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
     }
     else
     {
-        qDebug()<<"StatusForm::stringToJson  ---"<<stringstr;
+        //qDebug()<<"StatusForm::stringToJson  ---"<<stringstr;
     }
 }
 

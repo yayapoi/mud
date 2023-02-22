@@ -1,5 +1,4 @@
 #include "cmdcontrol.h"
-#include "qregularexpression.h"
 #include <QDebug>
 #include <globalhead.h>
 
@@ -202,13 +201,42 @@ int CmdControl::checkMessage(QString &instr)
 {
     //qDebug()<<"CmdControl::checkMessage--"<<instr;
     int flag=-1;
-    if(globalCheck::checkNewReg(instr))
+    if(globalCheck::checkTimer(instr))
     {
-        flag=0;
+        flag=1;
+        queueList.dequeue();
+        QRegularExpressionMatch regularmatch=regStr.match(instr, 0);
+        if(regularmatch.hasMatch())
+        {
+            int timerInt=regularmatch.captured(1).toInt();
+            if(timerInt>20)
+            {
+                QTimer* justdo=new QTimer;
+                timerMap.insert(justdo,regularmatch.captured(2));
+                connect(justdo,&QTimer::timeout,this,[&](){
+                    //qDebug()<<"sender--"<<sender();
+                    QTimer* justdo=(QTimer*)sender();
+                    justdo->stop();
+                    if(timerMap.find(justdo)!=timerMap.end()){
+                        QString backstr=timerMap.value(justdo);
+                        //qDebug()<<"backstr--"<<backstr;
+                        timerMap.remove(justdo);
+                        justdo->deleteLater();
+                        appendMessageFront(backstr);
+                    }
+                });
+                justdo->start(timerInt);
+            }
+            else
+            {
+                appendMessageFront(regularmatch.captured(2));
+            }
+            //qDebug()<<"checkStr--";
+        }
     }
     if(flag==-1)
     {
-        if(globalCheck::checkDeleteReg(instr))
+        if(globalCheck::checkPritf(instr))
         {
             flag=0;
         }
@@ -222,46 +250,23 @@ int CmdControl::checkMessage(QString &instr)
     }
     if(flag==-1)
     {
-        if(globalCheck::checkSetHPBar(instr))
+        if(globalCheck::checkDeleteReg(instr))
         {
             flag=0;
         }
     }
     if(flag==-1)
     {
-        if(globalCheck::checkTimer(instr))
+        if(globalCheck::checkNewReg(instr))
         {
-            flag=1;
-            queueList.dequeue();
-            QRegularExpression regStr("^#Timer\\((\\d+),\"([\\s\\S]*)\"\\)$");
-            QRegularExpressionMatch regularmatch=regStr.match(instr, 0);
-            if(regularmatch.hasMatch())
-            {
-                int timerInt=regularmatch.captured(1).toInt();
-                if(timerInt>20)
-                {
-                    QTimer* justdo=new QTimer;
-                    timerMap.insert(justdo,regularmatch.captured(2));
-                    connect(justdo,&QTimer::timeout,this,[&](){
-                        //qDebug()<<"sender--"<<sender();
-                        QTimer* justdo=(QTimer*)sender();
-                        justdo->stop();
-                        if(timerMap.find(justdo)!=timerMap.end()){
-                            QString backstr=timerMap.value(justdo);
-                            //qDebug()<<"backstr--"<<backstr;
-                            timerMap.remove(justdo);
-                            justdo->deleteLater();
-                            appendMessageFront(backstr);
-                        }
-                    });
-                    justdo->start(timerInt);
-                }
-                else
-                {
-                    appendMessageFront(regularmatch.captured(2));
-                }
-                //qDebug()<<"checkStr--";
-            }
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkSetHPBar(instr))
+        {
+            flag=0;
         }
     }
     return flag;
