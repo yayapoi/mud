@@ -47,7 +47,11 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
                 appendMessage(backStr);
             }
             else
+            {
+                //去除最前方空格
+                clearBlok(appendStr);
                 queueList.enqueue(appendStr);
+            }
         }
         else
         {
@@ -60,7 +64,11 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
                 appendMessage(backStr);
             }
             else
+            {
+                //去除最前方空格
+                clearBlok(appendStr);
                 queueList.enqueue(appendStr);
+            }
             index=inStr.length();
         }
         oldindex=index=index+1;
@@ -107,7 +115,11 @@ void CmdControl::appendMessage(QString inStr, QStringList &backList)
                 appendMessage(backStr, backList);
             }
             else
+            {
+                //去除最前方空格
+                clearBlok(appendStr);
                 backList.append(appendStr);
+            }
         }
         else
         {
@@ -120,7 +132,11 @@ void CmdControl::appendMessage(QString inStr, QStringList &backList)
                 appendMessage(backStr, backList);
             }
             else
+            {
+                //去除最前方空格
+                clearBlok(appendStr);
                 backList.append(appendStr);
+            }
             index=inStr.length();
         }
         oldindex=index=index+1;
@@ -320,6 +336,21 @@ int CmdControl::backStringIndex(QString &instr, int &from, int &kuohaoend)
         backint=instr.indexOf(";",from);
     }
     return backint;
+}
+
+void CmdControl::clearBlok(QString &instr)
+{
+    for(int num=0; num<instr.size(); num++)
+    {
+        if(instr[num]!=' ')
+        {
+            if(num!=0)
+            {
+                instr.remove(0,num);
+            }
+            break;
+        }
+    }
 }
 
 void CmdControl::appendMessage(QStringList inlist)
