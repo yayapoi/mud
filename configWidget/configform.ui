@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>40</y>
+     <y>10</y>
      <width>53</width>
      <height>16</height>
     </rect>
@@ -29,8 +29,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>70</y>
+     <x>20</x>
+     <y>40</y>
      <width>53</width>
      <height>16</height>
     </rect>
@@ -43,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>70</x>
-     <y>40</y>
+     <y>10</y>
      <width>113</width>
      <height>21</height>
     </rect>
@@ -53,7 +53,7 @@
    <property name="geometry">
     <rect>
      <x>70</x>
-     <y>70</y>
+     <y>40</y>
      <width>113</width>
      <height>21</height>
     </rect>
@@ -62,14 +62,77 @@
   <widget class="QPushButton" name="OKBT">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>160</y>
+     <x>310</x>
+     <y>260</y>
      <width>75</width>
      <height>24</height>
     </rect>
    </property>
    <property name="text">
     <string>确定</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="GMCPGB">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>90</y>
+     <width>121</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>gmcp显示过滤</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QCheckBox" name="buffCB">
+      <property name="text">
+       <string>buff</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QCheckBox" name="moveCB">
+      <property name="text">
+       <string>move</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="combatCB">
+      <property name="text">
+       <string>combat</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="statusCB">
+      <property name="text">
+       <string>status</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QCheckBox" name="messageCB">
+      <property name="text">
+       <string>message</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QCheckBox" name="allGMCPset">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>70</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>gmcp显示</string>
    </property>
   </widget>
  </widget>

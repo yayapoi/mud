@@ -4,6 +4,14 @@
 #include <QObject>
 #include <QDebug>
 
+//下面几个是gmcp显示设置的
+extern bool showGmcpAllBool;
+extern bool buffBool;
+extern bool moveBool;
+extern bool combatBool;
+extern bool statusBool;
+extern bool messageBool;
+
 enum Colors { close_all=0,//关闭所有属性
               Bold_Color,//设置高亮度
               underline=4,//下划线
@@ -67,6 +75,16 @@ struct UserNameGmcp
 {
     QString userName;
     QString userEnName;
+};
+/* @brief ini文件中的用户设置回显*/
+struct showGmcpCheck
+{
+    bool showGmcpAll;
+    bool buff;
+    bool move;
+    bool combat;
+    bool status;
+    bool message;
 };
 
 enum GMCPType{

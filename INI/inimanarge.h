@@ -23,6 +23,10 @@ public:
     void getUserNameGmcp(UserNameGmcp& back);
     ///外部存用户中英文名
     void setUserNameGmcp(UserNameGmcp& back);
+    ///外部获取配置中的gmcp设置
+    void getCheckGmcp(showGmcpCheck& back);
+    ///外部存用户中英文名
+    void setCheckGmcp(showGmcpCheck& back);
 private:
     QSettings *settings;//申明一个QSetting类函数
 

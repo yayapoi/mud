@@ -11,6 +11,15 @@ ConfigForm::ConfigForm(QWidget *parent) :
     INIManarge::GetInstance()->getUserNameGmcp(backstruct);
     ui->nameLE->setText(backstruct.userName);
     ui->idLE->setText(backstruct.userEnName);
+    showGmcpCheck showGmcpChecks;
+    INIManarge::GetInstance()->getCheckGmcp(showGmcpChecks);
+    ui->GMCPGB->setEnabled(showGmcpChecks.showGmcpAll);
+    ui->allGMCPset->setChecked(showGmcpChecks.showGmcpAll);
+    ui->buffCB->setChecked(showGmcpChecks.buff);
+    ui->combatCB->setChecked(showGmcpChecks.combat);
+    ui->messageCB->setChecked(showGmcpChecks.message);
+    ui->moveCB->setChecked(showGmcpChecks.move);
+    ui->statusCB->setChecked(showGmcpChecks.status);
 }
 
 ConfigForm::~ConfigForm()
@@ -30,7 +39,115 @@ void ConfigForm::on_OKBT_clicked()
     backstruct.userName=ui->nameLE->text();
     backstruct.userEnName=ui->idLE->text();
     INIManarge::GetInstance()->setUserNameGmcp(backstruct);
+    showGmcpCheck showGmcpChecks;
+    showGmcpChecks.showGmcpAll=ui->allGMCPset->isChecked();
+    showGmcpChecks.buff=ui->buffCB->isChecked();
+    showGmcpChecks.combat=ui->combatCB->isChecked();
+    showGmcpChecks.message=ui->messageCB->isChecked();
+    showGmcpChecks.move=ui->moveCB->isChecked();
+    showGmcpChecks.status=ui->statusCB->isChecked();
+    INIManarge::GetInstance()->setCheckGmcp(showGmcpChecks);
     emit closeWidget();
     close();
+}
+
+
+void ConfigForm::on_allGMCPset_stateChanged(int arg1)
+{
+    qDebug()<<"ConfigForm::on_allGMCPset_stateChanged-- arg1--"<<arg1;
+    switch (arg1) {
+    case 0:
+    {
+    ui->GMCPGB->setEnabled(false);
+    }
+        break;
+    case 2:
+    {
+    ui->GMCPGB->setEnabled(true);
+    }
+        break;
+    default:
+        break;
+    }
+}
+
+void ConfigForm::enableGB(bool flag)
+{
+    ui->GMCPGB->setEnabled(flag);
+}
+
+
+void ConfigForm::on_buffCB_stateChanged(int arg1)
+{
+    /*switch (arg1) {
+    case 0:
+    {}
+        break;
+    case 2:
+    {}
+        break;
+    default:
+        break;
+    }*/
+}
+
+
+void ConfigForm::on_moveCB_stateChanged(int arg1)
+{
+    /*switch (arg1) {
+    case 0:
+    {}
+        break;
+    case 2:
+    {}
+        break;
+    default:
+        break;
+    }*/
+}
+
+
+void ConfigForm::on_combatCB_stateChanged(int arg1)
+{
+    /*switch (arg1) {
+    case 0:
+    {}
+        break;
+    case 2:
+    {}
+        break;
+    default:
+        break;
+    }*/
+}
+
+
+void ConfigForm::on_statusCB_stateChanged(int arg1)
+{
+    /*switch (arg1) {
+    case 0:
+    {}
+        break;
+    case 2:
+    {}
+        break;
+    default:
+        break;
+    }*/
+}
+
+
+void ConfigForm::on_messageCB_stateChanged(int arg1)
+{
+    /*switch (arg1) {
+    case 0:
+    {}
+        break;
+    case 2:
+    {}
+        break;
+    default:
+        break;
+    }*/
 }
 

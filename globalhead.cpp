@@ -1,6 +1,13 @@
 #include "globalhead.h"
 #include <zconf.h>
 
+bool showGmcpAllBool=false;
+bool buffBool=false;
+bool moveBool=false;
+bool combatBool=false;
+bool statusBool=false;
+bool messageBool=false;
+
 bool globalCheck::checkNewReg(QString &instr)
 {
     bool flag=false;

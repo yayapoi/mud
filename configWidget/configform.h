@@ -21,8 +21,23 @@ signals:
 private slots:
     void on_OKBT_clicked();
 
+    ///2勾选  0没勾
+    void on_allGMCPset_stateChanged(int arg1);
+
+    void on_buffCB_stateChanged(int arg1);
+
+    void on_moveCB_stateChanged(int arg1);
+
+    void on_combatCB_stateChanged(int arg1);
+
+    void on_statusCB_stateChanged(int arg1);
+
+    void on_messageCB_stateChanged(int arg1);
+
 private:
     Ui::ConfigForm *ui;
+
+    void enableGB(bool flag);
 };
 
 #endif // CONFIGFORM_H

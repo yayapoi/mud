@@ -253,7 +253,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     zout.resize(zoutSize);
-    INIManarge::GetInstance();
+    showGmcpCheck asdf;
+    INIManarge::GetInstance()->getCheckGmcp(asdf);
+    INIManarge::GetInstance()->setCheckGmcp(asdf);
     ui->statusbar->hide();
     ui->cmdLE->setStyleSheet("background-color: rgb(0, 0, 0);color:lightGray;");
     initSysTrayIcon();
@@ -937,7 +939,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(false/*显示*/)
+                if(showGmcpAllBool && buffBool/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -977,7 +979,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(false/*显示*/)
+                if(showGmcpAllBool && moveBool/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -1017,7 +1019,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(false/*显示*/)
+                if(showGmcpAllBool && combatBool/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
@@ -1057,7 +1059,7 @@ void MainWindow::checkGMCP()
                 {
                     //须填
                 }
-                if(false/*显示*/)
+                if(showGmcpAllBool && statusBool/*显示*/)
                 {
                     if(true/*颜色*/)
                     {
