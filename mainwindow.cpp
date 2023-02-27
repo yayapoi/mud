@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QFileDialog>
 #include <QFile>
+#include <INI/inimanarge.h>
 
 struct totalZlibStruct{
     int showNum=0;//出现几次
@@ -252,6 +253,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     zout.resize(zoutSize);
+    INIManarge::GetInstance();
     ui->statusbar->hide();
     ui->cmdLE->setStyleSheet("background-color: rgb(0, 0, 0);color:lightGray;");
     initSysTrayIcon();

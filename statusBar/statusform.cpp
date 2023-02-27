@@ -4,6 +4,7 @@
 #include <QRegularExpression>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <INI/inimanarge.h>
 
 StatusForm::StatusForm(QWidget *parent) :
     QWidget(parent),
@@ -14,6 +15,9 @@ StatusForm::StatusForm(QWidget *parent) :
     ui->mpBar->setPointStatus(pointStatus::mp);
     ui->jingliBar->setPointStatus(pointStatus::mp);
     setStyleSheet("background-color: rgb(169,169,169);color:black");
+    UserNameGmcp backstruct;
+    INIManarge::GetInstance()->getUserNameGmcp(backstruct);
+    ID=backstruct.userEnName;
     //on_resizeBT_clicked(true);
 }
 
@@ -237,7 +241,7 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     }
                     else if(objone.key()=="family/family_name")//门派  family/family_na
                     {
-                        ui->touxian->setText("门派:"+objone.value().toString()+"   ");
+                        ui->menpai->setText("门派:"+objone.value().toString()+"   ");
                     }
                     else if(objone.key()=="vigour/yuan")//真元
                     {
@@ -254,23 +258,23 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     }
                     else if(objone.key()=="per")//容貌
                     {
-                        ui->dengji->setText("容貌:"+QString::number(objone.value().toInt())+"   ");
+                        ui->rongmao->setText("容貌:"+QString::number(objone.value().toInt())+"   ");
                     }
                     else if(objone.key()=="str")//膂力
                     {
-                        ui->dengji->setText("膂力:"+QString::number(objone.value().toInt())+"   ");
+                        ui->lvli->setText("膂力:"+QString::number(objone.value().toInt())+"   ");
                     }
                     else if(objone.key()=="int")//悟性
                     {
-                        ui->dengji->setText("悟性:"+QString::number(objone.value().toInt())+"   ");
+                        ui->wuxing->setText("悟性:"+QString::number(objone.value().toInt())+"   ");
                     }
                     else if(objone.key()=="con")//根骨
                     {
-                        ui->dengji->setText("根骨:"+QString::number(objone.value().toInt())+"   ");
+                        ui->gengu->setText("根骨:"+QString::number(objone.value().toInt())+"   ");
                     }
                     else if(objone.key()=="dex")//身法
                     {
-                        ui->dengji->setText("身法:"+QString::number(objone.value().toInt())+"   ");
+                        ui->shenfa->setText("身法:"+QString::number(objone.value().toInt())+"   ");
                     }
                     else if(objone.key()=="max_jingli")//最大精力
                     {

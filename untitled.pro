@@ -9,6 +9,7 @@ CONFIG += c++11 #console
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    INI/inimanarge.cpp \
     chatform.cpp \
     cmdMessageControl/cmdcontrol.cpp \
     cmdMessageControl/cmddo.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     tcpControl/tcpserverform.cpp
 
 HEADERS += \
+    INI/inimanarge.h \
     chatform.h \
     cmdMessageControl/cmdcontrol.h \
     cmdMessageControl/cmddo.h \

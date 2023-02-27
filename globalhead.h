@@ -62,6 +62,13 @@ struct RegPtr
     int strLength=-1;//触发长度
 };
 
+/* @brief ini文件中的设置用户中文英文名，同时设置的时候也改变这个值*/
+struct UserNameGmcp
+{
+    QString userName;
+    QString userEnName;
+};
+
 enum GMCPType{
     none,
     combat,
