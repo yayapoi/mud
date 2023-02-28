@@ -1029,7 +1029,7 @@ void MainWindow::checkGMCP()
                         colorByte.append('1');
                         colorByte.append(';');
                         colorByte.append('3');
-                        colorByte.append('3');
+                        colorByte.append('5');
                         colorByte.append('m');
 
                         QByteArray endcolorByte;
@@ -1069,7 +1069,47 @@ void MainWindow::checkGMCP()
                         colorByte.append('1');
                         colorByte.append(';');
                         colorByte.append('3');
-                        colorByte.append('4');
+                        colorByte.append('6');
+                        colorByte.append('m');
+
+                        QByteArray endcolorByte;
+                        endcolorByte.append('\x1b');
+                        endcolorByte.append('[');
+                        endcolorByte.append('2');
+                        endcolorByte.append(';');
+                        endcolorByte.append('3');
+                        endcolorByte.append('7');
+                        endcolorByte.append(';');
+                        endcolorByte.append('0');
+                        endcolorByte.append('m');
+
+                        bb=colorByte+bb+endcolorByte;
+                    }
+                    if(true/*换行*/)
+                    {
+                        bb=bb+'\r'+'\n';
+                    }
+                    backArray=bb+backArray;
+                }
+            }
+                break;
+            case GMCPType::message:
+            {
+                if(true/*发送到端口*/)
+                {
+                    //须填
+                }
+                if(showGmcpAllBool && messageBool/*显示*/)
+                {
+                    if(true/*颜色*/)
+                    {
+                        QByteArray colorByte;
+                        colorByte.append('\x1b');
+                        colorByte.append('[');
+                        colorByte.append('1');
+                        colorByte.append(';');
+                        colorByte.append('3');
+                        colorByte.append('7');
                         colorByte.append('m');
 
                         QByteArray endcolorByte;
