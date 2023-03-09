@@ -1387,6 +1387,7 @@ void MainWindow::on_actionRegIn_triggered()
 {
     QFileDialog fileD;
     QStringList filters;
+    fileD.setDirectory("./");
     filters << "dat files(*.json)";
     fileD.setNameFilters(filters);//过滤文件
     if(fileD.exec() == QFileDialog::Accepted){
