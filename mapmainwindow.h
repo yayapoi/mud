@@ -88,11 +88,13 @@ private:
     ///刚执行时时间
     QTime begintime;
     bool jishu=true;
-    /*测试代码
-    ///停止系统，随机时间开始走路
+    //测试代码
+    /*///停止系统，随机时间开始走路
     QTimer* starttimer;
     ///返回成功失败，随机时间返回成功失败
-    QList<QTimer*> backtimelist;*/
+    QList<QTimer*> backtimelist;
+    ///返回busy，随机时间返回busy
+    QList<QTimer*> busytimelist;*/
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     HINSTANCE dlliter=nullptr;
 #else

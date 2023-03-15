@@ -17,7 +17,7 @@ void WorkSys::startWalk()
 
 void WorkSys::Walk()
 {
-    //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus Walk--";
+    qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus Walk--";
     emit workPritf("----继续行走----");
     if(workend)
     {
@@ -33,7 +33,7 @@ void WorkSys::Walk()
 
 void WorkSys::stopWalk()
 {
-    //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus stopWalk--";
+    qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus stopWalk--";
     if(workend)
     {
         emit workPritf("----没有行走中路径----");
@@ -42,26 +42,24 @@ void WorkSys::stopWalk()
     {
         working=false;
         walktimer.stop();
-        emit workPritf("----停止行走----");
+        emit workPritf("----暂停行走----");
     }
 }
 
 void WorkSys::moveStatus(bool flag)
 {
-    //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus flag--"<<flag;
+    qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus flag--"<<flag;
+    getmoveStatus=true;
     moveSuccess=flag;
     //失败马上重走本房间命令;
     if(!flag)
     {
         cmdnum=cmdnum-1;
-        walktimer.stop();
-        dowork();
-    }
-    else
-    {
-        if(!workend && working && !walktimer.isActive())
+        if(!busy && working && !workend)
         {
-            walktimer.start(170);
+            qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"moveStatus in";
+            //walktimer.start(170);
+            dowork();
         }
     }
 }
@@ -69,11 +67,11 @@ void WorkSys::moveStatus(bool flag)
 void WorkSys::busyStatus(bool flag)
 {
     //暂时不管busy的事
-    //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::busyStatus flag--"<<flag;
+    qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::busyStatus flag--"<<flag;
     busy=flag;
-    if(!flag && !workend && working && !walktimer.isActive())
+    if(!flag && !workend && working && getmoveStatus && !moveSuccess)//当busy变为不busy,移动失败时候，重来本房间
     {
-        //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busyed--";
+        qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busyed in";
         walktimer.start(170);
         dowork();
     }
@@ -113,7 +111,7 @@ void WorkSys::releasepareCmd(QString pathAll, bool addCmd)
         {
             newstructr.clear();
             newstructr.roomNameZH=pathAll.mid(beginNum,num-beginNum);
-            //qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
+            qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
             beginNum=num+1;
             find=true;
         }
@@ -122,7 +120,7 @@ void WorkSys::releasepareCmd(QString pathAll, bool addCmd)
             if(find)
             {
                 newstructr.cmd=pathAll.mid(beginNum,num-beginNum);
-                //qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
+                qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
                 beginNum=num+1;
                 pathList.append(newstructr);
                 find=false;
@@ -138,7 +136,7 @@ void WorkSys::releasepareCmd(QString pathAll, bool addCmd)
     }
     /*for(int num=0; num<pathList.size(); num++)
     {
-//qDebug()<<"roomNameZH--"<<pathList[num].roomNameZH<<" list--"<<pathList[num].cmd;
+qDebug()<<"roomNameZH--"<<pathList[num].roomNameZH<<" list--"<<pathList[num].cmd;
     }*/
     releaseList(addCmd);
     startWalk();
@@ -147,6 +145,7 @@ void WorkSys::releasepareCmd(QString pathAll, bool addCmd)
 void WorkSys::releaseCmd(QString pathAll,bool addCmd)
 {
     emit workPritf("----解析无房间路径----");
+    emit workPritf("----路径为"+pathAll+"----");
     QRegularExpressionMatch regularmatch=pathRegStr.match(pathAll);
     if(regularmatch.hasMatch())
     {
@@ -178,7 +177,7 @@ void WorkSys::releaseList(bool addCmd)
     }
     for(int num=0; num<pathList.size(); num++)
     {
-        //qDebug()<<"num--"<<QString::number(num)<<" list--"<<pathList[num].releaseCmd;
+        qDebug()<<"num--"<<QString::number(num)<<" list--"<<pathList[num].releaseCmd;
     }
 }
 
@@ -194,7 +193,7 @@ void WorkSys::appendMessage(QString inStr, QStringList &backList, int &nownum, b
         if(index!=-1)
         {
             QString appendStr=inStr.mid(oldindex,index-oldindex);
-            //qDebug()<<"--"<<appendStr;
+            qDebug()<<"--"<<appendStr;
             QString backStr;
             bool flag=getMessageFrom(appendStr, backStr);
             if(flag==true)
@@ -235,7 +234,7 @@ void WorkSys::appendMessage(QString inStr, QStringList &backList, int &nownum, b
         else
         {
             QString appendStr=inStr.mid(oldindex);
-            //qDebug()<<"--"<<appendStr;
+            qDebug()<<"--"<<appendStr;
             QString backStr;
             bool flag=getMessageFrom(appendStr, backStr);
             if(flag==true)
@@ -285,7 +284,7 @@ int WorkSys::backStringIndex(QString &instr, int &from, int &kuohaoend)
     int backint=-1;
     //左括号还有几个没匹配,发现一个右括号，此值减一。一个左括号，此值加一
     int kuohaovalue=0;
-    //qDebug()<<"kuohaoend---"<<kuohaoend;
+    qDebug()<<"kuohaoend---"<<kuohaoend;
     int kuohaocunzai=instr.indexOf("(",kuohaoend);
     if(kuohaocunzai!=-1)
     {
@@ -295,10 +294,10 @@ int WorkSys::backStringIndex(QString &instr, int &from, int &kuohaoend)
         if(kuohaocunzai<backint)//左括号在;之前
         {
             kuohaoend=kuohaocunzai+1;
-            //qDebug()<<"reset kuohaoend---"<<kuohaoend;
+            qDebug()<<"reset kuohaoend---"<<kuohaoend;
             for(;kuohaoend<instr.length(); kuohaoend++)
             {
-                //qDebug()<<"kuohaovalue--"<<kuohaoend<<"   .at(kuohaovalue)---"<<instr.at(kuohaoend);
+                qDebug()<<"kuohaovalue--"<<kuohaoend<<"   .at(kuohaovalue)---"<<instr.at(kuohaoend);
                 if(kuohaovalue==0)
                 {
                     break;
@@ -371,19 +370,19 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
                     backStr=backStr+QString::fromUtf8(endchar)+";";
                 }
                 flag=true;
-                //qDebug()<<"backBool--"<<backBool;
-                //qDebug()<<"beginchar leg--"<<strlen(beginchar);
-                //qDebug()<<"fromUtf8--"<<QString::fromUtf8(beginchar);
-                //qDebug()<<"fromLatin1--"<<QString::fromLatin1(beginchar);
-                //qDebug()<<"endchar leg--"<<strlen(endchar);
-                //qDebug()<<"fromUtf8--"<<QString::fromUtf8(endchar);
-                //qDebug()<<"fromLatin1--"<<QString::fromLatin1(endchar);
-                //qDebug()<<"backStr--"<<backStr;
+                qDebug()<<"backBool--"<<backBool;
+                qDebug()<<"beginchar leg--"<<strlen(beginchar);
+                qDebug()<<"fromUtf8--"<<QString::fromUtf8(beginchar);
+                qDebug()<<"fromLatin1--"<<QString::fromLatin1(beginchar);
+                qDebug()<<"endchar leg--"<<strlen(endchar);
+                qDebug()<<"fromUtf8--"<<QString::fromUtf8(endchar);
+                qDebug()<<"fromLatin1--"<<QString::fromLatin1(endchar);
+                qDebug()<<"backStr--"<<backStr;
             }
         }
         else
         {
-            //qDebug()<<"WorkSys::getfunFrom   killNpc==nullptr";
+            qDebug()<<"WorkSys::getfunFrom   killNpc==nullptr";
         }
     }
     return flag;
@@ -475,7 +474,7 @@ void WorkSys::dowork()
         newcmdnum=0;
         if(endpathList(newlistnow))//路径也到底了，停止行走
         {
-            //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
+            qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
             clearOldPath();
             emit workPritf("----路径完成----");
         }
@@ -490,25 +489,28 @@ void WorkSys::dowork()
                 listnow=newlistnow;
                 cmdnum=newcmdnum;
                 //干活
-                //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"cmd--"<<pathList[newlistnow].releaseCmd[newcmdnum];
+                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"cmd--"<<pathList[newlistnow].releaseCmd[newcmdnum];
                 QString fangxiangback=outjianhua(pathList[newlistnow].releaseCmd[newcmdnum]);
                 if(fangxiangback!="特殊方向")//是方向，则暂停
                 {
                     moveSuccess=false;
+                    getmoveStatus=false;
                     if(pathList[newlistnow].stopnum==-1)
                     {
-                        //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"stopnum==-1";
+                        qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"stopnum==-1";
                         pathList[newlistnow].stopnum=newcmdnum;
                         emit cmdroom(pathList[newlistnow].roomNameZH, pathList[newlistnow].releaseCmd[newcmdnum]);
+                        lastTime=QTime::currentTime();
                         break;
                     }
                     else
                     {
                         if(pathList[newlistnow].stopnum<=newcmdnum)//
                         {
-                            //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"stopnum--"<<pathList[newlistnow].stopnum<<"newcmdnum--"<<newcmdnum;
+                            qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"stopnum--"<<pathList[newlistnow].stopnum<<"newcmdnum--"<<newcmdnum;
                             pathList[newlistnow].stopnum=newcmdnum;
                             emit cmdroom(pathList[newlistnow].roomNameZH, pathList[newlistnow].releaseCmd[newcmdnum]);
+                            lastTime=QTime::currentTime();
                             break;
                         }
                     }
@@ -541,42 +543,9 @@ WorkSys::WorkSys(QObject *parent)
     : QObject{parent}
 {
     connect(&walktimer,&QTimer::timeout,this,[this](){
-        if(moveSuccess)
+        if(moveSuccess && !busy && working && !workend)
         {
-            if(busy)//busy中，停止时间，等待busy启动命令
-            {
-                walktimer.stop();
-            }
-            else
-            {
-                if(working)
-                {
-                    dowork();
-                }
-                else
-                {
-                    walktimer.stop();
-                }
-            }
-        }
-        else//时间到了但是没有move成功，本房间从上条命令走 没有触发移动失败机制
-        {
-            /*cmdnum=cmdnum-1;
-            if(busy)//busy中，停止时间，等待busy启动命令
-            {
-                walktimer.stop();
-            }
-            else
-            {
-                if(working)
-                {
-                    dowork();
-                }
-                else
-                {
-                    walktimer.stop();
-                }
-            }*/
+            dowork();
         }
     });
 }

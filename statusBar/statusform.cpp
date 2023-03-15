@@ -1,10 +1,12 @@
 #include "statusform.h"
+#include "qjsonarray.h"
 #include "ui_statusform.h"
 #include <statusBar/pointbar.h>
 #include <QRegularExpression>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <INI/inimanarge.h>
+#include <work/worksys.h>
 
 StatusForm::StatusForm(QWidget *parent) :
     QWidget(parent),
@@ -80,6 +82,11 @@ void StatusForm::setStatus(QByteArray &newstring, GMCPType type)
         newstr=newstring.mid(12,newstring.size()-2-12);
     }
         break;
+    case GMCPType::move:
+    {
+        newstr=newstring.mid(12,newstring.size()-2-12);
+    }
+        break;
     default:
         return;
         break;
@@ -147,11 +154,11 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
     doucumen = QJsonDocument::fromJson(stringstr, &json_error);
     if(json_error.error == QJsonParseError::NoError)
     {
-        QJsonObject newObj=doucumen.object();
-        QJsonObject::Iterator objone=newObj.begin();
         switch (type) {
         case GMCPType::status:
         {
+            QJsonObject newObj=doucumen.object();
+            QJsonObject::Iterator objone=newObj.begin();
             QJsonObject::Iterator nowid=newObj.find("id");
             if( nowid==newObj.end() || (nowid!=newObj.end() && nowid.value().toString()==ID))
             {
@@ -189,7 +196,9 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     }
                     else if(objone.key()=="is_busy")//忙碌  "true"
                     {
-                        ui->mang->setText("忙碌:"+objone.value().toString()+"   ");
+                        QString busystr=objone.value().toString();
+                        ui->mang->setText("忙碌:"+busystr+"   ");
+                        WorkSys::GetInstance()->busyStatus(busystr=="true"?true:false);
                     }
                     else if(objone.key()=="name")//敌人名字 "加力"
                     {
@@ -301,6 +310,8 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
             break;
         case GMCPType::buff:
         {
+            QJsonObject newObj=doucumen.object();
+            QJsonObject::Iterator objone=newObj.begin();
             while(objone!=newObj.end())
             {
                 if(objone.key()=="name")//效果名称  "木桩子"
@@ -348,6 +359,34 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     objone.value().toString();
                 }
                 objone++;
+            }
+        }
+            break;
+        case GMCPType::move:
+        {//\xFF\xFA\xC9GMCP.Move [{\"result\":\"true\",\"dir\":[\"west\"],\"short\":\"\xE9\xBE\x9F\xE6\xB3\x89\"}]\xFF\xF0
+            //[{"result":"true","dir":["east","northwest"],"short":"比武场"}]
+            QJsonArray newArray=doucumen.array();
+            for(int num=0; num<newArray.size(); num++)
+            {
+                QJsonObject newObj=newArray.at(num).toObject();
+                QJsonObject::Iterator objone=newObj.begin();
+                while(objone!=newObj.end())
+                {
+                    if(objone.key()=="result")//移动结果 true:成功
+                    {
+                        QString moveresult=objone.value().toString();
+                        WorkSys::GetInstance()->moveStatus(moveresult=="true"?true:false);
+                    }
+                    else if(objone.key()=="dir")//出口
+                    {
+                        objone.value().toArray();
+                    }
+                    else if(objone.key()=="short")//房间
+                    {
+                        objone.value().toArray();
+                    }
+                    objone++;
+                }
             }
         }
             break;

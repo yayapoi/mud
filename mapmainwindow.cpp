@@ -57,7 +57,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
                 waitGo=true;
                 waitgoForm=goItem;
                 jishu=true;
-                WorkSys::GetInstance()->releaseCmd(cmd, true);
+                WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
             }
         });
         this->toroomLayout->addWidget(goFor2);
@@ -123,11 +123,11 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
 
     connect(WorkSys::GetInstance(),&WorkSys::cmdroom,this,[this](QString room, QString cmd){
         QString backstr=outjianhua(cmd);
-        qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"backstr--"<<backstr;
+        //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"backstr--"<<backstr;
         if(backstr!="特殊方向")//是方向延时返回成功
         {
-            int starttime=QRandomGenerator::global()->bounded(160,200);
-            qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"方向 backworktimer--"<<starttime;
+            int starttime=QRandomGenerator::global()->bounded(50,60);
+            qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"back time--"<<starttime;
             QTimer* backworktimer=new QTimer;
             backtimelist.append(backworktimer);
             connect(backworktimer,&QTimer::timeout,this,[this](){
@@ -142,6 +142,23 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
                     WorkSys::GetInstance()->moveStatus(true);
                 }
             });
+
+            int checkbuy=QRandomGenerator::global()->bounded(0, 2);
+            if(checkbuy!=0)
+            {
+                WorkSys::GetInstance()->busyStatus(true);
+                int busyttime=QRandomGenerator::global()->bounded(50,60);
+                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busy  time--"<<busyttime;
+                QTimer* busyworktimer=new QTimer;
+                busytimelist.append(busyworktimer);
+                connect(busyworktimer,&QTimer::timeout,this,[this](){
+                    QTimer *p = qobject_cast<QTimer *>(sender());
+                    p->stop();
+                    WorkSys::GetInstance()->busyStatus(false);
+                });
+                busyworktimer->start(busyttime);
+            }
+
             backworktimer->start(starttime);
         }
         else
@@ -229,7 +246,7 @@ void MapMainWindow::initToRoom()
                     waitGo=true;
                     waitgoForm=goItem;
                     jishu=true;
-                    WorkSys::GetInstance()->releaseCmd(cmd, true);
+                    WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
                 }
             });
             toroomLayout->addWidget(goFor2);
@@ -509,7 +526,7 @@ void MapMainWindow::calculateTo()
                 waitGo=true;
                 waitgoForm=goItem;
                 jishu=true;
-                WorkSys::GetInstance()->releaseCmd(cmd, true);
+                WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
             }
         });
         this->toroomLayout->addWidget(goFor2);

@@ -1218,6 +1218,7 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
                                                             backArray=backArray.mid(endInt+1);
                                                             backArray=beginArray+backArray;
                                                         }
+                                                        ui->fightTE->setStatus(GMCPArray, GMCPType);
                                                     }
                                                     else if(backArray[begin+8]=='M' && backArray[begin+9]=='e')
                                                     {

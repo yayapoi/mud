@@ -1,6 +1,7 @@
 #ifndef WORKSYS_H
 #define WORKSYS_H
 
+#include "qdatetime.h"
 #include "qregularexpression.h"
 #include "qtimer.h"
 #include <QObject>
@@ -63,14 +64,20 @@ public:
     QList<roomStruct> pathList;
     ///定时器
     QTimer walktimer;
+    ///最近一次方向时间
+    QTime lastTime;
     //流程是否暂停 true:不暂停
     bool working=false;
     ///全部走完，正常结束：true, 还没走完:false
     bool workend=true;
     int listnow=-1;
     int cmdnum=-1;
+    ///是否busy，true:busy中，false：不busy
     bool busy=false;
+    ///是否移动成功，true:移动成功，false：移动失败
     bool moveSuccess=true;
+    ///是否方向命令发出后发来结果，true:发来了，false：还没发来
+    bool getmoveStatus=true;
     //一处执行，其它调用本函数不用执行 true:已执行 可能不需要 可sleep测试
     bool mux=false;
     QRegularExpression pathRegStr{"^#path\\(([\\s\\S]+?)\\)$"};
