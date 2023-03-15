@@ -63,5 +63,21 @@ bool CmdDo::checkMessage(QString &instr)
             emit setHPBar(instr);
         }
     }
+    if(flag==false)
+    {
+        flag=globalCheck::checkPath(instr);
+        if(flag==true)
+        {
+            emit Path(instr);
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkPause(instr);
+        if(flag==true)
+        {
+            emit Pause(instr);
+        }
+    }
     return flag;
 }

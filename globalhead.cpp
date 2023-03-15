@@ -7,6 +7,184 @@ bool moveBool=false;
 bool combatBool=false;
 bool statusBool=false;
 bool messageBool=false;
+killnpc killNpc=nullptr;
+
+QString outChange(QString cmd)
+{
+    if(cmd=="north" || cmd=="n")
+    {
+        return "s";
+    }
+    else if(cmd=="nw" || cmd=="northwest")
+    {
+        return "se";
+    }
+    else if(cmd=="ne" || cmd=="northeast")
+    {
+        return "sw";
+    }
+    else if(cmd=="nu" || cmd=="northup")
+    {
+        return "sd";
+    }
+    else if(cmd=="nd" || cmd=="northdown")
+    {
+        return "su";
+    }
+    else if(cmd=="south" || cmd=="s")
+    {
+        return "n";
+    }
+    else if(cmd=="su" || cmd=="southup")
+    {
+        return "nd";
+    }
+    else if(cmd=="sd" || cmd=="southdown")
+    {
+        return "nu";
+    }
+    else if(cmd=="sw" || cmd=="southwest")
+    {
+        return "ne";
+    }
+    else if(cmd=="se" || cmd=="southeast")
+    {
+        return "nw";
+    }
+    else if(cmd=="west" || cmd=="w")
+    {
+        return "e";
+    }
+    else if(cmd=="wu" || cmd=="westup")
+    {
+        return "ed";
+    }
+    else if(cmd=="wd" || cmd=="westdown")
+    {
+        return "eu";
+    }
+    else if(cmd=="east" || cmd=="e")
+    {
+        return "west";
+    }
+    else if(cmd=="eu" || cmd=="eastup")
+    {
+        return "wd";
+    }
+    else if(cmd=="ed" || cmd=="eastdown")
+    {
+        return "wu";
+    }
+    else if(cmd=="enter")
+    {
+        return "out";
+    }
+    else if(cmd=="out")
+    {
+        return "enter";
+    }
+    else if(cmd=="up" || cmd=="u")
+    {
+        return "d";
+    }
+    else if(cmd=="down" || cmd=="d")
+    {
+        return "u";
+    }
+    return "特殊方向";
+}
+
+QString outjianhua(QString cmd)
+{
+    if(cmd.count()==1)
+    {
+        return cmd;
+    }
+    else
+    {
+        if(cmd=="north" || cmd=="n")
+        {
+            return "n";
+        }
+        else if(cmd=="nw" || cmd=="northwest")
+        {
+            return "nw";
+        }
+        else if(cmd=="ne" || cmd=="northeast")
+        {
+            return "ne";
+        }
+        else if(cmd=="nu" || cmd=="northup")
+        {
+            return "nu";
+        }
+        else if(cmd=="nd" || cmd=="northdown")
+        {
+            return "nd";
+        }
+        else if(cmd=="south" || cmd=="s")
+        {
+            return "s";
+        }
+        else if(cmd=="su" || cmd=="southup")
+        {
+            return "su";
+        }
+        else if(cmd=="sd" || cmd=="southdown")
+        {
+            return "sd";
+        }
+        else if(cmd=="sw" || cmd=="southwest")
+        {
+            return "sw";
+        }
+        else if(cmd=="se" || cmd=="southeast")
+        {
+            return "se";
+        }
+        else if(cmd=="west" || cmd=="w")
+        {
+            return "w";
+        }
+        else if(cmd=="wu" || cmd=="westup")
+        {
+            return "wu";
+        }
+        else if(cmd=="wd" || cmd=="westdown")
+        {
+            return "wd";
+        }
+        else if(cmd=="east" || cmd=="e")
+        {
+            return "e";
+        }
+        else if(cmd=="eu" || cmd=="eastup")
+        {
+            return "eu";
+        }
+        else if(cmd=="ed" || cmd=="eastdown")
+        {
+            return "ed";
+        }
+        else if(cmd=="enter")
+        {
+            return "enter";
+        }
+        else if(cmd=="out")
+        {
+            return "out";
+        }
+        else if(cmd=="up" || cmd=="u")
+        {
+            return "u";
+        }
+        else if(cmd=="down" || cmd=="d")
+        {
+            return "d";
+        }
+    }
+    return "特殊方向";
+}
 
 bool globalCheck::checkNewReg(QString &instr)
 {
@@ -82,6 +260,28 @@ bool globalCheck::checkPritf(QString &instr)
 {
     bool flag=false;
     int index=instr.indexOf("#Pritf(");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}
+
+bool globalCheck::checkPath(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#path(");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}
+
+bool globalCheck::checkPause(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#pause");
     if(index==0)
     {
         flag=true;

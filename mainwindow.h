@@ -12,6 +12,7 @@
 #include <tcpControl/tcpserverform.h>
 #include <QSystemTrayIcon>
 #include <configWidget/configform.h>
+#include "mapmainwindow.h"
 
 /*
  * MCCP2 协议
@@ -75,6 +76,8 @@ private slots:
 
     void on_actiongmcp_triggered();
 
+    void on_mapCreate_triggered();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;
@@ -111,8 +114,9 @@ private:
     CmdControl cmdControl;
     QFile* messageFile;
     TcpServerForm tcpServerForm;
+    MapMainWindow mapcreateWidget;
 
-    QRegularExpression regStr{"^#Pritf\\(\"([\\s\\S]*)\"\\)$"};
+    QRegularExpression regStr{"^#Pritf\\(([\\s\\S]*)\\)$"};
 
 
 

@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <INI/inimanarge.h>
+#include "work/worksys.h"
 
 struct totalZlibStruct{
     int showNum=0;//出现几次
@@ -274,6 +275,10 @@ signals:
         this->ui->fightTE->setMyId(name, this->id);
     });
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
+    connect(&cmdDo,&CmdDo::Path,[&](QString pathStr){WorkSys::GetInstance()->releaseCmd(pathStr,true);});
+    connect(&cmdDo,&CmdDo::Pause,[&](QString pauseStr){WorkSys::GetInstance()->stopWalk();});
+    connect(WorkSys::GetInstance(),&WorkSys::workPritf,this,[this](QString str){cmdControl.appendMessage("#Pritf("+str+")");});
+    connect(&mapcreateWidget,&MapMainWindow::mapCreateCmd,this,[this](QString cmd){cmdControl.appendMessage(cmd);});
     connect(&cmdDo,&CmdDo::pritf,[&](QString pritfStr){
         QRegularExpressionMatch regularmatch=regStr.match(pritfStr, 0);
         if(regularmatch.hasMatch())
@@ -1488,5 +1493,11 @@ void MainWindow::on_actionYuanWen_triggered(bool checked)
 void MainWindow::on_actiongmcp_triggered()
 {
     configForm.show();
+}
+
+
+void MainWindow::on_mapCreate_triggered()
+{
+    mapcreateWidget.show();
 }
 

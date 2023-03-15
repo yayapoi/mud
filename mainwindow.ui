@@ -72,6 +72,7 @@
      <string>菜单</string>
     </property>
     <addaction name="actionTCP"/>
+    <addaction name="mapCreate"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -127,6 +128,11 @@
   <action name="actiongmcp">
    <property name="text">
     <string>gmcp设置</string>
+   </property>
+  </action>
+  <action name="mapCreate">
+   <property name="text">
+    <string>地图编辑器</string>
    </property>
   </action>
  </widget>

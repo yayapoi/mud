@@ -14,20 +14,31 @@ SOURCES += \
     cmdMessageControl/cmdcontrol.cpp \
     cmdMessageControl/cmddo.cpp \
     configWidget/configform.cpp \
+    flowjson/jsoninter.cpp \
     fontwidget.cpp \
     globalhead.cpp \
     main.cpp \
     mainwindow.cpp \
+    mapCreateWindow/mapcreatelineitem.cpp \
+    mapCreateWindow/mapcreateroomitem.cpp \
+    mapCreateWindow/mapcreateview.cpp \
+    mapCreateWindow/mapcreatrecitem.cpp \
+    mapmainwindow.cpp \
     regClass/parentwidget.cpp \
     regClass/regclass.cpp \
     regClass/regform.cpp \
     regClass/regwidget.cpp \
+    showWidget/goform.cpp \
+    showWidget/npcform.cpp \
+    showWidget/outform.cpp \
+    showWidget/roomwidget.cpp \
     statusBar/pointbar.cpp \
     statusBar/statusform.cpp \
     tcpControl/tcpconnect.cpp \
     tcpControl/tcpprotocoltrans.cpp \
     tcpControl/tcpservercontrol.cpp \
-    tcpControl/tcpserverform.cpp
+    tcpControl/tcpserverform.cpp \
+    work/worksys.cpp
 
 HEADERS += \
     INI/inimanarge.h \
@@ -35,19 +46,30 @@ HEADERS += \
     cmdMessageControl/cmdcontrol.h \
     cmdMessageControl/cmddo.h \
     configWidget/configform.h \
+    flowjson/jsoninter.h \
     fontwidget.h \
     globalhead.h \
     mainwindow.h \
+    mapCreateWindow/mapcreatelineitem.h \
+    mapCreateWindow/mapcreateroomitem.h \
+    mapCreateWindow/mapcreateview.h \
+    mapCreateWindow/mapcreatrecitem.h \
+    mapmainwindow.h \
     regClass/parentwidget.h \
     regClass/regclass.h \
     regClass/regform.h \
     regClass/regwidget.h \
+    showWidget/goform.h \
+    showWidget/npcform.h \
+    showWidget/outform.h \
+    showWidget/roomwidget.h \
     statusBar/pointbar.h \
     statusBar/statusform.h \
     tcpControl/tcpconnect.h \
     tcpControl/tcpprotocoltrans.h \
     tcpControl/tcpservercontrol.h \
     tcpControl/tcpserverform.h \
+    work/worksys.h \
     zconf.h \
     zlib.h
 
@@ -56,9 +78,14 @@ FORMS += \
     configWidget/configform.ui \
     fontwidget.ui \
     mainwindow.ui \
+    mapmainwindow.ui \
     regClass/parentwidget.ui \
     regClass/regform.ui \
     regClass/regwidget.ui \
+    showWidget/goform.ui \
+    showWidget/npcform.ui \
+    showWidget/outform.ui \
+    showWidget/roomwidget.ui \
     statusBar/statusform.ui \
     tcpControl/tcpserverform.ui
 

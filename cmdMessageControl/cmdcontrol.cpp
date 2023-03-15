@@ -285,6 +285,20 @@ int CmdControl::checkMessage(QString &instr)
             flag=0;
         }
     }
+    if(flag==-1)
+    {
+        if(globalCheck::checkPath(instr))
+        {
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkPause(instr))
+        {
+            flag=0;
+        }
+    }
     return flag;
 }
 

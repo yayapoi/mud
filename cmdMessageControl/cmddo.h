@@ -29,6 +29,12 @@ signals:
 
     /* @brief 发送给血条*/
     void setHPBar(QString);
+
+    /* @brief 发送给行走系统 解析并使用路径*/
+    void Path(QString);
+
+    /* @brief 发送给行走系统 暂停*/
+    void Pause(QString);
 public slots:
     /* @brief 收到命令，附带有系统函数*/
     void newMessage(QQueue<QString>);

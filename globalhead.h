@@ -3,6 +3,11 @@
 
 #include <QObject>
 #include <QDebug>
+#include "qpoint.h"
+#include <QString>
+#include <QList>
+
+typedef bool (*killnpc)(char *roomName, char *backBegin, char *backEnd);
 
 //下面几个是gmcp显示设置的
 extern bool showGmcpAllBool;
@@ -11,6 +16,42 @@ extern bool moveBool;
 extern bool combatBool;
 extern bool statusBool;
 extern bool messageBool;
+extern killnpc killNpc;
+
+struct NpcInfo{
+    QString nameZH;//中文名
+    QString nameEN;//英文名
+    QString title;//之前的称号
+};
+
+struct OutInfo{
+    QString outcmd;//输出方向
+    QString outCmdNow;//输出方向的命令
+    int room=-1;//房间数字
+    int time=1;//走路耗时，最小值为1
+};
+
+struct roomInfo{
+    QPoint roomPoint;//房间在画布位置
+    int roomNum=1;//最初值为1，且递增，删除后应该补上新行
+    int chongfuNum=0;//最初值为0，同区域有相同名字的房间
+    QList<int> fromRoomList;//父房间
+    QList<int> toRoomList;//子房间
+    QString FqZH;//第一区域
+    QString FqEN;//第一区域
+    QString sqZH;//第二区域
+    QString sqEN;//第二区域
+    QString sthqZH;//第三区域
+    QString sthqEN;//第三区域
+    QString roomZH;//房间名
+    QString roomEN;//房间名
+    QString roomColor;//房间名颜色
+    QString out;//描述的出口
+    QString outnow;//实际的出口
+    QString roomDes;//房间描述
+    QList<NpcInfo> npcInfo;
+    QList<OutInfo> outInfo;
+};
 
 enum Colors { close_all=0,//关闭所有属性
               Bold_Color,//设置高亮度
@@ -165,11 +206,22 @@ bool checkTimer(QString &instr);
 /* @brief 系统显示并触发，不发送服务器，是则使用并返回true*/
 bool checkPritf(QString &instr);
 
+/* @brief 行走系统解析无房间路径并行走，不发送服务器，是则使用并返回true*/
+bool checkPath(QString &instr);
+/* @brief 行走系统停止行走函数，不发送服务器，是则使用并返回true*/
+bool checkPause(QString &instr);
+
 
 /* @brief 在数组中指定位置插入指定数字，该数字必定占3字节*/
 void int2Bytes(int i, QByteArray& backArray, int off);
 /* @brief 从数组中指定位置读取数字，该数字必定占3字节*/
 int bytes2Int(QByteArray& backArray, int off);
 }
+
+///传入一个方向，返回相反方向
+QString outChange(QString cmd);
+
+///传入一个方向，返回简拼方向
+QString outjianhua(QString cmd);
 
 #endif // GLOBALHEAD_H
