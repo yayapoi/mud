@@ -126,7 +126,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
         //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"backstr--"<<backstr;
         if(backstr!="特殊方向")//是方向延时返回成功
         {
-            int starttime=QRandomGenerator::global()->bounded(50,60);
+            int starttime=QRandomGenerator::global()->bounded(160,200);
             qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"back time--"<<starttime;
             QTimer* backworktimer=new QTimer;
             backtimelist.append(backworktimer);

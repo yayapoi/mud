@@ -119,8 +119,8 @@ public:
     bool endpathList(int listNum);
     /* @brief room中命令是否已经到底了*/
     bool endproomList(int listNum, int cmdNum);
-    /* @brief 开始初始化变量走路*/
-    void dowork();
+    /* @brief 开始初始化变量走路 特殊情况不用计时  true:计时*/
+    void dowork(bool jishi);
 signals:
     void cmdroom(QString room, QString cmd);
     void workPritf(QString str);

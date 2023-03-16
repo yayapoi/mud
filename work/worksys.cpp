@@ -12,7 +12,7 @@ void WorkSys::startWalk()
     working=true;
     emit workPritf("----开始行走----");
     walktimer.start(170);
-    dowork();
+    dowork(true);
 }
 
 void WorkSys::Walk()
@@ -27,7 +27,7 @@ void WorkSys::Walk()
     {
         working=true;
         walktimer.start(170);
-        dowork();
+        dowork(true);
     }
 }
 
@@ -59,7 +59,33 @@ void WorkSys::moveStatus(bool flag)
         {
             qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"moveStatus in";
             //walktimer.start(170);
-            dowork();
+            dowork(false);
+        }
+    }
+    else
+    {
+        if(!busy && working && !workend)
+        {
+            if(lastTime.msecsTo(QTime::currentTime())>170)
+            {
+                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"moveStatus time--------";
+                walktimer.start(170);
+                dowork(true);
+            }
+            else//看走完木有
+            {
+                if(endproomList(listnow,cmdnum))//这个房间命令是否到底了
+                {
+                    int newlistnow=listnow+1;
+                    int newcmdnum=0;
+                    if(endpathList(newlistnow))//路径也到底了，停止行走
+                    {
+                        qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
+                        clearOldPath();
+                        emit workPritf("----路径完成----");
+                    }
+                }
+            }
         }
     }
 }
@@ -69,11 +95,37 @@ void WorkSys::busyStatus(bool flag)
     //暂时不管busy的事
     qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::busyStatus flag--"<<flag;
     busy=flag;
-    if(!flag && !workend && working && getmoveStatus && !moveSuccess)//当busy变为不busy,移动失败时候，重来本房间
+    if(!flag && !workend && working)//当busy变为不busy
     {
-        qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busyed in";
-        walktimer.start(170);
-        dowork();
+        if(getmoveStatus)//已经获取移动结果
+        {
+            if(!moveSuccess)//移动失败时候，重来本房间
+            {
+                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busyed in";
+                walktimer.start(170);
+                dowork(false);
+            }
+            else if(lastTime.msecsTo(QTime::currentTime())>170)//移动成功并且超冷却时间
+            {
+                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busyed in";
+                walktimer.start(170);
+                dowork(true);
+            }
+            else//看走完木有
+            {
+                if(endproomList(listnow,cmdnum))//这个房间命令是否到底了
+                {
+                    int newlistnow=listnow+1;
+                    int newcmdnum=0;
+                    if(endpathList(newlistnow))//路径也到底了，停止行走
+                    {
+                        qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
+                        clearOldPath();
+                        emit workPritf("----路径完成----");
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -448,7 +500,7 @@ bool WorkSys::endproomList(int listNum, int cmdNum)
     return backbool;
 }
 
-void WorkSys::dowork()
+void WorkSys::dowork(bool jishi)
 {
     int newlistnow=listnow;
     int newcmdnum=cmdnum;
@@ -500,7 +552,8 @@ void WorkSys::dowork()
                         qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"stopnum==-1";
                         pathList[newlistnow].stopnum=newcmdnum;
                         emit cmdroom(pathList[newlistnow].roomNameZH, pathList[newlistnow].releaseCmd[newcmdnum]);
-                        lastTime=QTime::currentTime();
+                        if(jishi)
+                            lastTime=QTime::currentTime();
                         break;
                     }
                     else
@@ -510,7 +563,8 @@ void WorkSys::dowork()
                             qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"stopnum--"<<pathList[newlistnow].stopnum<<"newcmdnum--"<<newcmdnum;
                             pathList[newlistnow].stopnum=newcmdnum;
                             emit cmdroom(pathList[newlistnow].roomNameZH, pathList[newlistnow].releaseCmd[newcmdnum]);
-                            lastTime=QTime::currentTime();
+                            if(jishi)
+                                lastTime=QTime::currentTime();
                             break;
                         }
                     }
@@ -545,7 +599,7 @@ WorkSys::WorkSys(QObject *parent)
     connect(&walktimer,&QTimer::timeout,this,[this](){
         if(moveSuccess && !busy && working && !workend)
         {
-            dowork();
+            dowork(true);
         }
     });
 }
