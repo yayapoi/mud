@@ -123,7 +123,7 @@ public:
     /* @brief 开始初始化变量走路 特殊情况不用计时  true:计时*/
     void dowork(bool jishi);
     /* @brief 移动校验 gmcp校验*/
-    void moveGmcp(QString &instr);
+    bool moveGmcp(QString &instr);
     /* @brief 移动校验 room校验*/
     void moveroom(QString &instr);
 signals:

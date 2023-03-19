@@ -277,7 +277,7 @@ signals:
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
     connect(&cmdDo,&CmdDo::Path,[&](QString pathStr){WorkSys::GetInstance()->releaseCmd(pathStr,true);});
     connect(&cmdDo,&CmdDo::Pause,[&](QString pauseStr){WorkSys::GetInstance()->stopWalk();});
-    connect(&cmdDo,&CmdDo::MoveGMCP,[&](QString pauseStr){WorkSys::GetInstance()->moveGmcp(pauseStr);mapcreateWidget.GoSuccess();});
+    connect(&cmdDo,&CmdDo::MoveGMCP,[&](QString pauseStr){if(WorkSys::GetInstance()->moveGmcp(pauseStr))mapcreateWidget.GoSuccess();});
     connect(&cmdDo,&CmdDo::MoveRoom,[&](QString pauseStr){WorkSys::GetInstance()->moveroom(pauseStr);});
     connect(WorkSys::GetInstance(),&WorkSys::workPritf,this,[this](QString str){cmdControl.appendMessage("#Pritf("+str+")");});
     connect(&mapcreateWidget,&MapMainWindow::mapCreateCmd,this,[this](QString cmd){cmdControl.appendMessage(cmd);});

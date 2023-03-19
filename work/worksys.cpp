@@ -586,8 +586,9 @@ void WorkSys::dowork(bool jishi)
     }
 }
 
-void WorkSys::moveGmcp(QString &instr)
+bool WorkSys::moveGmcp(QString &instr)
 {
+    bool flag=false;
     //qDebug()<<"instr--"<<instr;
     QRegularExpressionMatch regularmatch=GmcpRegStr.match(instr);
     if(regularmatch.hasMatch())
@@ -607,7 +608,8 @@ void WorkSys::moveGmcp(QString &instr)
                     if(objone.key()=="result")//移动结果 true:成功
                     {
                         QString moveresult=objone.value().toString();
-                        moveStatus(moveresult=="true"?true:false);
+                        flag=moveresult=="true"?true:false;
+                        moveStatus(flag);
                     }
                     else if(objone.key()=="dir")//出口
                     {
@@ -627,6 +629,7 @@ void WorkSys::moveGmcp(QString &instr)
     {
         emit workPritf("----gmcp解析失败----");
     }
+    return flag;
 }
 
 void WorkSys::moveroom(QString &instr)
