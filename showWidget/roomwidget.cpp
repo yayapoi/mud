@@ -65,7 +65,7 @@ void RoomWidget::setWidger(roomInfo *infoList)
     ui->roomColor->setText(infoList->roomColor);
     ui->roomNum->setText(QString::number(infoList->roomNum));
     ui->outLE->setText(infoList->out);
-    qDebug()<<"RoomWidget::setWidger out--"<<infoList->out;
+    //qDebug()<<"RoomWidget::setWidger out--"<<infoList->out;
     ui->nowLE->setText(infoList->outnow);
     if(ui->FirstEN->text()!="")
     {

@@ -38,10 +38,19 @@ GoForm::~GoForm()
 
 void GoForm::initWidget(QString outCB, QString cmd, QString time, QString room)
 {
-    ui->cmd->setText(cmd);
-    ui->outCombox->setCurrentText(outCB);
-    ui->time->setText(time);
-    ui->room->setText(room);
+    if(cmd=="")
+    {
+        ui->outCombox->setCurrentText(outCB);
+        ui->time->setText(time);
+        ui->room->setText(room);
+    }
+    else
+    {
+        ui->outCombox->setCurrentText(outCB);
+        ui->cmd->setText(cmd);
+        ui->time->setText(time);
+        ui->room->setText(room);
+    }
 }
 
 void GoForm::getWidget(QString &outCB, QString &cmd, QString &time, QString &room)

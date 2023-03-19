@@ -54,7 +54,7 @@ void ConfigForm::on_OKBT_clicked()
 
 void ConfigForm::on_allGMCPset_stateChanged(int arg1)
 {
-    qDebug()<<"ConfigForm::on_allGMCPset_stateChanged-- arg1--"<<arg1;
+    //qDebug()<<"ConfigForm::on_allGMCPset_stateChanged-- arg1--"<<arg1;
     switch (arg1) {
     case 0:
     {

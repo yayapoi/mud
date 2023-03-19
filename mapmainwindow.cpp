@@ -40,7 +40,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
     QAction* m_ActionAddTo = new QAction(tr("增加出口"), this);
     connect(m_ActionAddTo,&QAction::triggered,this,[this](){
         GoForm* goFor2=new GoForm;
-        goFor2->initWidget("west", "west", "", "");
+        goFor2->initWidget("west", "", "", "");
         connect(goFor2,&GoForm::deleteGo,this,[this](GoForm* removeItem){
             this->toroomLayout->removeWidget(removeItem);
             removeItem->deleteLater();
@@ -425,6 +425,10 @@ void MapMainWindow::GoSuccess()
     }
     //假如已经有时间了，统计时间
     int nowTime=begintime.msecsTo(QTime::currentTime());
+    if(nowTime>50)
+    {
+        nowTime=50;
+    }
     if(longOrShortTime)
     {
         if(waitOut.time<nowTime)
@@ -434,6 +438,10 @@ void MapMainWindow::GoSuccess()
     }
     else {
         if(waitOut.time>nowTime)
+        {
+            waitOut.time=nowTime;
+        }
+        else if(waitOut.time<=0)
         {
             waitOut.time=nowTime;
         }
@@ -515,11 +523,11 @@ void MapMainWindow::calculateTo()
         GoForm* goFor2=new GoForm;
         if(listIter.value()->roomNum!=-1)
         {
-            goFor2->initWidget(listIter.key(), listIter.key(), "", QString::number(listIter.value()->roomNum));
+            goFor2->initWidget(listIter.key(), "", "", QString::number(listIter.value()->roomNum));
         }
         else
         {
-            goFor2->initWidget(listIter.key(), listIter.key(), "", "");
+            goFor2->initWidget(listIter.key(), "", "", "");
         }
         connect(goFor2,&GoForm::deleteGo,this,[this](GoForm* removeItem){
             this->toroomLayout->removeWidget(removeItem);
@@ -869,7 +877,7 @@ void MapMainWindow::on_saveRoomBT_clicked()
             oneroomJson.insert("roomEN",roomPtr->roomEN);
             oneroomJson.insert("roomColor",roomPtr->roomColor);
             oneroomJson.insert("out",roomPtr->out);
-            qDebug()<<"MapMainWindow::on_saveRoomBT_clicked() out--"<<roomPtr->out;
+            //qDebug()<<"MapMainWindow::on_saveRoomBT_clicked() out--"<<roomPtr->out;
             oneroomJson.insert("outnow",roomPtr->outnow);
             oneroomJson.insert("roomDes",roomPtr->roomDes);
             oneroomJson.insert("chongfuNum",roomPtr->chongfuNum);
@@ -938,9 +946,9 @@ void MapMainWindow::on_adddll_triggered()
         dlliter=nullptr;
         killNpc=nullptr;
     }
-    if(QFile::exists("dllToMapCreate.dll"))
+    if(QFile::exists("libdllToMapCreate.dll"))
     {
-        dlliter=LoadLibrary(L"dllToMapCreate.dll");
+        dlliter=LoadLibrary(L"libdllToMapCreate.dll");
         if(dlliter!=nullptr)
         {
             //定义相同的接口，打开So并获取对象。
