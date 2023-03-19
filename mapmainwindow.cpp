@@ -681,6 +681,12 @@ void MapMainWindow::roomname(QByteArray &inArray)
         if(backList.size()>=2)
         {
             ui->mapWidget->setRoomNC(backList[1],"");
+            auto clickIter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
+            if(clickIter!=JsonInter::GetInstance()->roomMap.end())
+            {
+                clickIter->second->roomName=backList[1];
+                clickIter->second->update();
+            }
             roomifo.roomnamefind=true;
         }
     }
@@ -809,6 +815,7 @@ void MapMainWindow::mouseReleaseEvent(QMouseEvent *event)
 void MapMainWindow::on_lookRoomBT_clicked()
 {
     roomifo.clear();
+    ui->mapWidget->clearLayout();
     mapcreateGetMessage=true;
     emit mapCreateCmd("l");
     //QString cmdtest="测试试试:#killNpc(wei zheng);sw;aaaaa;n;&测试试试:say 1;n&测试试试:#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;&测试试试:say 3 ;yz_qsdd_1;s";

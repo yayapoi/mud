@@ -60,6 +60,7 @@ void MapCreateView::initRoom()
         MapCreateRoomItem* testroom=new MapCreateRoomItem;
         testroom->setPos(mapiter.value().first->roomPoint);
         testroom->roomNum=mapiter.key();
+        testroom->roomName=mapiter->first->roomZH;
         scene()->addItem(testroom);
         mapiter.value().second=testroom;
         mapiter++;

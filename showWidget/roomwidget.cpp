@@ -205,6 +205,7 @@ void RoomWidget::appendNpc(QString nameZH, QString nameEN, QString title)
 
 void RoomWidget::setroommes(QString roomme)
 {
+    ui->roomMessage->clear();
     ui->roomMessage->append(roomme);
 }
 
@@ -232,6 +233,7 @@ void RoomWidget::on_checkRoomName_clicked()
         }
         else
         {
+            ui->roomID->clear();
             QList<int> roomNum;
             auto myself=JsonInter::GetInstance()->roomMap.find(nowClickNum);
             auto mapInter=JsonInter::GetInstance()->roomMap.begin();

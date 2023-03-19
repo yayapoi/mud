@@ -20,7 +20,7 @@ public:
 
     ///清空 layout  界面  初始化nowClickNum
     void clearWidget();
-    ///清空layout
+    ///清空npc layout
     void clearLayout();
     ///已有保存数据，设置layout  界面
     void setWidger(roomInfo*infoList);
