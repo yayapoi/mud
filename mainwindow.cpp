@@ -277,6 +277,8 @@ signals:
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
     connect(&cmdDo,&CmdDo::Path,[&](QString pathStr){WorkSys::GetInstance()->releaseCmd(pathStr,true);});
     connect(&cmdDo,&CmdDo::Pause,[&](QString pauseStr){WorkSys::GetInstance()->stopWalk();});
+    connect(&cmdDo,&CmdDo::MoveGMCP,[&](QString pauseStr){WorkSys::GetInstance()->moveGmcp(pauseStr);mapcreateWidget.GoSuccess();});
+    connect(&cmdDo,&CmdDo::MoveRoom,[&](QString pauseStr){WorkSys::GetInstance()->moveroom(pauseStr);});
     connect(WorkSys::GetInstance(),&WorkSys::workPritf,this,[this](QString str){cmdControl.appendMessage("#Pritf("+str+")");});
     connect(&mapcreateWidget,&MapMainWindow::mapCreateCmd,this,[this](QString cmd){cmdControl.appendMessage(cmd);});
     connect(&cmdDo,&CmdDo::pritf,[&](QString pritfStr){
@@ -430,7 +432,15 @@ signals:
         checkGMCP();
         ui->fightTE->appendNewText(backArray);
         testRegClass.getMessage(backArray);
-
+        if(mapcreateGetMessage)
+        {
+            //qDebug()<<"mapcreateGetMessage-----------"<<mapcreateGetMessage;
+            mapcreateWidget.roomMessage(backArray);
+        }
+        /*else
+        {
+            //qDebug()<<"mapcreateGetMessage-----------"<<mapcreateGetMessage;
+        }*/
         backArray.clear();
 
 
@@ -1438,6 +1448,7 @@ void MainWindow::on_actionRegOut_triggered()
 {
     QFileDialog fileD;
     QStringList filters;
+    fileD.setDirectory("./");
     filters << "dat files(*.json)";
     fileD.setNameFilters(filters);//过滤文件
     if(fileD.exec() == QFileDialog::Accepted){

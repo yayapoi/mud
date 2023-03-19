@@ -146,7 +146,7 @@ void CmdControl::appendMessage(QString inStr, QStringList &backList)
 bool CmdControl::getMessageFrom(QString& inStr, QString& backStr)//须填  宏定义
 {
     bool flag=false;
-    if(inStr=="123")
+    /*if(inStr=="123")
     {
         backStr="12 12 12;12 12 12";
         flag=true;
@@ -160,7 +160,7 @@ bool CmdControl::getMessageFrom(QString& inStr, QString& backStr)//须填  宏�
     {
         backStr="13 13 13";
         flag=true;
-    }
+    }*/
     return flag;
 }
 
@@ -260,6 +260,20 @@ int CmdControl::checkMessage(QString &instr)
     if(flag==-1)
     {
         if(globalCheck::checkEnableRegReg(instr))
+        {
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkMoveRoom(instr))
+        {
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkMoveGMCP(instr))
         {
             flag=0;
         }

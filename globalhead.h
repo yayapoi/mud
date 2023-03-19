@@ -17,6 +17,10 @@ extern bool combatBool;
 extern bool statusBool;
 extern bool messageBool;
 extern killnpc killNpc;
+///地图编辑器需要传入数据，地图编辑器获取完置为false;true:需要传数据
+extern bool mapcreateGetMessage;
+///使用最长或者最短时间，配置里选  true:最长，
+extern bool longOrShortTime;
 
 struct NpcInfo{
     QString nameZH;//中文名
@@ -210,7 +214,10 @@ bool checkPritf(QString &instr);
 bool checkPath(QString &instr);
 /* @brief 行走系统停止行走函数，不发送服务器，是则使用并返回true*/
 bool checkPause(QString &instr);
-
+/* @brief 行走系统房间值，不发送服务器，直接传入字符串“中央广场” 例 中央广场 - 或者中央广场 -星，是则使用并返回true*/
+bool checkMoveRoom(QString &instr);
+/* @brief 行走系统房间值，不发送服务器，直接传入gmcp的move值，是则使用并返回true*/
+bool checkMoveGMCP(QString &instr);
 
 /* @brief 在数组中指定位置插入指定数字，该数字必定占3字节*/
 void int2Bytes(int i, QByteArray& backArray, int off);

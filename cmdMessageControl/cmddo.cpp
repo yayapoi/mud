@@ -49,6 +49,22 @@ bool CmdDo::checkMessage(QString &instr)
     }
     if(flag==false)
     {
+        flag=globalCheck::checkMoveRoom(instr);
+        if(flag==true)
+        {
+            emit MoveRoom(instr);
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkMoveGMCP(instr);
+        if(flag==true)
+        {
+            emit MoveGMCP(instr);
+        }
+    }
+    if(flag==false)
+    {
         flag=globalCheck::checkDeleteReg(instr);
         if(flag==true)
         {

@@ -23,8 +23,8 @@ GoForm::GoForm(QWidget *parent) :
     ui->outCombox->addItem("e");
     ui->outCombox->addItem("eu");
     ui->outCombox->addItem("ed");
-    ui->outCombox->addItem("up");
-    ui->outCombox->addItem("down");
+    ui->outCombox->addItem("u");
+    ui->outCombox->addItem("d");
     ui->outCombox->addItem("enter");
     ui->outCombox->addItem("out");
     ui->outCombox->addItem("特殊方向");
@@ -38,16 +38,16 @@ GoForm::~GoForm()
 
 void GoForm::initWidget(QString outCB, QString cmd, QString time, QString room)
 {
-    ui->outCombox->setCurrentText(outCB);
     ui->cmd->setText(cmd);
+    ui->outCombox->setCurrentText(outCB);
     ui->time->setText(time);
     ui->room->setText(room);
 }
 
 void GoForm::getWidget(QString &outCB, QString &cmd, QString &time, QString &room)
 {
-    outCB=ui->outCombox->currentText();
     cmd=ui->cmd->text();
+    outCB=ui->outCombox->currentText();
     time=ui->time->text();
     room=ui->room->text();
 }
@@ -71,5 +71,11 @@ void GoForm::on_deleteRoom_clicked()
 void GoForm::on_go_clicked()
 {
     emit GoFormGo(this);
+}
+
+
+void GoForm::on_outCombox_currentTextChanged(const QString &arg1)
+{
+    ui->cmd->setText(arg1);
 }
 

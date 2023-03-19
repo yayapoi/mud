@@ -81,6 +81,7 @@ public:
     //一处执行，其它调用本函数不用执行 true:已执行 可能不需要 可sleep测试
     bool mux=false;
     QRegularExpression pathRegStr{"^#path\\(([\\s\\S]+?)\\)$"};
+    QRegularExpression GmcpRegStr{"^#mg\\(([\\s\\S]+?)\\)$"};
 
     ///开始走路
     void startWalk();
@@ -121,6 +122,10 @@ public:
     bool endproomList(int listNum, int cmdNum);
     /* @brief 开始初始化变量走路 特殊情况不用计时  true:计时*/
     void dowork(bool jishi);
+    /* @brief 移动校验 gmcp校验*/
+    void moveGmcp(QString &instr);
+    /* @brief 移动校验 room校验*/
+    void moveroom(QString &instr);
 signals:
     void cmdroom(QString room, QString cmd);
     void workPritf(QString str);

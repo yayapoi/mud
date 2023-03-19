@@ -32,9 +32,12 @@ signals:
 
     /* @brief 发送给行走系统 解析并使用路径*/
     void Path(QString);
-
     /* @brief 发送给行走系统 暂停*/
     void Pause(QString);
+    /* @brief 发送给行走系统 行走room校验*/
+    void MoveRoom(QString);
+    /* @brief 发送给行走系统 行走gmcp校验*/
+    void MoveGMCP(QString);
 public slots:
     /* @brief 收到命令，附带有系统函数*/
     void newMessage(QQueue<QString>);

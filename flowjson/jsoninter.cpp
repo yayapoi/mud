@@ -74,17 +74,17 @@ void JsonInter::saveRoomInFile(QString fillname)
     QFile testfile{fillname};
     if(testfile.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
-        /*auto oneroom=roomMap.begin();
-        QJsonObject allJson;
+        auto oneroom=roomMap.begin();
         while(oneroom!=roomMap.end())
         {
-            QJsonObject npcListJson;
+            QJsonObject roomobj=allDoc.value(QString::number(oneroom.key())).toObject();
+            /*QJsonObject npcListJson;
             QJsonObject outListJson;
             QJsonObject oneroomJson;
 
             roomInfo* roomPtr=oneroom.value().first;
             //npc
-            QList<npcInfo> aaa=roomPtr->npcInfo;
+            QList<NpcInfo> aaa=roomPtr->npcInfo;
             for(int num=0;num<aaa.size();num++)
             {
                 QJsonObject npcJson;
@@ -95,7 +95,7 @@ void JsonInter::saveRoomInFile(QString fillname)
             }
 
             //room
-            QList<outInfo> bbb=roomPtr->outInfo;
+            QList<OutInfo> bbb=roomPtr->outInfo;
             for(int num=0;num<bbb.size();num++)
             {
                 QJsonObject roomJson;
@@ -120,16 +120,16 @@ void JsonInter::saveRoomInFile(QString fillname)
             oneroomJson.insert("out",roomPtr->out);
             oneroomJson.insert("outnow",roomPtr->outnow);
             oneroomJson.insert("roomDes",roomPtr->roomDes);
-            oneroomJson.insert("chongfuNum",roomPtr->chongfuNum);
+            oneroomJson.insert("chongfuNum",roomPtr->chongfuNum);*/
 
             //控件坐标
             QJsonArray roomCoordinate;
-            roomCoordinate.append(roomPtr->roomPoint.x());
-            roomCoordinate.append(roomPtr->roomPoint.y());
-            oneroomJson.insert("coordinate_data",roomCoordinate);
+            roomCoordinate.append(oneroom->second->pos().x());
+            roomCoordinate.append(oneroom->second->pos().y());
+            roomobj.insert("coordinate_data",roomCoordinate);
 
             //出去房间
-            QJsonArray toroom;
+            /*QJsonArray toroom;
             foreach(auto oneINT,roomPtr->toRoomList)
                 toroom.append(oneINT);
             oneroomJson.insert("child_items",toroom);
@@ -138,11 +138,11 @@ void JsonInter::saveRoomInFile(QString fillname)
             QJsonArray fromroom;
             foreach(auto oneINT,roomPtr->fromRoomList)
                 fromroom.append(oneINT);
-            oneroomJson.insert("parent_items",fromroom);
+            oneroomJson.insert("parent_items",fromroom);*/
 
-            allJson.insert(QString::number(oneroom.key()),oneroomJson);
+            allDoc.insert(QString::number(oneroom.key()),roomobj);
             oneroom++;
-        }*/
+        }
         testfile.write(QJsonDocument(allDoc).toJson());
         testfile.flush();
         testfile.close();
@@ -431,18 +431,37 @@ void JsonInter::itemMarge(MapCreateRoomItem *beginitem, MapCreateRoomItem *endIt
                                 endNummm=num;
                             }
                         }
-                        if(parentItemIter->first->outInfo[begimNummm].time>parentItemIter->first->outInfo[endNummm].time)
+                        if(longOrShortTime)
                         {
-                            //更新room,
-                            parentItemIter->first->outInfo[endNummm].time=parentItemIter->first->outInfo[begimNummm].time;
-                            //更新json
-                            QJsonObject parentRoom=allDoc.value(QString::number(partroomNum2)).toObject();
-                            QJsonObject parentoutList=parentRoom.value("outList").toObject();
-                            QJsonObject parentoneout=parentoutList.value(QString::number(endNummm)).toObject();
-                            parentoneout.insert("time",parentItemIter->first->outInfo[begimNummm].time);
-                            parentoutList.insert(QString::number(endNummm),parentoneout);
-                            parentRoom.insert("outList",parentoutList);
-                            allDoc.insert(QString::number(partroomNum2),parentRoom);
+                            if(parentItemIter->first->outInfo[begimNummm].time>parentItemIter->first->outInfo[endNummm].time)
+                            {
+                                //更新room,
+                                parentItemIter->first->outInfo[endNummm].time=parentItemIter->first->outInfo[begimNummm].time;
+                                //更新json
+                                QJsonObject parentRoom=allDoc.value(QString::number(partroomNum2)).toObject();
+                                QJsonObject parentoutList=parentRoom.value("outList").toObject();
+                                QJsonObject parentoneout=parentoutList.value(QString::number(endNummm)).toObject();
+                                parentoneout.insert("time",parentItemIter->first->outInfo[begimNummm].time);
+                                parentoutList.insert(QString::number(endNummm),parentoneout);
+                                parentRoom.insert("outList",parentoutList);
+                                allDoc.insert(QString::number(partroomNum2),parentRoom);
+                            }
+                        }
+                        else
+                        {
+                            if(parentItemIter->first->outInfo[begimNummm].time<parentItemIter->first->outInfo[endNummm].time)
+                            {
+                                //更新room,
+                                parentItemIter->first->outInfo[endNummm].time=parentItemIter->first->outInfo[begimNummm].time;
+                                //更新json
+                                QJsonObject parentRoom=allDoc.value(QString::number(partroomNum2)).toObject();
+                                QJsonObject parentoutList=parentRoom.value("outList").toObject();
+                                QJsonObject parentoneout=parentoutList.value(QString::number(endNummm)).toObject();
+                                parentoneout.insert("time",parentItemIter->first->outInfo[begimNummm].time);
+                                parentoutList.insert(QString::number(endNummm),parentoneout);
+                                parentRoom.insert("outList",parentoutList);
+                                allDoc.insert(QString::number(partroomNum2),parentRoom);
+                            }
                         }
                     }
                 }
@@ -503,21 +522,44 @@ void JsonInter::itemMarge(MapCreateRoomItem *beginitem, MapCreateRoomItem *endIt
                 if(beginItemIter->first->outInfo[numbegimnn].room==endItemIter->first->outInfo[numendmnn].room)
                 {
                     findBool=true;
-                    //有相同的roominfo，俩房间最大时间给enditem的(json map)
-                    if(beginItemIter->first->outInfo[numbegimnn].time>endItemIter->first->outInfo[numendmnn].time)
+                    if(longOrShortTime)
                     {
-                        //更新room,
-                        endItemIter->first->outInfo[numendmnn].time=beginItemIter->first->outInfo[numbegimnn].time;
-                        //更新json
-                        QJsonObject endRoom=allDoc.value(QString::number(begimNum)).toObject();
-                        QJsonObject endoutList=endRoom.value("outList").toObject();
-                        QJsonObject endoneout=endoutList.value(QString::number(numendmnn)).toObject();
-                        if(endoneout.value("room").toInt()==endItemIter->first->outInfo[numendmnn].room)
+                        //有相同的roominfo，俩房间最大时间给enditem的(json map)
+                        if(beginItemIter->first->outInfo[numbegimnn].time>endItemIter->first->outInfo[numendmnn].time)
                         {
-                            endoneout.insert("time",beginItemIter->first->outInfo[numbegimnn].time);
-                            endoutList.insert(QString::number(numendmnn),endoneout);
-                            endRoom.insert("outList",endoutList);
-                            allDoc.insert(QString::number(begimNum),endRoom);
+                            //更新room,
+                            endItemIter->first->outInfo[numendmnn].time=beginItemIter->first->outInfo[numbegimnn].time;
+                            //更新json
+                            QJsonObject endRoom=allDoc.value(QString::number(begimNum)).toObject();
+                            QJsonObject endoutList=endRoom.value("outList").toObject();
+                            QJsonObject endoneout=endoutList.value(QString::number(numendmnn)).toObject();
+                            if(endoneout.value("room").toInt()==endItemIter->first->outInfo[numendmnn].room)
+                            {
+                                endoneout.insert("time",beginItemIter->first->outInfo[numbegimnn].time);
+                                endoutList.insert(QString::number(numendmnn),endoneout);
+                                endRoom.insert("outList",endoutList);
+                                allDoc.insert(QString::number(begimNum),endRoom);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //有相同的roominfo，俩房间最小时间给enditem的(json map)
+                        if(beginItemIter->first->outInfo[numbegimnn].time<endItemIter->first->outInfo[numendmnn].time)
+                        {
+                            //更新room,
+                            endItemIter->first->outInfo[numendmnn].time=beginItemIter->first->outInfo[numbegimnn].time;
+                            //更新json
+                            QJsonObject endRoom=allDoc.value(QString::number(begimNum)).toObject();
+                            QJsonObject endoutList=endRoom.value("outList").toObject();
+                            QJsonObject endoneout=endoutList.value(QString::number(numendmnn)).toObject();
+                            if(endoneout.value("room").toInt()==endItemIter->first->outInfo[numendmnn].room)
+                            {
+                                endoneout.insert("time",beginItemIter->first->outInfo[numbegimnn].time);
+                                endoutList.insert(QString::number(numendmnn),endoneout);
+                                endRoom.insert("outList",endoutList);
+                                allDoc.insert(QString::number(begimNum),endRoom);
+                            }
                         }
                     }
                 }

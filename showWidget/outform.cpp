@@ -17,6 +17,7 @@ OutForm::~OutForm()
 
 void OutForm::initWidget(QString comeRoom, QString roomName, QString outLe, QString cmdLe)
 {
+    qDebug()<<"OutForm::initWidget() out--"<<outLe;
     ui->comeRoom->setText(comeRoom);
     ui->roomName->setText(roomName);
     ui->out->setText(outLe);
@@ -25,6 +26,7 @@ void OutForm::initWidget(QString comeRoom, QString roomName, QString outLe, QStr
 
 void OutForm::getWidget(QString &comeRoom, QString &roomName, QString &outLe, QString &cmdLe)
 {
+    qDebug()<<"OutForm::getWidget() out--"<<ui->out->text();
     comeRoom=ui->comeRoom->text();
     roomName=ui->roomName->text();
     outLe=ui->out->text();

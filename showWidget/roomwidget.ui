@@ -177,7 +177,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="roomID"/>
+        <widget class="QLineEdit" name="roomID">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -194,7 +198,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="roomNum"/>
+        <widget class="QLineEdit" name="roomNum">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -225,7 +236,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="roomZN"/>
+        <widget class="QLineEdit" name="roomZN">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -242,7 +257,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="roomEN"/>
+        <widget class="QLineEdit" name="roomEN">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -283,7 +302,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="outLE"/>
+        <widget class="QLineEdit" name="outLE">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

@@ -8,7 +8,9 @@ bool combatBool=false;
 bool statusBool=false;
 bool messageBool=false;
 killnpc killNpc=nullptr;
+bool longOrShortTime=false;
 
+bool mapcreateGetMessage=false;
 QString outChange(QString cmd)
 {
     if(cmd=="north" || cmd=="n")
@@ -65,7 +67,7 @@ QString outChange(QString cmd)
     }
     else if(cmd=="east" || cmd=="e")
     {
-        return "west";
+        return "w";
     }
     else if(cmd=="eu" || cmd=="eastup")
     {
@@ -282,6 +284,28 @@ bool globalCheck::checkPause(QString &instr)
 {
     bool flag=false;
     int index=instr.indexOf("#pause");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}
+
+bool globalCheck::checkMoveRoom(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#mr(");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}
+
+bool globalCheck::checkMoveGMCP(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#mg(");
     if(index==0)
     {
         flag=true;

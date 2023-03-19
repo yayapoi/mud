@@ -2,6 +2,7 @@
 #include "ui_roomwidget.h"
 #include "flowjson/jsoninter.h"
 #include <QMessageBox>
+#include <ZHToEN/zhtopy.h>
 
 RoomWidget::RoomWidget(QWidget *parent) :
     QWidget(parent),
@@ -64,6 +65,7 @@ void RoomWidget::setWidger(roomInfo *infoList)
     ui->roomColor->setText(infoList->roomColor);
     ui->roomNum->setText(QString::number(infoList->roomNum));
     ui->outLE->setText(infoList->out);
+    qDebug()<<"RoomWidget::setWidger out--"<<infoList->out;
     ui->nowLE->setText(infoList->outnow);
     if(ui->FirstEN->text()!="")
     {
@@ -132,6 +134,19 @@ void RoomWidget::seNpcList(roomInfo *infoList)
     }
 }
 
+void RoomWidget::uselastname(QString &fzh, QString &fen, QString &szh, QString &sen, QString &srdzh, QString &srden)
+{
+    if(ui->FirstZH->text().isEmpty())
+    {
+        ui->FirstZH->setText(fzh);
+        ui->FirstEN->setText(fen);
+        ui->secondZH->setText(szh);
+        ui->secondEN->setText(sen);
+        ui->srdZH->setText(srdzh);
+        ui->srdEN->setText(srden);
+    }
+}
+
 void RoomWidget::getNpcList(roomInfo *infoList)
 {
     infoList->npcInfo.clear();
@@ -170,6 +185,34 @@ QString RoomWidget::getRoomnowout()
     return ui->nowLE->text();
 }
 
+void RoomWidget::setRoomNC(QString name, QString color)
+{
+    ui->roomZN->setText(name);
+    ui->roomEN->setText(ZhToPY::Instance()->zhToJP(name).toLower());
+    ui->roomColor->setText(color);
+}
+
+void RoomWidget::appendNpc(QString nameZH, QString nameEN, QString title)
+{
+    NPCForm* npcFor2=new NPCForm;
+    npcFor2->initWidget(title, nameZH, nameEN);
+    connect(npcFor2,&NPCForm::deleteNpc,this,[this](NPCForm* removeItem){
+        this->npcLayout->removeWidget(removeItem);
+        removeItem->deleteLater();
+    });
+    npcLayout->addWidget(npcFor2);
+}
+
+void RoomWidget::setroommes(QString roomme)
+{
+    ui->roomMessage->append(roomme);
+}
+
+void RoomWidget::setroomout(QString roomout)
+{
+    ui->outLE->setText(roomout);
+}
+
 void RoomWidget::on_checkRoomName_clicked()
 {
     if(nowClickNum==-1)
@@ -190,14 +233,12 @@ void RoomWidget::on_checkRoomName_clicked()
         else
         {
             QList<int> roomNum;
+            auto myself=JsonInter::GetInstance()->roomMap.find(nowClickNum);
             auto mapInter=JsonInter::GetInstance()->roomMap.begin();
-            while(true)
+            while(mapInter!=JsonInter::GetInstance()->roomMap.end())
             {
-                if(mapInter==JsonInter::GetInstance()->roomMap.end())
-                {
-                    break;
-                }
-                if(mapInter.value().first->FqZH==ui->FirstEN->text() &&
+                if(mapInter!=myself &&
+                        mapInter.value().first->FqEN==ui->FirstEN->text() &&
                         mapInter.value().first->sqEN==ui->secondEN->text() &&
                         mapInter.value().first->sthqEN==ui->srdEN->text() &&
                         mapInter.value().first->roomEN==ui->roomEN->text())
@@ -215,7 +256,7 @@ void RoomWidget::on_checkRoomName_clicked()
                     break;
                 }
             }
-            JsonInter::GetInstance()->roomMap.value(nowClickNum).first->chongfuNum=num;
+            myself->first->chongfuNum=num;
 
             QString roomId="";
             if(ui->secondEN->text()!="")
@@ -268,5 +309,23 @@ void RoomWidget::on_checkFirstEN_clicked()
         }
         mapInter++;
     }
+}
+
+
+void RoomWidget::on_FirstZH_textChanged(const QString &arg1)
+{
+    ui->FirstEN->setText(ZhToPY::Instance()->zhToJP(arg1).toLower());
+}
+
+
+void RoomWidget::on_secondZH_textChanged(const QString &arg1)
+{
+    ui->secondEN->setText(ZhToPY::Instance()->zhToJP(arg1).toLower());
+}
+
+
+void RoomWidget::on_srdZH_textChanged(const QString &arg1)
+{
+    ui->srdEN->setText(ZhToPY::Instance()->zhToJP(arg1).toLower());
 }
 

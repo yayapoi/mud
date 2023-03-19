@@ -611,23 +611,23 @@ void MapCreateView::addnewItem(int roomNum, MapCreateRoomItem *beginitem, QStrin
         QPointF nene=beginitem->pos();
         if(cmd=="w" || cmd=="west" || cmd=="wd" || cmd=="westdown" || cmd=="wu" || cmd=="westup")
         {
-            nene.setX(nene.x()-beginitem->itemWidth*3/2);
+            nene.setX(nene.x()-beginitem->itemWidth*2);
         }
         else if(cmd=="north"|| cmd=="n" || cmd=="nu" || cmd=="nd" || cmd=="ne" || cmd=="nw" || cmd=="northup" || cmd=="northdown" || cmd=="northeast" || cmd=="northwest")
         {
-            nene.setY(nene.y()-beginitem->itemHeight*3/2);
+            nene.setY(nene.y()-beginitem->itemHeight*2);
         }
         else if(cmd=="south" || cmd=="s" || cmd=="su" || cmd=="sd" || cmd=="se" || cmd=="sw" || cmd=="southup" || cmd=="southdown" || cmd=="southeast" || cmd=="southwest")
         {
-            nene.setY(nene.y()+beginitem->itemHeight*3/2);
+            nene.setY(nene.y()+beginitem->itemHeight*2);
         }
         else if(cmd=="e" || cmd=="east" || cmd=="eu" || cmd=="ed" || cmd=="eastup" || cmd=="eastdown")
         {
-            nene.setX(nene.x()+beginitem->itemWidth*3/2);
+            nene.setX(nene.x()+beginitem->itemWidth*2);
         }
         else if(cmd=="enter" || cmd=="out"|| cmd=="up" || cmd=="down" || cmd=="u" || cmd=="d"|| cmd=="特殊方向")
         {
-            nene.setY(nene.y()-beginitem->itemHeight*3/2);
+            nene.setY(nene.y()-beginitem->itemHeight*2);
         }
         MapCreateRoomItem* newItem=new MapCreateRoomItem;
         scene()->addItem(newItem);

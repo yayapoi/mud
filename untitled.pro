@@ -10,10 +10,12 @@ CONFIG += c++11 #console
 
 SOURCES += \
     INI/inimanarge.cpp \
+    ZHToEN/zhtopy.cpp \
     chatform.cpp \
     cmdMessageControl/cmdcontrol.cpp \
     cmdMessageControl/cmddo.cpp \
     configWidget/configform.cpp \
+    configWidget/mapcreateconfigform.cpp \
     flowjson/jsoninter.cpp \
     fontwidget.cpp \
     globalhead.cpp \
@@ -42,10 +44,12 @@ SOURCES += \
 
 HEADERS += \
     INI/inimanarge.h \
+    ZHToEN/zhtopy.h \
     chatform.h \
     cmdMessageControl/cmdcontrol.h \
     cmdMessageControl/cmddo.h \
     configWidget/configform.h \
+    configWidget/mapcreateconfigform.h \
     flowjson/jsoninter.h \
     fontwidget.h \
     globalhead.h \
@@ -76,6 +80,7 @@ HEADERS += \
 FORMS += \
     chatform.ui \
     configWidget/configform.ui \
+    configWidget/mapcreateconfigform.ui \
     fontwidget.ui \
     mainwindow.ui \
     mapmainwindow.ui \

@@ -375,7 +375,6 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     if(objone.key()=="result")//移动结果 true:成功
                     {
                         QString moveresult=objone.value().toString();
-                        WorkSys::GetInstance()->moveStatus(moveresult=="true"?true:false);
                     }
                     else if(objone.key()=="dir")//出口
                     {

@@ -16,6 +16,7 @@
 #include "work/worksys.h"
 #include <QRandomGenerator>
 #include <QTime>
+#include <ZHToEN/zhtopy.h>
 
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #include <windows.h>
@@ -88,6 +89,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
                 ui->mapWidget->setWidger(mapiter->first);
                 setWidget(nowClickNum);
                 calculateTo();
+                ui->mapWidget->uselastname(fZH,fEn,sZH,sEn,srdZH,srdEh);
                 break;
             }
             mapiter++;
@@ -421,11 +423,20 @@ void MapMainWindow::GoSuccess()
         auto mapiter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
         ui->graphicsView->addnewItem(num, mapiter->second, waitOut.outcmd);
     }
-    //假如已经有时间了，统计最久的时间 须填
+    //假如已经有时间了，统计时间
     int nowTime=begintime.msecsTo(QTime::currentTime());
-    if(waitOut.time<nowTime)
+    if(longOrShortTime)
     {
-        waitOut.time=nowTime;
+        if(waitOut.time<nowTime)
+        {
+            waitOut.time=nowTime;
+        }
+    }
+    else {
+        if(waitOut.time>nowTime)
+        {
+            waitOut.time=nowTime;
+        }
     }
     waitgoForm->setRoomTime(QString::number(waitOut.time));
     //保存json,保存map,即本map增加出口，json增加出口，
@@ -500,6 +511,7 @@ void MapMainWindow::calculateTo()
     auto listIter=listlist.begin();
     while(listIter!=listlist.end())
     {
+        qDebug()<<"MapMainWindow::calculateTo()---"<<listIter.key();
         GoForm* goFor2=new GoForm;
         if(listIter.value()->roomNum!=-1)
         {
@@ -534,6 +546,243 @@ void MapMainWindow::calculateTo()
     }
 }
 
+void MapMainWindow::roomMessage(QByteArray roomMess)
+{
+    /*auto clickIter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
+    if(clickIter!=JsonInter::GetInstance()->roomMap.end())
+    {
+        clickIter->second->roomName="杭州提督府正门";
+        clickIter->second->update();
+    }*/
+    while (roomMess.size()>0) {//循环截取出要打印的字符串  一行的那种
+        QByteArray oneStr;
+        getOneStrFromArray(roomMess, oneStr);//截取出要打印的字符串  一行的那种
+        if(!roomifo.roomnamefind)//名字检测
+        {
+            //只有房间名以外的才需要去除颜色
+            removeColorFromArray(oneStr);
+            roomname(oneStr);
+        }
+        else if(!roomifo.RoomMessagefind)//描述检测
+        {
+            //只有房间名以外的才需要去除颜色
+            removeColorFromArray(oneStr);
+            roommes(oneStr);
+        }
+        else if(!roomifo.fangxiangfind)//出口检测
+        {
+            //只有房间名以外的才需要去除颜色
+            removeColorFromArray(oneStr);
+            roomout(oneStr);
+        }
+        else//npc检测
+        {
+            //只有房间名以外的才需要去除颜色
+            removeColorFromArray(oneStr);
+            roomnpc(oneStr);
+        }
+    }
+}
+
+void MapMainWindow::getOneStrFromArray(QByteArray &inArray, QByteArray &outArray)
+{
+    bool findStr=false;//找到回车换行
+    int charNum=0;//没找到回车换行，但是到尾部了
+    for(; charNum<inArray.size()-1; charNum++)
+    {
+        if(uchar(inArray[charNum])==0x0D && uchar(inArray[charNum+1])==0x0A)
+        {
+            findStr=true;
+            charNum++;
+            break;
+        }
+    }
+
+    if(findStr)//找到回车换行
+    {
+        outArray=inArray.mid(0, charNum+1);
+        inArray=inArray.mid(charNum+1);
+        //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<QString(backArray);
+    }
+    else
+    {
+        if(charNum+1 == inArray.size())//没找到回车换行，但是到尾部了
+        {
+            outArray=inArray;
+            inArray=inArray.mid(charNum+1);
+            //qDebug()<<"outArray--"<<QString(outArray)<<"  backArray--"<<QString(backArray);
+        }
+        else
+        {
+            //qDebug()<<"error  backArray--"<<QString(backArray);
+        }
+    }
+}
+
+bool MapMainWindow::removeColorFromArray(QByteArray &inArray)
+{
+    //QRegularExpression regular{"\\033\\[\\d+(;\\d+)*m"};//去除颜色
+    //\x1B
+    bool found=false;
+    int Num=0;
+    while(Num<inArray.size()-1)
+    {
+        if(inArray[Num]=='\x1B')
+        {
+            int key=Num+1;
+            if(key<inArray.size() && inArray[key]=='[')//\x1B 后必是 [
+            {
+                key++;
+                while(key<inArray.size())
+                {
+                    if(inArray[key]==';' || ('0'<=inArray[key] && inArray[key]<='9') || inArray[key]=='m')
+                    {
+                        if(inArray[key]=='m')//M结尾
+                        {
+                            found=true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        found=false;
+                        break;
+                    }
+                    key++;
+                }
+            }
+            if(found)//数组中移除
+            {
+                inArray.remove(Num,key-Num+1);
+                Num--;
+            }
+        }
+        Num++;
+    }
+    return found;
+}
+
+void MapMainWindow::roomname(QByteArray &inArray)
+{
+    qDebug()<<"MapMainWindow::roomname--"<<inArray;
+    QRegularExpressionMatch regularmatch=nameRegStr.match(inArray);
+    if(regularmatch.hasMatch())
+    {
+        QStringList backList=regularmatch.capturedTexts();
+        //qDebug()<<"MapMainWindow::backList--"<<backList;
+        if(backList.size()>=2)
+        {
+            ui->mapWidget->setRoomNC(backList[1],"");
+            roomifo.roomnamefind=true;
+        }
+    }
+}
+
+void MapMainWindow::roommes(QByteArray &inArray)
+{
+    qDebug()<<"MapMainWindow::roommes--"<<inArray;
+    if(!roomifo.RoomMessagebegin)
+    {
+        //qDebug()<<"MapMainWindow::roommes--  1111";
+        QRegularExpressionMatch roomMesBeginmatch=roomMesBeginRegStr.match(inArray);
+        if(roomMesBeginmatch.hasMatch())
+        {
+            //qDebug()<<"MapMainWindow::roommes--  2222";
+            roomifo.RoomMessageArray.append(inArray);
+            roomifo.RoomMessagebegin=true;
+        }
+    }
+    else
+    {
+        //qDebug()<<"MapMainWindow::roommes--  3333";
+        QRegularExpressionMatch roomMesendmatch=roomMesendRegStr.match(inArray);
+        if(roomMesendmatch.hasMatch())
+        {
+            //qDebug()<<"MapMainWindow::roommes--  4444";
+            ui->mapWidget->setroommes(roomifo.RoomMessageArray);
+            roomifo.RoomMessagefind=true;
+        }
+        else
+        {
+            //qDebug()<<"MapMainWindow::roommes--  5555";
+            roomifo.RoomMessageArray.append(inArray);
+        }
+    }
+}
+
+void MapMainWindow::roomout(QByteArray &inArray)
+{
+    qDebug()<<"MapMainWindow::roomout--"<<inArray;
+    QRegularExpressionMatch roomoutmatch=roomoutRegStr.match(inArray);
+    if(roomoutmatch.hasMatch())
+    {
+        QStringList backList=roomoutmatch.capturedTexts();
+        if(backList.size()>=2)
+        {
+            QByteArray outList;
+            bool findbegin=false;
+            QByteArray outstr=backList[1].toUtf8();
+            for(int num=0;num<outstr.size();num++)
+            {
+                if('a'<=outstr[num] && outstr[num]<='z')
+                {
+                    findbegin=true;
+                    outList.append(outstr[num]);
+                }
+                else if('A'<=outstr[num] && outstr[num]<='Z')
+                {
+                    findbegin=true;
+                    outList.append(outstr[num]-26);
+                }
+                else
+                {
+                    if(findbegin)
+                    {
+                        outList.append(';');
+                        findbegin=false;
+                    }
+                }
+            }
+            ui->mapWidget->setroomout(outList);
+            roomifo.fangxiangfind=true;
+        }
+    }
+    else
+    {
+        QRegularExpressionMatch nooutmatch=nooutRegStr.match(inArray);//没有出口
+        if(nooutmatch.hasMatch())
+        {
+            roomifo.fangxiangfind=true;
+        }
+    }
+}
+
+void MapMainWindow::roomnpc(QByteArray &inArray)
+{
+    qDebug()<<"MapMainWindow::roomnpc--"<<inArray;
+    QRegularExpressionMatch npcmatch=npcReg.match(inArray);//有npc
+    if(npcmatch.hasMatch())
+    {
+        QStringList backList=npcmatch.capturedTexts();
+        if(backList.size()>=4)
+        {
+            ui->mapWidget->appendNpc(backList[2],backList[3].toLower(),backList[1]);
+        }
+    }
+    else
+    {
+        QRegularExpressionMatch endmatch=endReg.match(inArray);//结束字符
+        if(endmatch.hasMatch())
+        {
+            //qDebug()<<"MapMainWindow::roomnpc--"<<mapcreateGetMessage;
+            mapcreateGetMessage=false;
+            calculateTo();
+            ui->mapWidget->on_checkRoomName_clicked();
+            on_saveRoomBT_clicked();
+        }
+    }
+}
+
 void MapMainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button() & Qt::RightButton)
@@ -551,16 +800,14 @@ void MapMainWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void MapMainWindow::on_lookRoomBT_clicked()
 {
-    //
-    auto clickIter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
-    if(clickIter!=JsonInter::GetInstance()->roomMap.end())
-    {
-        clickIter->second->roomName="杭州提督府正门";
-        clickIter->second->update();
-    }
-    QString cmdtest="测试试试:#killNpc(wei zheng);sw;aaaaa;n;&测试试试:say 1;n&测试试试:#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;&测试试试:say 3 ;yz_qsdd_1;s";
-    WorkSys::GetInstance()->releasepareCmd(cmdtest,true);
+    roomifo.clear();
+    mapcreateGetMessage=true;
+    emit mapCreateCmd("l");
+    //QString cmdtest="测试试试:#killNpc(wei zheng);sw;aaaaa;n;&测试试试:say 1;n&测试试试:#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;&测试试试:say 3 ;yz_qsdd_1;s";
+    //WorkSys::GetInstance()->releasepareCmd(cmdtest,true);
     //cmdtest="#killNpc(wei zheng);sw;say 1;n;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;say 3 ;yz_qsdd_1;s";
+    //WorkSys::GetInstance()->releaseCmd(cmdtest,true);
+    //QString cmdtest="#path(sw)";
     //WorkSys::GetInstance()->releaseCmd(cmdtest,true);
 }
 
@@ -622,6 +869,7 @@ void MapMainWindow::on_saveRoomBT_clicked()
             oneroomJson.insert("roomEN",roomPtr->roomEN);
             oneroomJson.insert("roomColor",roomPtr->roomColor);
             oneroomJson.insert("out",roomPtr->out);
+            qDebug()<<"MapMainWindow::on_saveRoomBT_clicked() out--"<<roomPtr->out;
             oneroomJson.insert("outnow",roomPtr->outnow);
             oneroomJson.insert("roomDes",roomPtr->roomDes);
             oneroomJson.insert("chongfuNum",roomPtr->chongfuNum);
@@ -659,7 +907,7 @@ void MapMainWindow::on_saveRoomBT_clicked()
 
 void MapMainWindow::on_openMap_triggered()
 {
-    QString filepath = QFileDialog::getOpenFileName(this, "选择单个文件", "./exampleProject", tr("(*.mudmap)"));
+    QString filepath = QFileDialog::getOpenFileName(this, "选择单个文件", "./", tr("(*.mudmap)"));
     if(filepath!="")
     {
         ui->graphicsView->clearView();
@@ -675,8 +923,8 @@ void MapMainWindow::on_openMap_triggered()
 
 void MapMainWindow::on_saveMap_triggered()
 {
-    qDebug()<<"MapMainWindow::on_saveMapBT_clicked()";
-    QString filepath = QFileDialog::getSaveFileName(this, "选择单个文件", "./exampleProject", tr("(*.mudmap)"));
+    //qDebug()<<"MapMainWindow::on_saveMapBT_clicked()";
+    QString filepath = QFileDialog::getSaveFileName(this, "选择单个文件", "./", tr("(*.mudmap)"));
     JsonInter::GetInstance()->saveRoomInFile(filepath);
 }
 
@@ -759,5 +1007,40 @@ void MapMainWindow::on_deleteDLL_triggered()
         killNpc=nullptr;
     }
 #endif
+}
+
+void MapMainWindow::on_cmdLE_returnPressed()
+{
+    QString cmdname=ui->cmdLE->text();
+    ui->cmdLE->clear();
+    if(cmdname!="l")
+    {
+        for(int num=0; num<toroomLayout->count(); num++)
+        {
+            QString outCB, cmd, time, room;
+            ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room);
+            if(outCB==cmdname)
+            {
+                //发送命令，等待成功
+                this->waitOut.outcmd=outCB;
+                this->waitOut.outCmdNow=cmd;
+                this->waitOut.time=time.toInt();
+                this->waitOut.room=room.toInt();
+                waitGo=true;
+                waitgoForm=((GoForm*)(toroomLayout->itemAt(num)->widget()));
+                jishu=true;
+                WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
+                break;
+            }
+        }
+    }
+    else
+        on_lookRoomBT_clicked();
+}
+
+
+void MapMainWindow::on_action_triggered()
+{
+    configWidget.show();
 }
 

@@ -32,6 +32,12 @@
     </property>
     <item row="0" column="0">
      <widget class="QSplitter" name="splitter">
+      <property name="lineWidth">
+       <number>2</number>
+      </property>
+      <property name="midLineWidth">
+       <number>1</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -39,69 +45,22 @@
       <widget class="QWidget" name="widget" native="true">
        <layout class="QGridLayout" name="gridLayout_2">
         <property name="leftMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="topMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="bottomMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
-        <property name="horizontalSpacing">
-         <number>6</number>
-        </property>
-        <item row="2" column="0">
-         <widget class="QScrollArea" name="scrollArea_2">
-          <property name="widgetResizable">
-           <bool>true</bool>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="lookRoomBT">
+          <property name="text">
+           <string>look检视房间</string>
           </property>
-          <widget class="QWidget" name="outRoomWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>156</width>
-             <height>206</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QScrollArea" name="scrollArea">
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="RoomWidget" name="mapWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>320</width>
-             <height>206</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QScrollArea" name="scrollArea_3">
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="QWidget" name="inRoomWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>156</width>
-             <height>206</height>
-            </rect>
-           </property>
-          </widget>
          </widget>
         </item>
         <item row="0" column="1">
@@ -111,11 +70,76 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="lookRoomBT">
-          <property name="text">
-           <string>look检视房间</string>
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="cmdLE"/>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QSplitter" name="splitter_3">
+          <property name="lineWidth">
+           <number>2</number>
           </property>
+          <property name="midLineWidth">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="RoomWidget" name="mapWidget">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>206</width>
+              <height>438</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QSplitter" name="splitter_2">
+           <property name="lineWidth">
+            <number>2</number>
+           </property>
+           <property name="midLineWidth">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <widget class="QScrollArea" name="scrollArea_2">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="outRoomWidget">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>205</width>
+               <height>216</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QScrollArea" name="scrollArea_3">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inRoomWidget">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>205</width>
+               <height>215</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -147,8 +171,15 @@
     <addaction name="adddll"/>
     <addaction name="deleteDLL"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>其它</string>
+    </property>
+    <addaction name="action"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menuDLL"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="openMap">
@@ -169,6 +200,11 @@
   <action name="deleteDLL">
    <property name="text">
     <string>卸载DLL</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>设置</string>
    </property>
   </action>
  </widget>

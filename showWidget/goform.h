@@ -24,6 +24,8 @@ private slots:
 
     void on_go_clicked();
 
+    void on_outCombox_currentTextChanged(const QString &arg1);
+
 signals:
     void deleteGo(GoForm*);
     void GoFormGo(GoForm*);
