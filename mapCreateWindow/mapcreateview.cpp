@@ -145,6 +145,7 @@ void MapCreateView::setsomeClike()
     if(clickItem!=nullptr)
     {
         clickItem->itemSHOW_STATE=false;
+        clickItem->itemSELECTED_STATE=false;
         clickItem->update();
     }
     if(!JsonInter::GetInstance()->roomMap.isEmpty())
@@ -161,6 +162,7 @@ void MapCreateView::setsomeClike(int roomnum)
     if(clickItem!=nullptr)
     {
         clickItem->itemSHOW_STATE=false;
+        clickItem->itemSELECTED_STATE=false;
         clickItem->update();
     }
     if(!JsonInter::GetInstance()->roomMap.isEmpty())
@@ -170,6 +172,7 @@ void MapCreateView::setsomeClike(int roomnum)
         {
             clickItem=mapiter->second;
             clickItem->itemSHOW_STATE=true;
+            clickItem->update();
             emit itemeclick(clickItem);
         }
     }
@@ -755,6 +758,7 @@ void MapCreateView::mousePressEvent(QMouseEvent *event)
                 if(clickItem!=nullptr)
                 {
                     clickItem->itemSHOW_STATE=false;
+                    clickItem->itemSELECTED_STATE=false;
                     clickItem->update();
                 }
                 clickItem=((MapCreateRoomItem*)asdfasdf);
@@ -768,6 +772,7 @@ void MapCreateView::mousePressEvent(QMouseEvent *event)
                 if(clickItem!=nullptr)
                 {
                     clickItem->itemSHOW_STATE=false;
+                    clickItem->itemSELECTED_STATE=false;
                     clickItem->update();
                 }
                 clickItem=((MapCreateRoomItem*)(asdfasdf->parentItem()));
@@ -802,6 +807,7 @@ void MapCreateView::mouseReleaseEvent(QMouseEvent *event)
                 if(clickItem!=nullptr)
                 {
                     clickItem->itemSHOW_STATE=false;
+                    clickItem->itemSELECTED_STATE=false;
                     clickItem->update();
                 }
             }
