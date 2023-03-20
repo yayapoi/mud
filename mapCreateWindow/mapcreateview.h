@@ -72,6 +72,7 @@ private:
     MapCreateRoomItem* clickItem=nullptr;
     MapCreateRoomItem* heBingItem=nullptr;
 
+    QList<MapCreateRoomItem*> seletitem;
     void gentle_zoom(double factor);
     int mousePosIsLocationAtMove(QPoint mousePos);
     void moveScrollBar(int value);

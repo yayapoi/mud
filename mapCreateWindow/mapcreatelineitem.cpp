@@ -4,7 +4,10 @@
 
 MapCreateLineItem::MapCreateLineItem()
 {
-
+    setFlag(QGraphicsItem::ItemIsSelectable,false);
+    setFlag(QGraphicsItem::ItemIsMovable,false);
+    setFlag(QGraphicsItem::ItemIsFocusable,false);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges,false);
 }
 
 MapCreateLineItem::~MapCreateLineItem()

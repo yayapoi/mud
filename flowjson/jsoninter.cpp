@@ -623,7 +623,7 @@ void JsonInter::valueMerge(double &x, double &y)
     {
         maxY=y;
     }
-    if(y>minY)
+    if(y<minY)
     {
         minY=y;
     }

@@ -75,6 +75,8 @@ public:
 
     /** @brief 修改控件状态 */
     void changeItemState(itemState state);
+    /** @brief 刷新线的位置 */
+    void fluseLine();
 
     QPointF getPointF(IOposition, IOO);
     void addItem(IOposition, IOO, MapCreateLineItem*);

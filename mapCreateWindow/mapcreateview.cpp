@@ -18,6 +18,44 @@ MapCreateView::MapCreateView(QWidget *parent):QGraphicsView(parent)
     initRightMenu();
     viewportMoveTimer.setInterval(50);
     connect(&viewportMoveTimer,&QTimer::timeout,this,&MapCreateView::viewportMoveTimerOut);
+    QGraphicsScene* testScene=new QGraphicsScene;
+    testScene->setSceneRect(-10000,-10000,20000,20000);
+    setScene(testScene);
+    connect(testScene,&QGraphicsScene::selectionChanged,this,[this](){
+        //qDebug()<<"QGraphicsScene::selectionChanged----";
+        /*QList<QGraphicsItem*> allList=items();
+        for(int num=0;num<allList.size();num++)
+        {
+            if(allList[num]->type()==MapCreateRoomItem::Type)
+            {
+                if(((MapCreateRoomItem*)allList[num])->itemSELECTED_STATE)
+                {
+                    ((MapCreateRoomItem*)allList[num])->itemSELECTED_STATE=false;
+                    ((MapCreateRoomItem*)allList[num])->update();
+                }
+            }
+        }*/
+        for(int num=0;num<seletitem.size();num++)
+        {
+            if(seletitem[num]->type()==MapCreateRoomItem::Type)
+            {
+                ((MapCreateRoomItem*)seletitem[num])->itemSELECTED_STATE=false;
+                ((MapCreateRoomItem*)seletitem[num])->update();
+            }
+        }
+        seletitem.clear();
+        QList<QGraphicsItem*> selelist=scene()->selectedItems();
+        for(int num=0;num<selelist.size();num++)
+        {
+            if(selelist[num]->type()==MapCreateRoomItem::Type)
+            {
+                //qDebug()<<"QGraphicsScene::selectionChanged----111";
+                ((MapCreateRoomItem*)selelist[num])->itemSELECTED_STATE=true;
+                ((MapCreateRoomItem*)selelist[num])->update();
+                seletitem.append(((MapCreateRoomItem*)selelist[num]));
+            }
+        }
+    });
     /*connect(this,&MapCreateView::rubberBandChanged,[&](QRect rubberBandRect, QPointF fromScenePoint, QPointF toScenePoint){
         //qDebug()<<"rubberBandRect--"<<rubberBandRect<<"   fromScenePoint--"<<fromScenePoint<<"  toScenePoint--"<<toScenePoint;
         if(rubberBandRect.isEmpty())
@@ -103,27 +141,26 @@ void MapCreateView::clearView()
 
 void MapCreateView::setsomeClike()
 {
+    qDebug()<<"QGraphicsScene::setsomeClike----";
     if(clickItem!=nullptr)
     {
-        clickItem->itemSELECTED_STATE=false;
-        clickItem->setSelected(false);
+        clickItem->itemSHOW_STATE=false;
         clickItem->update();
     }
     if(!JsonInter::GetInstance()->roomMap.isEmpty())
     {
         clickItem=JsonInter::GetInstance()->roomMap.begin()->second;
-        clickItem->itemSELECTED_STATE=true;
-        clickItem->setSelected(true);
+        clickItem->itemSHOW_STATE=true;
         emit itemeclick(clickItem);
     }
 }
 
 void MapCreateView::setsomeClike(int roomnum)
 {
+    qDebug()<<"QGraphicsScene::setsomeClike(int roomnum)----";
     if(clickItem!=nullptr)
     {
-        clickItem->itemSELECTED_STATE=false;
-        clickItem->setSelected(false);
+        clickItem->itemSHOW_STATE=false;
         clickItem->update();
     }
     if(!JsonInter::GetInstance()->roomMap.isEmpty())
@@ -132,8 +169,7 @@ void MapCreateView::setsomeClike(int roomnum)
         if(mapiter!=JsonInter::GetInstance()->roomMap.end())
         {
             clickItem=mapiter->second;
-            clickItem->itemSELECTED_STATE=true;
-            clickItem->setSelected(true);
+            clickItem->itemSHOW_STATE=true;
             emit itemeclick(clickItem);
         }
     }
@@ -711,20 +747,18 @@ void MapCreateView::mousePressEvent(QMouseEvent *event)
         QGraphicsItem* asdfasdf=scene()->itemAt(mapToScene(event->pos()),QTransform());
         if(asdfasdf!=nullptr)
         {
-            upSelectItem();
+            //upSelectItem();
             //qDebug()<<"FlowGraphicsView::mousePressEvent-----";
             if(asdfasdf->type()==MapCreateRoomItem::Type)
             {
                 //qDebug()<<"FlowGraphicsView::mousePressEvent   asdfasdf->type()==MapCreateRoomItem::Type"<<asdfasdf;
                 if(clickItem!=nullptr)
                 {
-                    clickItem->itemSELECTED_STATE=false;
-                    clickItem->setSelected(false);
+                    clickItem->itemSHOW_STATE=false;
                     clickItem->update();
                 }
                 clickItem=((MapCreateRoomItem*)asdfasdf);
-                clickItem->itemSELECTED_STATE=true;
-                clickItem->setSelected(true);
+                clickItem->itemSHOW_STATE=true;
                 emit itemeclick(clickItem);
                 //oneItem->update();
             }
@@ -733,13 +767,11 @@ void MapCreateView::mousePressEvent(QMouseEvent *event)
                 //qDebug()<<"FlowGraphicsView::mousePressEvent   asdfasdf->type()!=MapCreateRoomItem::Type";
                 if(clickItem!=nullptr)
                 {
-                    clickItem->itemSELECTED_STATE=false;
-                    clickItem->setSelected(false);
+                    clickItem->itemSHOW_STATE=false;
                     clickItem->update();
                 }
                 clickItem=((MapCreateRoomItem*)(asdfasdf->parentItem()));
-                clickItem->itemSELECTED_STATE=true;
-                clickItem->setSelected(true);
+                clickItem->itemSHOW_STATE=true;
                 emit itemeclick(clickItem);
             }
         }
@@ -769,8 +801,7 @@ void MapCreateView::mouseReleaseEvent(QMouseEvent *event)
                 //用户右键到没选中的控件上，弹起所有的已选中控件，自动选中鼠标右键在的控件
                 if(clickItem!=nullptr)
                 {
-                    clickItem->itemSELECTED_STATE=false;
-                    clickItem->setSelected(false);
+                    clickItem->itemSHOW_STATE=false;
                     clickItem->update();
                 }
             }
@@ -780,8 +811,7 @@ void MapCreateView::mouseReleaseEvent(QMouseEvent *event)
                 //qDebug() << "FlowGraphicsView::mouseReleaseEvent  右键选中控件上--";
             }
             clickItem=backItem;
-            clickItem->itemSELECTED_STATE=true;
-            clickItem->setSelected(true);
+            clickItem->itemSHOW_STATE=true;
             deleteAction.setEnabled(true);
             emit itemeclick(clickItem);
             if(heBingItem!=nullptr)
@@ -814,6 +844,16 @@ void MapCreateView::mouseReleaseEvent(QMouseEvent *event)
             }
         }
         rightMenu.exec(QCursor::pos());
+    }
+    else
+    {
+        for(int num=0;num<seletitem.size();num++)
+        {
+            if(seletitem[num]->type()==MapCreateRoomItem::Type)
+            {
+                ((MapCreateRoomItem*)seletitem[num])->fluseLine();
+            }
+        }
     }
     QGraphicsView::mouseReleaseEvent(event);
 }
@@ -1035,6 +1075,7 @@ void MapCreateView::deleteItem(MapCreateRoomItem *delettt)
 {
     if(delettt!=nullptr)
     {
+        seletitem.removeAll(delettt);
         if(heBingItem==delettt)
         {
             heBingItem=nullptr;

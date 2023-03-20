@@ -100,6 +100,75 @@ void MapCreateRoomItem::changeItemState(itemState state)
     }
 }
 
+void MapCreateRoomItem::fluseLine()
+{
+    if(upItem->inLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::UP,MapCreateRoomItem::IN);
+        foreach(MapCreateLineItem* oneitem,upItem->inLineItem)
+        {
+            //qDebug()<<"MapCreateLineItem::addMyLine oneitem--"<<oneitem;
+            oneitem->setLine(oneitem->line().x1(),oneitem->line().y1(),beginP.x(),beginP.y());
+        }
+    }
+    if(upItem->outLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::UP,MapCreateRoomItem::OUT);
+        foreach(MapCreateLineItem* oneitem,upItem->outLineItem)
+        {
+            oneitem->setLine(beginP.x(),beginP.y(),oneitem->line().x2(),oneitem->line().y2());
+        }
+    }
+    if(downItem->inLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::DOWN,MapCreateRoomItem::IN);
+        foreach(MapCreateLineItem* oneitem,downItem->inLineItem)
+        {
+            oneitem->setLine(oneitem->line().x1(),oneitem->line().y1(),beginP.x(),beginP.y());
+        }
+    }
+    if(downItem->outLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::DOWN,MapCreateRoomItem::OUT);
+        foreach(MapCreateLineItem* oneitem,downItem->outLineItem)
+        {
+            oneitem->setLine(beginP.x(),beginP.y(),oneitem->line().x2(),oneitem->line().y2());
+        }
+    }
+    if(LeftItem->inLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::LEFT,MapCreateRoomItem::IN);
+        foreach(MapCreateLineItem* oneitem,LeftItem->inLineItem)
+        {
+            oneitem->setLine(oneitem->line().x1(),oneitem->line().y1(),beginP.x(),beginP.y());
+        }
+    }
+    if(LeftItem->outLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::LEFT,MapCreateRoomItem::OUT);
+        foreach(MapCreateLineItem* oneitem,LeftItem->outLineItem)
+        {
+            oneitem->setLine(beginP.x(),beginP.y(),oneitem->line().x2(),oneitem->line().y2());
+        }
+    }
+    if(rightItem->inLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::RIGHT,MapCreateRoomItem::IN);
+        foreach(MapCreateLineItem* oneitem,rightItem->inLineItem)
+        {
+            oneitem->setLine(oneitem->line().x1(),oneitem->line().y1(),beginP.x(),beginP.y());
+        }
+    }
+    if(rightItem->outLineItem.size()!=0)
+    {
+        QPointF beginP=getPointF(MapCreateRoomItem::RIGHT,MapCreateRoomItem::OUT);
+        foreach(MapCreateLineItem* oneitem,rightItem->outLineItem)
+        {
+            oneitem->setLine(beginP.x(),beginP.y(),oneitem->line().x2(),oneitem->line().y2());
+        }
+    }
+}
+
 QPointF MapCreateRoomItem::getPointF(IOposition Ioposition, IOO io)
 {
     QPointF backPoin{0,0};

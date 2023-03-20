@@ -65,10 +65,6 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
     });
     MyMenu.addAction(m_ActionAddTo);
 
-    QGraphicsScene* testScene=new QGraphicsScene;
-    testScene->setSceneRect(-10000,-10000,20000,20000);
-    ui->graphicsView->setScene(testScene);
-
     fromroomLayout=new QVBoxLayout();
     ui->outRoomWidget->setLayout(fromroomLayout);
 
