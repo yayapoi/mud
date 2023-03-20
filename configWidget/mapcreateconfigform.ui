@@ -26,6 +26,22 @@
     <string>行走时统计最长时间</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="errorTimeCB">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>60</y>
+     <width>191</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>网络延时长时使用虚假走路时间</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -9,6 +9,7 @@ bool statusBool=false;
 bool messageBool=false;
 killnpc killNpc=nullptr;
 bool longOrShortTime=false;
+bool errorTime=true;
 
 bool mapcreateGetMessage=false;
 QString outChange(QString cmd)

@@ -21,6 +21,8 @@ extern killnpc killNpc;
 extern bool mapcreateGetMessage;
 ///使用最长或者最短时间，配置里选  true:最长，
 extern bool longOrShortTime;
+///网络延时过长时 同时用户确认只需要很短时间时  使用虚假时间，配置里选  true:使用虚假时间，
+extern bool errorTime;
 
 struct NpcInfo{
     QString nameZH;//中文名

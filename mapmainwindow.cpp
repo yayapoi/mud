@@ -425,7 +425,7 @@ void MapMainWindow::GoSuccess()
     }
     //假如已经有时间了，统计时间
     int nowTime=begintime.msecsTo(QTime::currentTime());
-    if(nowTime>50)
+    if(errorTime && nowTime>50)
     {
         nowTime=50;
     }

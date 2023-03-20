@@ -18,6 +18,8 @@ public:
 private slots:
     void on_timeCB_toggled(bool checked);
 
+    void on_errorTimeCB_toggled(bool checked);
+
 private:
     Ui::MapCreateConfigForm *ui;
 };
