@@ -52,6 +52,14 @@ public:
 
     ///合并两个控件的输入输出，map,json
     void itemMarge(MapCreateRoomItem* beginitem, MapCreateRoomItem* endItem);
+
+    //计算地图中控件占用最大最小值，画布也要变化
+    double minX=9999999.0;
+    double maxX=-9999999.0;
+    double minY=9999999.0;
+    double maxY=-9999999.0;
+    ///统计地图中全部控件占用面积大小
+    void valueMerge(double& x, double& y);
 signals:
 private:
     explicit JsonInter(QObject *parent = nullptr);

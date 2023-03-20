@@ -930,6 +930,9 @@ void MapMainWindow::on_openMap_triggered()
         clearFromRoom();
         clearToRoom();
         JsonInter::GetInstance()->getRoomInFile(filepath);
+        ui->graphicsView->scene()->setSceneRect(JsonInter::GetInstance()->minX-200,JsonInter::GetInstance()->minY-200
+                                                ,JsonInter::GetInstance()->maxX-JsonInter::GetInstance()->minX+400
+                                                ,JsonInter::GetInstance()->maxY-JsonInter::GetInstance()->minY+400);
         //初始化房间
         ui->graphicsView->initRoom();
     }

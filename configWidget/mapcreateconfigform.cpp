@@ -22,6 +22,6 @@ void MapCreateConfigForm::on_timeCB_toggled(bool checked)
 
 void MapCreateConfigForm::on_errorTimeCB_toggled(bool checked)
 {
-    D
+    errorTime=checked;
 }
 

@@ -173,8 +173,11 @@ bool JsonInter::getRoomInFile(QString fillname)
                 roomInfo* oneRoonInfo=new roomInfo;
 
                 QJsonArray coordinate_data=oneRoomObj.value("coordinate_data").toArray();
-                oneRoonInfo->roomPoint.setX(coordinate_data[0].toDouble());
-                oneRoonInfo->roomPoint.setY(coordinate_data[1].toDouble());
+                double x=coordinate_data[0].toDouble();
+                double y=coordinate_data[1].toDouble();
+                valueMerge(x, y);
+                oneRoonInfo->roomPoint.setX(x);
+                oneRoonInfo->roomPoint.setY(y);
 
                 QJsonArray child_items=oneRoomObj.value("child_items").toArray();
                 foreach(auto oneitem,child_items)
@@ -603,5 +606,25 @@ void JsonInter::itemMarge(MapCreateRoomItem *beginitem, MapCreateRoomItem *endIt
                 }
             }
         }
+    }
+}
+
+void JsonInter::valueMerge(double &x, double &y)
+{
+    if(x>maxX)
+    {
+        maxX=x;
+    }
+    if(x<minX)
+    {
+        minX=x;
+    }
+    if(y>maxY)
+    {
+        maxY=y;
+    }
+    if(y>minY)
+    {
+        minY=y;
     }
 }
