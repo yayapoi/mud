@@ -446,6 +446,7 @@ void MapMainWindow::GoSuccess()
     //保存json,保存map,即本map增加出口，json增加出口，
     on_saveRoomBT_clicked();
     ui->graphicsView->setsomeClike(waitOut.room);
+    ui->graphicsView->centeeron();
 }
 
 void MapMainWindow::calculateTo()
@@ -690,7 +691,7 @@ void MapMainWindow::roomname(QByteArray &inArray)
 
 void MapMainWindow::roommes(QByteArray &inArray)
 {
-    qDebug()<<"MapMainWindow::roommes--"<<inArray;
+    qDebug()<<"MapMainWindow::roommes--"<<QString(inArray);
     if(!roomifo.RoomMessagebegin)
     {
         //qDebug()<<"MapMainWindow::roommes--  1111";
@@ -722,7 +723,7 @@ void MapMainWindow::roommes(QByteArray &inArray)
 
 void MapMainWindow::roomout(QByteArray &inArray)
 {
-    qDebug()<<"MapMainWindow::roomout--"<<inArray;
+    qDebug()<<"MapMainWindow::roomout--"<<QString(inArray);
     QRegularExpressionMatch roomoutmatch=roomoutRegStr.match(inArray);
     if(roomoutmatch.hasMatch())
     {
@@ -926,9 +927,9 @@ void MapMainWindow::on_openMap_triggered()
         clearFromRoom();
         clearToRoom();
         JsonInter::GetInstance()->getRoomInFile(filepath);
-        ui->graphicsView->scene()->setSceneRect(JsonInter::GetInstance()->minX-200,JsonInter::GetInstance()->minY-200
-                                                ,JsonInter::GetInstance()->maxX-JsonInter::GetInstance()->minX+400
-                                                ,JsonInter::GetInstance()->maxY-JsonInter::GetInstance()->minY+400);
+        ui->graphicsView->scene()->setSceneRect(JsonInter::GetInstance()->minX-3000,JsonInter::GetInstance()->minY-3000
+                                                ,JsonInter::GetInstance()->maxX-JsonInter::GetInstance()->minX+6000
+                                                ,JsonInter::GetInstance()->maxY-JsonInter::GetInstance()->minY+6000);
         //初始化房间
         ui->graphicsView->initRoom();
     }

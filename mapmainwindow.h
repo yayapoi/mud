@@ -43,7 +43,7 @@ public:
     bool waitGo=false;
     GoForm* waitgoForm=nullptr;
     QRegularExpression nameRegStr{"^([\\(\\)a-zA-Z\u4e00-\u9fa5]+?) - [(?: ★)|(?: ☆)]*\\r\\n$"};
-    QRegularExpression roomMesBeginRegStr{"^    (?:[\u4e00-\u9fa5]+)"};
+    QRegularExpression roomMesBeginRegStr{"^    (?:[*\u4e00-\u9fa5]+)"};
     QRegularExpression roomMesendRegStr{"(?:^\\r\\n)|(?:^    )"};
     QRegularExpression roomoutRegStr{"^    (?:这里[\u4e00-\u9fa5]*的(?:出口|方向)(?:是|有) *(.+)。|浓雾中你[\u4e00-\u9fa5]*觉得似乎[\u4e00-\u9fa5]*通往 *(.+)方向。)\\r\\n$"};
     QRegularExpression nooutRegStr{"^    这里没有任何明显的.*\\w*"};

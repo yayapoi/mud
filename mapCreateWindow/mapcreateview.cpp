@@ -1331,6 +1331,11 @@ void MapCreateView::hebingTwoItem()
     heBingAction.setEnabled(false);
 }
 
+void MapCreateView::centeeron()
+{
+    centerOn(clickItem);
+}
+
 void MapCreateView::viewportMoveTimerOut()
 {
     viewportMoveTimer.stop();

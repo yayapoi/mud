@@ -9,11 +9,15 @@
 WorkSys* WorkSys::m_pipe_rw = nullptr;
 WorkSys::GC WorkSys::gc;
 
+#define movegmcpOn "#enableReg(\"地图编辑\",\"moceGMCP\",1);"
+#define movegmcpOff "#enableReg(\"地图编辑\",\"moceGMCP\",0);"
+
 void WorkSys::startWalk()
 {
     workend=false;
     working=true;
     emit workPritf("----开始行走----");
+    emit cmdroom("", movegmcpOn);
     walktimer.start(170);
     dowork(true);
 }
@@ -22,8 +26,10 @@ void WorkSys::Walk()
 {
     //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"WorkSys::moveStatus Walk--";
     emit workPritf("----继续行走----");
+    emit cmdroom("", movegmcpOn);
     if(workend)
     {
+        emit cmdroom("", movegmcpOff);
         emit workPritf("----没有路径可执行----");
     }
     else
@@ -45,6 +51,7 @@ void WorkSys::stopWalk()
     {
         working=false;
         walktimer.stop();
+        emit cmdroom("", movegmcpOff);
         emit workPritf("----暂停行走----");
     }
 }
@@ -85,6 +92,7 @@ void WorkSys::moveStatus(bool flag)
                     {
                         //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
                         clearOldPath();
+                        emit cmdroom("", movegmcpOff);
                         emit workPritf("----路径完成----");
                     }
                 }
@@ -124,6 +132,7 @@ void WorkSys::busyStatus(bool flag)
                     {
                         //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
                         clearOldPath();
+                        emit cmdroom("", movegmcpOff);
                         emit workPritf("----路径完成----");
                     }
                 }
@@ -209,7 +218,7 @@ void WorkSys::releaseCmd(QString pathAll,bool addCmd)
         {
             pathList.clear();
             roomStruct newstructr;
-            newstructr.roomNameZH="测试试试";
+            newstructr.roomNameZH="";
             newstructr.cmd=backList[1];
             pathList.append(newstructr);
             releaseList(addCmd);
@@ -531,6 +540,7 @@ void WorkSys::dowork(bool jishi)
         {
             //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
             clearOldPath();
+            emit cmdroom("", movegmcpOff);
             emit workPritf("----路径完成----");
         }
     }

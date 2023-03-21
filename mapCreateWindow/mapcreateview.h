@@ -44,6 +44,9 @@ public:
 
     ///其它地方收到合并并处理后，调用此函数合并view中房间，并删除item
     void hebingTwoItem();
+
+    ///行走后居中某某某
+    void centeeron();
 protected:
     void wheelEvent(QWheelEvent *event) override;//放大缩小图片
     void mouseMoveEvent(QMouseEvent *event) override;

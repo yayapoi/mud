@@ -286,8 +286,8 @@ signals:
         if(regularmatch.hasMatch())
         {
             QString pritfStrstr=regularmatch.captured(1);
-            ui->fightTE->appendNewText(pritfStrstr);
             testRegClass.getMessage(pritfStrstr.toUtf8());
+            ui->fightTE->appendNewText(pritfStrstr+"\r\n");
             //qDebug()<<"checkStr--";
         }
     });
@@ -295,7 +295,7 @@ signals:
     connect(&cmdDo,&CmdDo::deleteRegStr,[&](QString deleteRegStr){testRegClass.deleteRegStr(deleteRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::enableRegStr,[&](QString enableRegStr){testRegClass.enableRegStr(enableRegStr);});//发送给触发类
     connect(&cmdDo,&CmdDo::sendToServer,[&](QString sendToServerStr){socketWrite(sendToServerStr);});//发送给服务器
-    connect(&cmdDo,&CmdDo::cmdShowInWindow,[&](QString cmdShowInWindowStr){ui->fightTE->appendNewText(cmdShowInWindowStr.toUtf8());});//发送给显示界面
+    connect(&cmdDo,&CmdDo::cmdShowInWindow,[&](QString cmdShowInWindowStr){ui->fightTE->appendNewText(cmdShowInWindowStr);});//发送给显示界面
 
     messageFile=new QFile("D:/gmcp.txt");
     if(messageFile->open(QIODevice::WriteOnly))
