@@ -12,7 +12,7 @@ MapCreateLineItem::MapCreateLineItem()
 
 MapCreateLineItem::~MapCreateLineItem()
 {
-    qDebug()<<"MapCreateLineItem::~MapCreateLineItem";
+    //qDebug()<<"MapCreateLineItem::~MapCreateLineItem";
 }
 
 QRectF MapCreateLineItem::boundingRect() const

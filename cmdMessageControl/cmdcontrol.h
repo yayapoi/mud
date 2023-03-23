@@ -43,6 +43,8 @@ private:
     int backStringIndex(QString& instr, int& from, int& kuohaoend);
     /* @brief 删除最前方空格*/
     void clearBlok(QString& instr);
+    /* @brief 开始执行命令*/
+    void doqueueList();
 };
 
 #endif // CMDCONTROL_H

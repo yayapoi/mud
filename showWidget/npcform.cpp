@@ -11,7 +11,7 @@ NPCForm::NPCForm(QWidget *parent) :
 
 NPCForm::~NPCForm()
 {
-    qDebug()<<"NPCForm::~NPCForm()";
+    //qDebug()<<"NPCForm::~NPCForm()";
     delete ui;
 }
 

@@ -40,6 +40,7 @@ public:
 
     //等待命令结果
     OutInfo waitOut;
+    //等待命令结果
     bool waitGo=false;
     GoForm* waitgoForm=nullptr;
     QRegularExpression nameRegStr{"^([\\(\\)a-zA-Z\u4e00-\u9fa5]+?) - [(?: ★)|(?: ☆)]*\\r\\n$"};
@@ -100,7 +101,13 @@ public:
     void roomout(QByteArray &inArray);
     /* @brief 检查是否是npc或者结束*/
     void roomnpc(QByteArray &inArray);
+    /* @brief 行走系统发送命令了，需要统计时间*/
+    void startTime();
+    /* @brief 获取roomid*/
+    QString getroomID();
 
+    void showEvent(QShowEvent *) override;
+    void hideEvent(QHideEvent *) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 signals:
     void mapCreateCmd(QString cmd);

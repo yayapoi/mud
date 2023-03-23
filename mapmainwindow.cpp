@@ -58,7 +58,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
                 waitGo=true;
                 waitgoForm=goItem;
                 jishu=true;
-                WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
+                WorkSys::GetInstance()->releasepareCmd("#path("+getroomID()+":"+cmd+")", true);
             }
         });
         this->toroomLayout->addWidget(goFor2);
@@ -170,14 +170,6 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
             }
         }
     });*/
-    connect(WorkSys::GetInstance(),&WorkSys::cmdroom,this,[this](QString room, QString cmd){
-        if(jishu)
-        {
-            begintime=QTime::currentTime();
-            jishu=false;
-        }
-        emit mapCreateCmd(cmd);
-    });
 }
 
 MapMainWindow::~MapMainWindow()
@@ -244,7 +236,7 @@ void MapMainWindow::initToRoom()
                     waitGo=true;
                     waitgoForm=goItem;
                     jishu=true;
-                    WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
+                    WorkSys::GetInstance()->releasepareCmd("#path("+getroomID()+":"+cmd+")", true);
                 }
             });
             toroomLayout->addWidget(goFor2);
@@ -381,72 +373,75 @@ bool MapMainWindow::checkTo()
 
 void MapMainWindow::GoSuccess()
 {
-    waitGo=false;
-    //qDebug()<<"MapMainWindow::GoSuccess()  waitOut.room--"<<waitOut.room;
-    if(waitOut.room==-1 || waitOut.room==0)//没有房间数字
+    if(waitGo)
     {
-        int num=0;//房间数字
-        if(JsonInter::GetInstance()->roomNumList.isEmpty())
+        waitGo=false;
+        //qDebug()<<"MapMainWindow::GoSuccess()  waitOut.room--"<<waitOut.room;
+        if(waitOut.room==-1 || waitOut.room==0)//没有房间数字
         {
-            num=1;
-            JsonInter::GetInstance()->setnewRoomInJson(num, fZH, fEn, sZH, sEn, srdZH, srdEh);
-        }
-        else
-        {
-            qSort(JsonInter::GetInstance()->roomNumList.begin(), JsonInter::GetInstance()->roomNumList.end());
-            //qDebug()<<"MapMainWindow::GoSuccess()  roomNum--"<<JsonInter::GetInstance()->roomNum;
-            bool findNUm=false;
-            for(; num<JsonInter::GetInstance()->roomNumList.size(); num++)
+            int num=0;//房间数字
+            if(JsonInter::GetInstance()->roomNumList.isEmpty())
             {
-                if(num+1!=JsonInter::GetInstance()->roomNumList[num])
+                num=1;
+                JsonInter::GetInstance()->setnewRoomInJson(num, fZH, fEn, sZH, sEn, srdZH, srdEh);
+            }
+            else
+            {
+                qSort(JsonInter::GetInstance()->roomNumList.begin(), JsonInter::GetInstance()->roomNumList.end());
+                //qDebug()<<"MapMainWindow::GoSuccess()  roomNum--"<<JsonInter::GetInstance()->roomNum;
+                bool findNUm=false;
+                for(; num<JsonInter::GetInstance()->roomNumList.size(); num++)
                 {
-                    num++;
-                    //qDebug()<<"MapMainWindow::GoSuccess()  num++"<<num;
-                    findNUm=true;
-                    break;
+                    if(num+1!=JsonInter::GetInstance()->roomNumList[num])
+                    {
+                        num++;
+                        //qDebug()<<"MapMainWindow::GoSuccess()  num++"<<num;
+                        findNUm=true;
+                        break;
+                    }
                 }
-            }
-            if(!findNUm)
-            {
-                num=JsonInter::GetInstance()->roomNumList.size()+1;
+                if(!findNUm)
+                {
+                    num=JsonInter::GetInstance()->roomNumList.size()+1;
+                    //qDebug()<<"MapMainWindow::GoSuccess()  ednum--"<<num;
+                }
                 //qDebug()<<"MapMainWindow::GoSuccess()  ednum--"<<num;
+                JsonInter::GetInstance()->setnewRoomInJson(num, fZH, fEn, sZH, sEn, srdZH, srdEh);
             }
-            //qDebug()<<"MapMainWindow::GoSuccess()  ednum--"<<num;
-            JsonInter::GetInstance()->setnewRoomInJson(num, fZH, fEn, sZH, sEn, srdZH, srdEh);
+            waitOut.room=num;
+            waitgoForm->setRoomWidget(QString::number(num));
+            auto mapiter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
+            ui->graphicsView->addnewItem(num, mapiter->second, waitOut.outcmd);
         }
-        waitOut.room=num;
-        waitgoForm->setRoomWidget(QString::number(num));
-        auto mapiter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
-        ui->graphicsView->addnewItem(num, mapiter->second, waitOut.outcmd);
-    }
-    //假如已经有时间了，统计时间
-    int nowTime=begintime.msecsTo(QTime::currentTime());
-    if(errorTime && nowTime>50)
-    {
-        nowTime=50;
-    }
-    if(longOrShortTime)
-    {
-        if(waitOut.time<nowTime)
+        //假如已经有时间了，统计时间
+        int nowTime=begintime.msecsTo(QTime::currentTime());
+        if(errorTime && nowTime>50)
         {
-            waitOut.time=nowTime;
+            nowTime=50;
         }
-    }
-    else {
-        if(waitOut.time>nowTime)
+        if(longOrShortTime)
         {
-            waitOut.time=nowTime;
+            if(waitOut.time<nowTime)
+            {
+                waitOut.time=nowTime;
+            }
         }
-        else if(waitOut.time<=0)
-        {
-            waitOut.time=nowTime;
+        else {
+            if(waitOut.time>nowTime)
+            {
+                waitOut.time=nowTime;
+            }
+            else if(waitOut.time<=0)
+            {
+                waitOut.time=nowTime;
+            }
         }
+        waitgoForm->setRoomTime(QString::number(waitOut.time));
+        //保存json,保存map,即本map增加出口，json增加出口，
+        on_saveRoomBT_clicked();
+        ui->graphicsView->setsomeClike(waitOut.room);
+        ui->graphicsView->centeeron();
     }
-    waitgoForm->setRoomTime(QString::number(waitOut.time));
-    //保存json,保存map,即本map增加出口，json增加出口，
-    on_saveRoomBT_clicked();
-    ui->graphicsView->setsomeClike(waitOut.room);
-    ui->graphicsView->centeeron();
 }
 
 void MapMainWindow::calculateTo()
@@ -543,7 +538,7 @@ void MapMainWindow::calculateTo()
                 waitGo=true;
                 waitgoForm=goItem;
                 jishu=true;
-                WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
+                WorkSys::GetInstance()->releasepareCmd("#path("+getroomID()+":"+cmd+")", true);
             }
         });
         this->toroomLayout->addWidget(goFor2);
@@ -794,6 +789,75 @@ void MapMainWindow::roomnpc(QByteArray &inArray)
     }
 }
 
+void MapMainWindow::startTime()
+{
+    if(jishu)
+    {
+        begintime=QTime::currentTime();
+        jishu=false;
+    }
+}
+
+QString MapMainWindow::getroomID()
+{
+    QString backstr;
+    auto mapiter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
+    if(mapiter!=JsonInter::GetInstance()->roomMap.end())
+        if(mapiter->first->FqEN!="")
+        {
+            if(mapiter->first->roomEN!="")
+            {
+                if(mapiter->first->sqEN!="")
+                {
+                    if(mapiter->first->sthqEN!="")
+                    {
+                        if(mapiter->first->chongfuNum==0)
+                        {
+                            backstr=mapiter->first->FqEN+"_"+mapiter->first->sqEN+"_"+mapiter->first->sthqEN+"_"+mapiter->first->roomEN;
+                        }
+                        else
+                        {
+                            backstr=mapiter->first->FqEN+"_"+mapiter->first->sqEN+"_"+mapiter->first->sthqEN+"_"+mapiter->first->roomEN+"_"+QString::number(mapiter->first->chongfuNum);
+                        }
+                    }
+                    else
+                    {
+                        if(mapiter->first->chongfuNum==0)
+                        {
+                            backstr=mapiter->first->FqEN+"_"+mapiter->first->sqEN+"_"+mapiter->first->roomEN;
+                        }
+                        else
+                        {
+                            backstr=mapiter->first->FqEN+"_"+mapiter->first->sqEN+"_"+mapiter->first->roomEN+"_"+QString::number(mapiter->first->chongfuNum);
+                        }
+                    }
+                }
+                else
+                {
+                    if(mapiter->first->chongfuNum==0)
+                    {
+                        backstr=mapiter->first->FqEN+"_"+mapiter->first->roomEN;
+                    }
+                    else
+                    {
+                        backstr=mapiter->first->FqEN+"_"+mapiter->first->roomEN+"_"+QString::number(mapiter->first->chongfuNum);
+                    }
+                }
+            }
+        }
+    return backstr;
+}
+
+void MapMainWindow::showEvent(QShowEvent *)
+{
+    mapCreaterShow=true;
+}
+
+void MapMainWindow::hideEvent(QHideEvent *)
+{
+    mapCreaterShow=false;
+}
+
 void MapMainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button() & Qt::RightButton)
@@ -815,9 +879,9 @@ void MapMainWindow::on_lookRoomBT_clicked()
     ui->mapWidget->clearLayout();
     mapcreateGetMessage=true;
     emit mapCreateCmd("l");
-    //QString cmdtest="测试试试:#killNpc(wei zheng);sw;aaaaa;n;&测试试试:say 1;n&测试试试:#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;&测试试试:say 3 ;yz_qsdd_1;s";
+    //QString cmdtest="测试试试:#killnpc(wei zheng);sw;aaaaa;n;&测试试试:say 1;n&测试试试:#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;&测试试试:say 3 ;yz_qsdd_1;s";
     //WorkSys::GetInstance()->releasepareCmd(cmdtest,true);
-    //cmdtest="#killNpc(wei zheng);sw;say 1;n;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;say 3 ;yz_qsdd_1;s";
+    //cmdtest="#killnpc(wei zheng);sw;say 1;n;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");ne;say 3 ;yz_qsdd_1;s";
     //WorkSys::GetInstance()->releaseCmd(cmdtest,true);
     //QString cmdtest="#path(sw)";
     //WorkSys::GetInstance()->releaseCmd(cmdtest,true);
@@ -952,6 +1016,8 @@ void MapMainWindow::on_adddll_triggered()
         FreeLibrary(dlliter);
         dlliter=nullptr;
         killNpc=nullptr;
+        boatIn=nullptr;
+        cheIn=nullptr;
     }
     if(QFile::exists("libdllToMapCreate.dll"))
     {
@@ -961,7 +1027,17 @@ void MapMainWindow::on_adddll_triggered()
             //定义相同的接口，打开So并获取对象。
             killNpc=(killnpc)GetProcAddress(dlliter,"killNpc");
             if (killNpc == NULL) {
-                //std::cout << mTag << "unable to find createShowWraper" << std::endl << dlerror();
+                qDebug()<<"killNpc fail--";
+                return;
+            }
+            boatIn=(boatin)GetProcAddress(dlliter,"boatIn");
+            if (boatIn == NULL) {
+                qDebug()<<"boatIn fail--";
+                return;
+            }
+            cheIn=(chein)GetProcAddress(dlliter,"cheIn");
+            if (cheIn == NULL) {
+                qDebug()<<"cheIn fail--";
                 return;
             }
             qDebug()<<"load成功";
@@ -981,6 +1057,8 @@ void MapMainWindow::on_adddll_triggered()
         dlclose(dlliter);
         dlliter=nullptr;
         killNpc=nullptr;
+        boatIn=nullptr;
+        cheIn=nullptr;
     }
     if(QFile::exists("libdllToMapCreate.so"))
     {
@@ -991,6 +1069,16 @@ void MapMainWindow::on_adddll_triggered()
             //定义相同的接口，打开So并获取对象。
             killNpc = (killnpc)dlsym(dlliter, "killNpc");
             if (killNpc == NULL) {
+                //std::cout << mTag << "unable to find createShowWraper" << std::endl << dlerror();
+                return;
+            }
+            boatIn = (boatin)dlsym(dlliter,"boatIn");
+            if (boatIn == NULL) {
+                //std::cout << mTag << "unable to find createShowWraper" << std::endl << dlerror();
+                return;
+            }
+            cheIn = (chein)dlsym(dlliter,"cheIn");
+            if (cheIn == NULL) {
                 //std::cout << mTag << "unable to find createShowWraper" << std::endl << dlerror();
                 return;
             }
@@ -1013,6 +1101,8 @@ void MapMainWindow::on_deleteDLL_triggered()
         FreeLibrary(dlliter);
         dlliter=nullptr;
         killNpc=nullptr;
+        boatIn=nullptr;
+        cheIn=nullptr;
     }
 #else
     if(dlliter!=nullptr)
@@ -1020,6 +1110,8 @@ void MapMainWindow::on_deleteDLL_triggered()
         dlclose(dlliter);
         dlliter=nullptr;
         killNpc=nullptr;
+        boatIn=nullptr;
+        cheIn=nullptr;
     }
 #endif
 }
@@ -1034,7 +1126,7 @@ void MapMainWindow::on_cmdLE_returnPressed()
         {
             QString outCB, cmd, time, room;
             ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room);
-            if(outCB==cmdname)
+            if(cmd==cmdname)
             {
                 //发送命令，等待成功
                 this->waitOut.outcmd=outCB;
@@ -1044,7 +1136,8 @@ void MapMainWindow::on_cmdLE_returnPressed()
                 waitGo=true;
                 waitgoForm=((GoForm*)(toroomLayout->itemAt(num)->widget()));
                 jishu=true;
-                WorkSys::GetInstance()->releaseCmd("#path("+cmd+")", true);
+                //#path(yz_mc:#chein(qu xinyang)&xy_mc:xia)
+                WorkSys::GetInstance()->releasepareCmd("#path("+getroomID()+":"+cmd+")", true);
                 break;
             }
         }

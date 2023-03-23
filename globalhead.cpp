@@ -8,8 +8,11 @@ bool combatBool=false;
 bool statusBool=false;
 bool messageBool=false;
 killnpc killNpc=nullptr;
+boatin boatIn=nullptr;
+chein cheIn=nullptr;
 bool longOrShortTime=false;
 bool errorTime=true;
+bool mapCreaterShow=false;
 
 bool mapcreateGetMessage=false;
 QString outChange(QString cmd)
@@ -93,6 +96,14 @@ QString outChange(QString cmd)
     else if(cmd=="down" || cmd=="d")
     {
         return "u";
+    }
+    else if(cmd=="gu")
+    {
+        return "xia";
+    }
+    else if(cmd=="xia")
+    {
+        return "gu";
     }
     return "特殊方向";
 }
@@ -184,6 +195,14 @@ QString outjianhua(QString cmd)
         else if(cmd=="down" || cmd=="d")
         {
             return "d";
+        }
+        else if(cmd=="gu")
+        {
+            return "gu";
+        }
+        else if(cmd=="xia")
+        {
+            return "xia";
         }
     }
     return "特殊方向";
@@ -284,8 +303,7 @@ bool globalCheck::checkPath(QString &instr)
 bool globalCheck::checkPause(QString &instr)
 {
     bool flag=false;
-    int index=instr.indexOf("#pause");
-    if(index==0)
+    if(instr=="#pause")
     {
         flag=true;
     }
@@ -308,6 +326,16 @@ bool globalCheck::checkMoveGMCP(QString &instr)
     bool flag=false;
     int index=instr.indexOf("#mg(");
     if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}
+
+bool globalCheck::checkWalk(QString &instr)
+{
+    bool flag=false;
+    if(instr=="#walk")
     {
         flag=true;
     }

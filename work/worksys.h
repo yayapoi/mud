@@ -95,9 +95,9 @@ public:
     void busyStatus(bool flag);
     /// 清空路径
     void clearOldPath();
-    ///键值对路径   测试试试:#killNpc(wei zheng:);say 1;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");say 3 &yz_qsdd_1:e(:&)
+    ///键值对路径   测试试试:#killnpc(wei zheng:);say 1;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");say 3 &yz_qsdd_1:e(:&)
     void releasepareCmd(QString pathAll,bool addCmd=true);
-    ///纯路径    #killNpc(wei zheng:);say 1;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");say 3 ;yz_qsdd_1;
+    ///纯路径    #killnpc(wei zheng:);say 1;#Timer(3000,\"()sa:y( 1;say 2;say 3)\");say 3 ;yz_qsdd_1;
     void releaseCmd(QString pathAll,bool addCmd=true);
     /**
      * @brief releaseList 解析队列
@@ -127,8 +127,12 @@ public:
     /* @brief 移动校验 room校验*/
     void moveroom(QString &instr);
 signals:
+    ///发向命令执行器的命令
     void cmdroom(QString room, QString cmd);
+    ///行走系统打印
     void workPritf(QString str);
+    ///行走系统打印
+    void continueWalk();
 private:
     explicit WorkSys(QObject *parent = nullptr);
     class GC

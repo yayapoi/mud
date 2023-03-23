@@ -11,17 +11,7 @@ CmdControl::CmdControl(QObject *parent)
         {
             queueList.enqueue("say 2");
         }
-        if(!queueList.isEmpty())
-        {
-            sendmessage=0;
-            QQueue<QString> backMessageList;
-            messageToList(backMessageList);
-            //qDebug()<<"backMessageList--"<<backMessageList;
-            if(!backMessageList.isEmpty())
-            {
-                emit newMessage(backMessageList);
-            }
-        }
+        doqueueList();
     });
     cmdTimer.start(5);
 }
@@ -51,6 +41,7 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
                 //去除最前方空格
                 clearBlok(appendStr);
                 queueList.enqueue(appendStr);
+                doqueueList();
             }
         }
         else
@@ -68,6 +59,7 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
                 //去除最前方空格
                 clearBlok(appendStr);
                 queueList.enqueue(appendStr);
+                doqueueList();
             }
             index=inStr.length();
         }
@@ -92,6 +84,7 @@ void CmdControl::appendMessageFront(QString inStr)
         queueList.push_front(incmd);
         //qDebug()<<"CmdControl::appendMessageFront  queueList--"<<queueList;
     }
+    doqueueList();
     //qDebug()<<"CmdControl::appendMessageFront  queueList--"<<queueList;
 }
 
@@ -313,6 +306,13 @@ int CmdControl::checkMessage(QString &instr)
             flag=0;
         }
     }
+    if(flag==-1)
+    {
+        if(globalCheck::checkWalk(instr))
+        {
+            flag=0;
+        }
+    }
     return flag;
 }
 
@@ -377,6 +377,21 @@ void CmdControl::clearBlok(QString &instr)
                 instr.remove(0,num);
             }
             break;
+        }
+    }
+}
+
+void CmdControl::doqueueList()
+{
+    if(!queueList.isEmpty())
+    {
+        sendmessage=0;
+        QQueue<QString> backMessageList;
+        messageToList(backMessageList);
+        //qDebug()<<"backMessageList--"<<backMessageList;
+        if(!backMessageList.isEmpty())
+        {
+            emit newMessage(backMessageList);
         }
     }
 }

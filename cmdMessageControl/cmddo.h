@@ -33,7 +33,9 @@ signals:
     /* @brief 发送给行走系统 解析并使用路径*/
     void Path(QString);
     /* @brief 发送给行走系统 暂停*/
-    void Pause(QString);
+    void Pause();
+    /* @brief 发送给行走系统 继续*/
+    void Walk();
     /* @brief 发送给行走系统 行走room校验*/
     void MoveRoom(QString);
     /* @brief 发送给行走系统 行走gmcp校验*/

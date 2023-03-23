@@ -275,9 +275,24 @@ signals:
         this->ui->fightTE->setMyId(name, this->id);
     });
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
-    connect(&cmdDo,&CmdDo::Path,[&](QString pathStr){WorkSys::GetInstance()->releaseCmd(pathStr,true);});
-    connect(&cmdDo,&CmdDo::Pause,[&](QString pauseStr){WorkSys::GetInstance()->stopWalk();});
-    connect(&cmdDo,&CmdDo::MoveGMCP,[&](QString pauseStr){if(WorkSys::GetInstance()->moveGmcp(pauseStr))mapcreateWidget.GoSuccess();});
+    connect(&cmdDo,&CmdDo::Path,[&](QString pathStr){WorkSys::GetInstance()->releasepareCmd(pathStr,true);});
+    connect(&cmdDo,&CmdDo::Pause,[&](){WorkSys::GetInstance()->stopWalk();});
+    connect(&cmdDo,&CmdDo::Walk,[&](){WorkSys::GetInstance()->Walk();});
+    connect(WorkSys::GetInstance(),&WorkSys::cmdroom,this,[this](QString room, QString cmd){
+        if(mapCreaterShow)
+        {
+            mapcreateWidget.startTime();
+        }
+        cmdControl.appendMessage(cmd);
+    });
+    connect(WorkSys::GetInstance(),&WorkSys::continueWalk,this,[this](){
+        if(mapCreaterShow)
+        {
+            mapcreateWidget.GoSuccess();
+        }
+    });
+    //使用#path()时，关闭mapcreateWidget.GoSuccess()
+    connect(&cmdDo,&CmdDo::MoveGMCP,[&](QString pauseStr){if(WorkSys::GetInstance()->moveGmcp(pauseStr))if(mapCreaterShow)mapcreateWidget.GoSuccess();});
     connect(&cmdDo,&CmdDo::MoveRoom,[&](QString pauseStr){WorkSys::GetInstance()->moveroom(pauseStr);});
     connect(WorkSys::GetInstance(),&WorkSys::workPritf,this,[this](QString str){cmdControl.appendMessage("#Pritf("+str+")");});
     connect(&mapcreateWidget,&MapMainWindow::mapCreateCmd,this,[this](QString cmd){cmdControl.appendMessage(cmd);});
@@ -377,7 +392,7 @@ signals:
             }
             else
             {
-                int num=zbuffer.size()-1;
+               int num=zbuffer.size()-1;
                 //qDebug()<<"zbuffer11--"<<zbuffer;
                 for(; num-1>=0; num--)
                 {

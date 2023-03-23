@@ -92,7 +92,15 @@ bool CmdDo::checkMessage(QString &instr)
         flag=globalCheck::checkPause(instr);
         if(flag==true)
         {
-            emit Pause(instr);
+            emit Pause();
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkWalk(instr);
+        if(flag==true)
+        {
+            emit Walk();
         }
     }
     return flag;

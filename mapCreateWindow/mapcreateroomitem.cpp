@@ -65,7 +65,7 @@ MapCreateRoomItem::MapCreateRoomItem(QGraphicsItem *parent):QGraphicsObject(pare
 
 MapCreateRoomItem::~MapCreateRoomItem()
 {
-    qDebug()<<"MapCreateRoomItem::~MapCreateRoomItem()";
+    //qDebug()<<"MapCreateRoomItem::~MapCreateRoomItem()";
 }
 
 QRectF MapCreateRoomItem::boundingRect() const
