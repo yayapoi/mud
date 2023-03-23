@@ -131,7 +131,7 @@ signals:
     void cmdroom(QString room, QString cmd);
     ///行走系统打印
     void workPritf(QString str);
-    ///行走系统打印
+    ///继续走路
     void continueWalk();
 private:
     explicit WorkSys(QObject *parent = nullptr);
@@ -151,7 +151,7 @@ private:
         }
     };
     static GC gc;
-    static	WorkSys* m_pipe_rw;
+    static WorkSys* m_pipe_rw;
 };
 
 #endif // WORKSYS_H

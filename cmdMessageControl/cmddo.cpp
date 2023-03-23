@@ -25,26 +25,10 @@ bool CmdDo::checkMessage(QString &instr)
     bool flag=false;
     if(flag==false)
     {
-        flag=globalCheck::checkEnableRegReg(instr);
+        flag=globalCheck::checkPause(instr);
         if(flag==true)
         {
-            emit enableRegStr(instr);
-        }
-    }
-    if(flag==false)
-    {
-        flag=globalCheck::checkPritf(instr);
-        if(flag==true)
-        {
-            emit pritf(instr);
-        }
-    }
-    if(flag==false)
-    {
-        flag=globalCheck::checkNewReg(instr);
-        if(flag==true)
-        {
-            emit newRegStr(instr);
+            emit Pause();
         }
     }
     if(flag==false)
@@ -65,10 +49,42 @@ bool CmdDo::checkMessage(QString &instr)
     }
     if(flag==false)
     {
+        flag=globalCheck::checkKillNpc(instr);
+        if(flag==true)
+        {
+            emit KillSomeNpc(instr);
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkPritf(instr);
+        if(flag==true)
+        {
+            emit pritf(instr);
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkEnableRegReg(instr);
+        if(flag==true)
+        {
+            emit enableRegStr(instr);
+        }
+    }
+    if(flag==false)
+    {
         flag=globalCheck::checkDeleteReg(instr);
         if(flag==true)
         {
             emit deleteRegStr(instr);
+        }
+    }
+    if(flag==false)
+    {
+        flag=globalCheck::checkNewReg(instr);
+        if(flag==true)
+        {
+            emit newRegStr(instr);
         }
     }
     if(flag==false)
@@ -85,14 +101,6 @@ bool CmdDo::checkMessage(QString &instr)
         if(flag==true)
         {
             emit Path(instr);
-        }
-    }
-    if(flag==false)
-    {
-        flag=globalCheck::checkPause(instr);
-        if(flag==true)
-        {
-            emit Pause();
         }
     }
     if(flag==false)

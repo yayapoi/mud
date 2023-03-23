@@ -341,3 +341,14 @@ bool globalCheck::checkWalk(QString &instr)
     }
     return flag;
 }
+
+bool globalCheck::checkKillNpc(QString &instr)
+{
+    bool flag=false;
+    int index=instr.indexOf("#killnpc(");
+    if(index==0)
+    {
+        flag=true;
+    }
+    return flag;
+}

@@ -229,6 +229,9 @@ bool checkMoveRoom(QString &instr);
 /* @brief 行走系统房间值，不发送服务器，直接传入gmcp的move值，是则使用并返回true*/
 bool checkMoveGMCP(QString &instr);
 
+/* @brief 战斗系统杀目标，不发送服务器，直接传入npc名字，是则使用并返回true*/
+bool checkKillNpc(QString &instr);
+
 /* @brief 在数组中指定位置插入指定数字，该数字必定占3字节*/
 void int2Bytes(int i, QByteArray& backArray, int off);
 /* @brief 从数组中指定位置读取数字，该数字必定占3字节*/

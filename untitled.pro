@@ -10,6 +10,7 @@ CONFIG += c++11 #console
 
 SOURCES += \
     INI/inimanarge.cpp \
+    KillSys/killsys.cpp \
     ZHToEN/zhtopy.cpp \
     chatform.cpp \
     cmdMessageControl/cmdcontrol.cpp \
@@ -44,6 +45,7 @@ SOURCES += \
 
 HEADERS += \
     INI/inimanarge.h \
+    KillSys/killsys.h \
     ZHToEN/zhtopy.h \
     chatform.h \
     cmdMessageControl/cmdcontrol.h \

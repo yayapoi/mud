@@ -40,6 +40,9 @@ signals:
     void MoveRoom(QString);
     /* @brief 发送给行走系统 行走gmcp校验*/
     void MoveGMCP(QString);
+
+    /* @brief 发送给战斗系统 kill npc*/
+    void KillSomeNpc(QString);
 public slots:
     /* @brief 收到命令，附带有系统函数*/
     void newMessage(QQueue<QString>);

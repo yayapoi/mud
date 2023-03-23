@@ -245,14 +245,7 @@ int CmdControl::checkMessage(QString &instr)
     }
     if(flag==-1)
     {
-        if(globalCheck::checkPritf(instr))
-        {
-            flag=0;
-        }
-    }
-    if(flag==-1)
-    {
-        if(globalCheck::checkEnableRegReg(instr))
+        if(globalCheck::checkPause(instr))
         {
             flag=0;
         }
@@ -267,6 +260,27 @@ int CmdControl::checkMessage(QString &instr)
     if(flag==-1)
     {
         if(globalCheck::checkMoveGMCP(instr))
+        {
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkKillNpc(instr))
+        {
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkPritf(instr))
+        {
+            flag=0;
+        }
+    }
+    if(flag==-1)
+    {
+        if(globalCheck::checkEnableRegReg(instr))
         {
             flag=0;
         }
@@ -295,13 +309,6 @@ int CmdControl::checkMessage(QString &instr)
     if(flag==-1)
     {
         if(globalCheck::checkPath(instr))
-        {
-            flag=0;
-        }
-    }
-    if(flag==-1)
-    {
-        if(globalCheck::checkPause(instr))
         {
             flag=0;
         }

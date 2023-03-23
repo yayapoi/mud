@@ -11,6 +11,7 @@
 #include <QFile>
 #include <INI/inimanarge.h>
 #include "work/worksys.h"
+#include "KillSys/killsys.h"
 
 struct totalZlibStruct{
     int showNum=0;//出现几次
@@ -277,6 +278,7 @@ signals:
     connect(&cmdDo,&CmdDo::setHPBar,[&](QString hpStr){ui->fightTE->setHpMpStatus(hpStr);});
     connect(&cmdDo,&CmdDo::Path,[&](QString pathStr){WorkSys::GetInstance()->releasepareCmd(pathStr,true);});
     connect(&cmdDo,&CmdDo::Pause,[&](){WorkSys::GetInstance()->stopWalk();});
+    connect(&cmdDo,&CmdDo::KillSomeNpc,this,[](QString str){KillSys::GetInstance()->killNpcStart(str);});
     connect(&cmdDo,&CmdDo::Walk,[&](){WorkSys::GetInstance()->Walk();});
     connect(WorkSys::GetInstance(),&WorkSys::cmdroom,this,[this](QString room, QString cmd){
         if(mapCreaterShow)
