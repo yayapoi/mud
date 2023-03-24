@@ -668,19 +668,16 @@ void MapMainWindow::roomname(QByteArray &inArray)
     QRegularExpressionMatch regularmatch=nameRegStr.match(inArray);
     if(regularmatch.hasMatch())
     {
-        QStringList backList=regularmatch.capturedTexts();
+        QString backList=regularmatch.captured(1);
         //qDebug()<<"MapMainWindow::backList--"<<backList;
-        if(backList.size()>=2)
+        ui->mapWidget->setRoomNC(backList,"");
+        auto clickIter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
+        if(clickIter!=JsonInter::GetInstance()->roomMap.end())
         {
-            ui->mapWidget->setRoomNC(backList[1],"");
-            auto clickIter=JsonInter::GetInstance()->roomMap.find(nowClickNum);
-            if(clickIter!=JsonInter::GetInstance()->roomMap.end())
-            {
-                clickIter->second->roomName=backList[1];
-                clickIter->second->update();
-            }
-            roomifo.roomnamefind=true;
+            clickIter->second->roomName=backList;
+            clickIter->second->update();
         }
+        roomifo.roomnamefind=true;
     }
 }
 
@@ -722,36 +719,32 @@ void MapMainWindow::roomout(QByteArray &inArray)
     QRegularExpressionMatch roomoutmatch=roomoutRegStr.match(inArray);
     if(roomoutmatch.hasMatch())
     {
-        QStringList backList=roomoutmatch.capturedTexts();
-        if(backList.size()>=2)
+        QByteArray outList;
+        bool findbegin=false;
+        QByteArray outstr=roomoutmatch.captured(1).toUtf8();
+        for(int num=0;num<outstr.size();num++)
         {
-            QByteArray outList;
-            bool findbegin=false;
-            QByteArray outstr=backList[1].toUtf8();
-            for(int num=0;num<outstr.size();num++)
+            if('a'<=outstr[num] && outstr[num]<='z')
             {
-                if('a'<=outstr[num] && outstr[num]<='z')
+                findbegin=true;
+                outList.append(outstr[num]);
+            }
+            else if('A'<=outstr[num] && outstr[num]<='Z')
+            {
+                findbegin=true;
+                outList.append(outstr[num]-26);
+            }
+            else
+            {
+                if(findbegin)
                 {
-                    findbegin=true;
-                    outList.append(outstr[num]);
-                }
-                else if('A'<=outstr[num] && outstr[num]<='Z')
-                {
-                    findbegin=true;
-                    outList.append(outstr[num]-26);
-                }
-                else
-                {
-                    if(findbegin)
-                    {
-                        outList.append(';');
-                        findbegin=false;
-                    }
+                    outList.append(';');
+                    findbegin=false;
                 }
             }
-            ui->mapWidget->setroomout(outList);
-            roomifo.fangxiangfind=true;
         }
+        ui->mapWidget->setroomout(outList);
+        roomifo.fangxiangfind=true;
     }
     else
     {

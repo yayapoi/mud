@@ -172,51 +172,48 @@ void WorkSys::releasepareCmd(QString pathAll, bool addCmd)
     QRegularExpressionMatch regularmatch=pathRegStr.match(pathAll);
     if(regularmatch.hasMatch())
     {
-        QStringList backList=regularmatch.capturedTexts();
-        if(backList.size()>=2)
+        QString backList=regularmatch.captured(1);
+        bool kouhaoExit=findkuohao(backList,num,beginLeft,endleft);
+        for(; num<backList.size(); num++)
         {
-            bool kouhaoExit=findkuohao(backList[1],num,beginLeft,endleft);
-            for(; num<backList[1].size(); num++)
+            if(kouhaoExit && num>=beginLeft)
             {
-                if(kouhaoExit && num>=beginLeft)
+                num=endleft;
+                kouhaoExit=findkuohao(backList,num+1,beginLeft,endleft);
+            }
+            if(backList[num]==":")
+            {
+                newstructr.clear();
+                newstructr.roomNameZH=backList.mid(beginNum,num-beginNum);
+                //qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
+                beginNum=num+1;
+                find=true;
+            }
+            if(backList[num]=="&")
+            {
+                if(find)
                 {
-                    num=endleft;
-                    kouhaoExit=findkuohao(backList[1],num+1,beginLeft,endleft);
-                }
-                if(backList[1][num]==":")
-                {
-                    newstructr.clear();
-                    newstructr.roomNameZH=backList[1].mid(beginNum,num-beginNum);
+                    newstructr.cmd=backList.mid(beginNum,num-beginNum);
                     //qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
                     beginNum=num+1;
-                    find=true;
-                }
-                if(backList[1][num]=="&")
-                {
-                    if(find)
-                    {
-                        newstructr.cmd=backList[1].mid(beginNum,num-beginNum);
-                        //qDebug()<<"roomNameZH--"<<newstructr.roomNameZH<<" beginNum--"<<beginNum<<" num-beginNum--"<<num-beginNum;
-                        beginNum=num+1;
-                        pathList.append(newstructr);
-                        find=false;
-                    }
+                    pathList.append(newstructr);
+                    find=false;
                 }
             }
-            if(beginNum<backList[1].size() && find)
-            {
-                newstructr.cmd=backList[1].mid(beginNum,num-beginNum);
-                beginNum=num+1;
-                pathList.append(newstructr);
-                find=false;
-            }
-            for(int num=0; num<pathList.size(); num++)
-            {
-                //qDebug()<<"roomNameZH--"<<pathList[num].roomNameZH<<" list--"<<pathList[num].cmd;
-            }
-            releaseList(addCmd);
-            startWalk();
         }
+        if(beginNum<backList.size() && find)
+        {
+            newstructr.cmd=backList.mid(beginNum,num-beginNum);
+            beginNum=num+1;
+            pathList.append(newstructr);
+            find=false;
+        }
+        for(int num=0; num<pathList.size(); num++)
+        {
+            //qDebug()<<"roomNameZH--"<<pathList[num].roomNameZH<<" list--"<<pathList[num].cmd;
+        }
+        releaseList(addCmd);
+        startWalk();
     }
     else
     {
@@ -231,17 +228,13 @@ void WorkSys::releaseCmd(QString pathAll,bool addCmd)
     QRegularExpressionMatch regularmatch=pathRegStr.match(pathAll);
     if(regularmatch.hasMatch())
     {
-        QStringList backList=regularmatch.capturedTexts();
-        if(backList.size()>=2)
-        {
-            pathList.clear();
-            roomStruct newstructr;
-            newstructr.roomNameZH="111";
-            newstructr.cmd=backList[1];
-            pathList.append(newstructr);
-            releaseList(addCmd);
-            startWalk();
-        }
+        pathList.clear();
+        roomStruct newstructr;
+        newstructr.roomNameZH="111";
+        newstructr.cmd=regularmatch.captured(1);
+        pathList.append(newstructr);
+        releaseList(addCmd);
+        startWalk();
     }
     else
     {
@@ -437,7 +430,7 @@ bool WorkSys::getMessageFrom(QString &inStr, QString &backStr)//须填  宏定�
 bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
 {
     bool flag=false;
-    if(inStr.indexOf("#killnpc(")!=-1)
+    /*if(inStr.indexOf("#killnpc(")!=-1)
     {
         if(killNpc!=nullptr)
         {
@@ -473,7 +466,7 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
             //qDebug()<<"WorkSys::getfunFrom   killNpc==nullptr";
         }
     }
-    else if(inStr.indexOf("#boatin(")!=-1)
+    else*/ if(inStr.indexOf("#boatin(")!=-1)
     {
         if(boatIn!=nullptr)
         {
@@ -686,35 +679,31 @@ bool WorkSys::moveGmcp(QString &instr)
     QRegularExpressionMatch regularmatch=GmcpRegStr.match(instr);
     if(regularmatch.hasMatch())
     {
-        QStringList backList=regularmatch.capturedTexts();
-        if(backList.size()>=2)
+        //qDebug()<<"backList[1]--"<<backList[1];
+        QJsonDocument doucumen=QJsonDocument::fromJson(regularmatch.captured(1).toUtf8());
+        QJsonArray newArray=doucumen.array();
+        for(int num=0; num<newArray.size(); num++)
         {
-            //qDebug()<<"backList[1]--"<<backList[1];
-            QJsonDocument doucumen=QJsonDocument::fromJson(backList[1].toUtf8());
-            QJsonArray newArray=doucumen.array();
-            for(int num=0; num<newArray.size(); num++)
+            QJsonObject newObj=newArray.at(num).toObject();
+            QJsonObject::Iterator objone=newObj.begin();
+            while(objone!=newObj.end())
             {
-                QJsonObject newObj=newArray.at(num).toObject();
-                QJsonObject::Iterator objone=newObj.begin();
-                while(objone!=newObj.end())
+                if(objone.key()=="result")//移动结果 true:成功
                 {
-                    if(objone.key()=="result")//移动结果 true:成功
-                    {
-                        QString moveresult=objone.value().toString();
-                        flag=moveresult=="true"?true:false;
-                        moveStatus(flag);
-                    }
-                    else if(objone.key()=="dir")//出口
-                    {
-                        objone.value().toArray();
-                    }
-                    else if(objone.key()=="short")//房间
-                    {
-                        QString roomname=objone.value().toString();
-                        //qDebug()<<"roomname--"<<roomname;
-                    }
-                    objone++;
+                    QString moveresult=objone.value().toString();
+                    flag=moveresult=="true"?true:false;
+                    moveStatus(flag);
                 }
+                else if(objone.key()=="dir")//出口
+                {
+                    objone.value().toArray();
+                }
+                else if(objone.key()=="short")//房间
+                {
+                    QString roomname=objone.value().toString();
+                    //qDebug()<<"roomname--"<<roomname;
+                }
+                objone++;
             }
         }
     }

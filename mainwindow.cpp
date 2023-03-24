@@ -269,6 +269,7 @@ signals:
     connect(&(tcpServerForm.tcpServerControl),&TcpServerControl::getMessage,[&](QList<QString> StrList){cmdControl.appendMessage(StrList);});
     connect(&testRegClass,&RegClass::regStrSendToTcp,&(tcpServerForm.tcpServerControl),&TcpServerControl::getSendMessage);
     connect(&testRegClass,&RegClass::regStrSend,[&](QString Str){cmdControl.appendMessage(Str);});
+    connect(KillSys::GetInstance(),&KillSys::sysCmd,this,[this](QString cmd){cmdControl.appendMessage(cmd);});
     connect(&cmdControl,&CmdControl::newMessage,[&](QQueue<QString> queueStr){cmdDo.newMessage(queueStr);});
     connect(&configForm,&ConfigForm::closeWidget,this,[this](){
         QString name;
@@ -454,10 +455,11 @@ signals:
             //qDebug()<<"mapcreateGetMessage-----------"<<mapcreateGetMessage;
             mapcreateWidget.roomMessage(backArray);
         }
-        /*else
+        if(killSysGetMes)
         {
-            //qDebug()<<"mapcreateGetMessage-----------"<<mapcreateGetMessage;
-        }*/
+            //qDebug()<<"killSysGetMes-----------"<<killSysGetMes;
+            KillSys::GetInstance()->roomMessage(backArray);
+        }
         backArray.clear();
 
 
@@ -1282,6 +1284,7 @@ bool MainWindow::slipeBackArray(GMCPType &GMCPType, QByteArray &GMCPArray)
                                                             backArray=backArray.mid(endInt+1);
                                                             backArray=beginArray+backArray;
                                                         }
+                                                        ui->fightTE->setStatus(GMCPArray, GMCPType);
                                                     }
                                                     else if(backArray[begin+8]=='B')
                                                     {

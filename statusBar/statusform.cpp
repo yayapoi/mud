@@ -1,4 +1,5 @@
 #include "statusform.h"
+#include "KillSys/killsys.h"
 #include "qjsonarray.h"
 #include "ui_statusform.h"
 #include <statusBar/pointbar.h>
@@ -85,6 +86,11 @@ void StatusForm::setStatus(QByteArray &newstring, GMCPType type)
     case GMCPType::move:
     {
         newstr=newstring.mid(12,newstring.size()-2-12);
+    }
+        break;
+    case GMCPType::combat:
+    {
+        newstr=newstring.mid(14,newstring.size()-2-14);
     }
         break;
     default:
@@ -214,7 +220,9 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     }
                     else if(objone.key()=="is_fighting")//战斗中  "true"
                     {
-                        ui->zhandou->setText("战斗:"+objone.value().toString()+"   ");
+                        QString zhandou=objone.value().toString();
+                        ui->zhandou->setText("战斗:"+zhandou+"   ");
+                        KillSys::GetInstance()->fightting(zhandou);
                     }
                     else if(objone.key()=="eff_qi")//有效气血
                     {
@@ -385,6 +393,67 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                         objone.value().toArray();
                     }
                     objone++;
+                }
+            }
+        }
+            break;
+        case GMCPType::combat:
+        {//\xFF\xFA\xC9GMCP.combat [{"enemy_in":1,"name":"木桩子","id":"mu zhuangzi#1942144"}]\xFF\xF0
+            //[{"enemy_in":1,"name":"流氓","id":"liu mang#930301"}]
+            //{"enemy_in":1,"name":"流氓","id":"liu mang#7830018"}
+            QJsonArray newArray=doucumen.array();
+            for(int num=0; num<newArray.size(); num++)
+            {
+                QJsonObject newObj=newArray.at(num).toObject();
+                QJsonObject::Iterator objone=newObj.begin();
+
+                ///战斗系统需要战斗值
+                bool enemy_inbool=false;
+                bool namebool=false;
+                bool idbool=false;
+                QString id;
+                QString name;
+                int enemy_inin;
+
+                while(objone!=newObj.end())
+                {
+                    if(objone.key()=="id")//liu mang#930301
+                    {
+                        idbool=true;
+                        id=objone.value().toString();
+                        //qDebug()<<"StatusForm::stringToJson  id---"<<id;
+                    }
+                    else if(objone.key()=="name")//name
+                    {
+                        namebool=true;
+                        name=objone.value().toString();
+                        //qDebug()<<"StatusForm::stringToJson  name---"<<name;
+                    }
+                    else if(objone.key()=="enemy_in")//enemy_in
+                    {
+                        enemy_inbool=true;
+                        enemy_inin=objone.value().toInt();
+                        //qDebug()<<"StatusForm::stringToJson  enemy_inin---"<<enemy_inin;
+                    }
+                    objone++;
+                }
+                if(idbool && namebool)
+                {
+                    if(enemy_inbool)//有敌人进入战斗
+                    {
+                        if(enemy_inin==1)//进入战斗为1
+                        {
+                            KillSys::GetInstance()->killmeStart(name,id);
+                        }
+                        else
+                        {
+                            //脱离战斗
+                        }
+                    }
+                    else
+                    {
+                        KillSys::GetInstance()->fightCheck(name,id);
+                    }
                 }
             }
         }

@@ -141,7 +141,7 @@ void MapCreateView::clearView()
 
 void MapCreateView::setsomeClike()
 {
-    qDebug()<<"QGraphicsScene::setsomeClike----";
+    //qDebug()<<"QGraphicsScene::setsomeClike----";
     if(clickItem!=nullptr)
     {
         clickItem->itemSHOW_STATE=false;
@@ -158,7 +158,7 @@ void MapCreateView::setsomeClike()
 
 void MapCreateView::setsomeClike(int roomnum)
 {
-    qDebug()<<"QGraphicsScene::setsomeClike(int roomnum)----";
+    //qDebug()<<"QGraphicsScene::setsomeClike(int roomnum)----";
     if(clickItem!=nullptr)
     {
         clickItem->itemSHOW_STATE=false;

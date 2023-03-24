@@ -20,6 +20,8 @@ extern bool statusBool;
 extern bool messageBool;
 ///编辑模式
 extern bool mapCreaterShow;
+///战斗系统需要截取信息
+extern bool killSysGetMes;
 extern killnpc killNpc;
 extern boatin boatIn;
 extern chein cheIn;

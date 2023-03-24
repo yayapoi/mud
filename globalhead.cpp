@@ -13,6 +13,7 @@ chein cheIn=nullptr;
 bool longOrShortTime=false;
 bool errorTime=true;
 bool mapCreaterShow=false;
+bool killSysGetMes=false;
 
 bool mapcreateGetMessage=false;
 QString outChange(QString cmd)
