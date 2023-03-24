@@ -99,6 +99,14 @@ void KillSys::fightting(QString status)
     {
         npcname.clear();
     }
+    else//突然进入战斗状态、不触发gmcp，停止行走
+    {
+        if(WorkSys::GetInstance()->working)
+        {
+            walkingStop=true;
+            emit sysCmd("#pause");
+        }
+    }
 }
 
 void KillSys::nokillNpc()
