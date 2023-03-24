@@ -94,6 +94,7 @@ void WorkSys::moveStatus(bool flag)
                     if(endpathList(newlistnow))//路径也到底了，停止行走
                     {
                         //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
+                        emit roomEnd();
                         clearOldPath();
                         emit cmdroom("", movegmcpOff);
                         emit workPritf("----路径完成----");
@@ -134,6 +135,7 @@ void WorkSys::busyStatus(bool flag)
                     if(endpathList(newlistnow))//路径也到底了，停止行走
                     {
                         //qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"work end--";
+                        emit roomEnd();
                         clearOldPath();
                         emit cmdroom("", movegmcpOff);
                         emit workPritf("----路径完成----");
@@ -210,7 +212,7 @@ void WorkSys::releasepareCmd(QString pathAll, bool addCmd)
             }
             for(int num=0; num<pathList.size(); num++)
             {
-                qDebug()<<"roomNameZH--"<<pathList[num].roomNameZH<<" list--"<<pathList[num].cmd;
+                //qDebug()<<"roomNameZH--"<<pathList[num].roomNameZH<<" list--"<<pathList[num].cmd;
             }
             releaseList(addCmd);
             startWalk();
@@ -257,7 +259,7 @@ void WorkSys::releaseList(bool addCmd)
     }
     /*for(int num=0; num<pathList.size(); num++)
     {
-        qDebug()<<"num--"<<QString::number(num)<<" list--"<<pathList[num].releaseCmd;
+//qDebug()<<"num--"<<QString::number(num)<<" list--"<<pathList[num].releaseCmd;
     }*/
 }
 
@@ -273,7 +275,7 @@ void WorkSys::appendMessage(QString inStr, QStringList &backList, int &nownum, b
         if(index!=-1)
         {
             QString appendStr=inStr.mid(oldindex,index-oldindex);
-            qDebug()<<"--"<<appendStr;
+            //qDebug()<<"--"<<appendStr;
             QString backStr;
             bool flag=getMessageFrom(appendStr, backStr);
             if(flag==true)
@@ -282,14 +284,14 @@ void WorkSys::appendMessage(QString inStr, QStringList &backList, int &nownum, b
             }
             else
             {
-                qDebug()<<"addCmd--"<<addCmd;
+                //qDebug()<<"addCmd--"<<addCmd;
                 if(addCmd)
                 {
                     QString backfunStr;
                     bool flag=getfunFrom(appendStr, backfunStr, nownum);
                     if(flag==true)
                     {
-                        qDebug()<<"backfunStr--"<<backfunStr;
+                        //qDebug()<<"backfunStr--"<<backfunStr;
                         appendMessage(backfunStr, backList, nownum, false);
                     }
                     else
@@ -316,7 +318,7 @@ void WorkSys::appendMessage(QString inStr, QStringList &backList, int &nownum, b
         else
         {
             QString appendStr=inStr.mid(oldindex);
-            qDebug()<<"11--"<<appendStr;
+            //qDebug()<<"11--"<<appendStr;
             QString backStr;
             bool flag=getMessageFrom(appendStr, backStr);
             if(flag==true)
@@ -325,14 +327,14 @@ void WorkSys::appendMessage(QString inStr, QStringList &backList, int &nownum, b
             }
             else
             {
-                qDebug()<<"addCmd22--"<<addCmd;
+                //qDebug()<<"addCmd22--"<<addCmd;
                 if(addCmd)
                 {
                     QString backfunStr;
                     bool flag=getfunFrom(appendStr, backfunStr, nownum);
                     if(flag==true)
                     {
-                        qDebug()<<"backfunStr33--"<<backfunStr;
+                        //qDebug()<<"backfunStr33--"<<backfunStr;
                         appendMessage(backfunStr, backList, nownum, false);
                     }
                     else
@@ -485,13 +487,9 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
                 }
                 flag=true;
                 //qDebug()<<"backBool--"<<backBool;
-                //qDebug()<<"beginchar leg--"<<strlen(beginchar);
-                //qDebug()<<"fromUtf8--"<<QString::fromUtf8(beginchar);
-                //qDebug()<<"fromLatin1--"<<QString::fromLatin1(beginchar);
-                //qDebug()<<"endchar leg--"<<strlen(endchar);
-                //qDebug()<<"fromUtf8--"<<QString::fromUtf8(endchar);
-                //qDebug()<<"fromLatin1--"<<QString::fromLatin1(endchar);
-                //qDebug()<<"backStr--"<<backStr;
+                //qDebug()<<"beginchar leg--"<<strlen(backchar);
+                //qDebug()<<"fromUtf8--"<<QString::fromUtf8(backchar);
+                //qDebug()<<"fromLatin1--"<<QString::fromLatin1(backchar);
                 free(backchar);
             }
         }
@@ -502,7 +500,7 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
     }
     else if(inStr.indexOf("#chein(")!=-1)
     {
-        qDebug()<<"chein--";
+        //qDebug()<<"chein--";
         if(cheIn!=nullptr)
         {
             char* backchar = nullptr;
@@ -510,8 +508,8 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
             if(lastint!=1)
             {
                 QString cmd=inStr.mid(7,lastint-7);
-                qDebug()<<"cmd--"<<cmd;
-                qDebug()<<"roomNameZH--"<<pathList[nownum].roomNameZH;
+                //qDebug()<<"cmd--"<<cmd;
+                //qDebug()<<"roomNameZH--"<<pathList[nownum].roomNameZH;
                 bool backBool=cheIn(pathList[nownum].roomNameZH.toUtf8().data(), cmd.toUtf8().data(), backchar);
                 if(backBool)
                 {
@@ -520,10 +518,10 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
                         backStr=QString::fromUtf8(backchar)+";";
                     }
                     flag=true;
-                    qDebug()<<"backBool--"<<backBool;
-                    qDebug()<<"beginchar leg--"<<strlen(backchar);
-                    qDebug()<<"fromUtf8--"<<QString::fromUtf8(backchar);
-                    qDebug()<<"backStr--"<<backStr;
+                    //qDebug()<<"backBool--"<<backBool;
+                    //qDebug()<<"beginchar leg--"<<strlen(backchar);
+                    //qDebug()<<"fromUtf8--"<<QString::fromUtf8(backchar);
+                    //qDebug()<<"backStr--"<<backStr;
                     free(backchar);
                 }
             }
@@ -618,6 +616,7 @@ void WorkSys::dowork(bool jishi)
     }
     if(endproomList(newlistnow,newcmdnum))//这个房间命令是否到底了
     {
+        emit roomEnd();
         newlistnow=newlistnow+1;
         newcmdnum=0;
         if(endpathList(newlistnow))//路径也到底了，停止行走

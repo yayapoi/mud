@@ -133,6 +133,8 @@ signals:
     void workPritf(QString str);
     ///继续走路
     void continueWalk();
+    ///换房间时候发送
+    void roomEnd();
 private:
     explicit WorkSys(QObject *parent = nullptr);
     class GC

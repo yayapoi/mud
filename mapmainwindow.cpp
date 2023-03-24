@@ -125,7 +125,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
         if(backstr!="特殊方向")//是方向延时返回成功
         {
             int starttime=QRandomGenerator::global()->bounded(160,200);
-            qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"back time--"<<starttime;
+//qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"back time--"<<starttime;
             QTimer* backworktimer=new QTimer;
             backtimelist.append(backworktimer);
             connect(backworktimer,&QTimer::timeout,this,[this](){
@@ -146,7 +146,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
             {
                 WorkSys::GetInstance()->busyStatus(true);
                 int busyttime=QRandomGenerator::global()->bounded(50,60);
-                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busy  time--"<<busyttime;
+//qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"busy  time--"<<busyttime;
                 QTimer* busyworktimer=new QTimer;
                 busytimelist.append(busyworktimer);
                 connect(busyworktimer,&QTimer::timeout,this,[this](){
@@ -165,7 +165,7 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
             {
                 WorkSys::GetInstance()->stopWalk();
                 int starttime=QRandomGenerator::global()->bounded(100, 200);
-                qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"start starttime--"<<starttime;
+//qDebug()<<QTime::currentTime().toString("mm:ss zzz:")<<"start starttime--"<<starttime;
                 this->starttimer->start(starttime);
             }
         }
@@ -487,7 +487,7 @@ void MapMainWindow::calculateTo()
     /*auto listIter=listlist.begin();
     while(listIter!=listlist.end())
     {
-        qDebug()<<listIter.key()<<"   "<<listIter.value()->roomNum;
+//qDebug()<<listIter.key()<<"   "<<listIter.value()->roomNum;
         listIter++;
     }*/
     //分析layout现在已经有啥出口 出房间是啥
@@ -511,7 +511,7 @@ void MapMainWindow::calculateTo()
     auto listIter=listlist.begin();
     while(listIter!=listlist.end())
     {
-        qDebug()<<"MapMainWindow::calculateTo()---"<<listIter.key();
+        //qDebug()<<"MapMainWindow::calculateTo()---"<<listIter.key();
         GoForm* goFor2=new GoForm;
         if(listIter.value()->roomNum!=-1)
         {
@@ -664,7 +664,7 @@ bool MapMainWindow::removeColorFromArray(QByteArray &inArray)
 
 void MapMainWindow::roomname(QByteArray &inArray)
 {
-    qDebug()<<"MapMainWindow::roomname--"<<inArray;
+    //qDebug()<<"MapMainWindow::roomname--"<<inArray;
     QRegularExpressionMatch regularmatch=nameRegStr.match(inArray);
     if(regularmatch.hasMatch())
     {
@@ -686,7 +686,7 @@ void MapMainWindow::roomname(QByteArray &inArray)
 
 void MapMainWindow::roommes(QByteArray &inArray)
 {
-    qDebug()<<"MapMainWindow::roommes--"<<QString(inArray);
+    //qDebug()<<"MapMainWindow::roommes--"<<QString(inArray);
     if(!roomifo.RoomMessagebegin)
     {
         //qDebug()<<"MapMainWindow::roommes--  1111";
@@ -718,7 +718,7 @@ void MapMainWindow::roommes(QByteArray &inArray)
 
 void MapMainWindow::roomout(QByteArray &inArray)
 {
-    qDebug()<<"MapMainWindow::roomout--"<<QString(inArray);
+    //qDebug()<<"MapMainWindow::roomout--"<<QString(inArray);
     QRegularExpressionMatch roomoutmatch=roomoutRegStr.match(inArray);
     if(roomoutmatch.hasMatch())
     {
@@ -765,7 +765,7 @@ void MapMainWindow::roomout(QByteArray &inArray)
 
 void MapMainWindow::roomnpc(QByteArray &inArray)
 {
-    qDebug()<<"MapMainWindow::roomnpc--"<<inArray;
+    //qDebug()<<"MapMainWindow::roomnpc--"<<inArray;
     QRegularExpressionMatch npcmatch=npcReg.match(inArray);//有npc
     if(npcmatch.hasMatch())
     {
@@ -1027,29 +1027,29 @@ void MapMainWindow::on_adddll_triggered()
             //定义相同的接口，打开So并获取对象。
             killNpc=(killnpc)GetProcAddress(dlliter,"killNpc");
             if (killNpc == NULL) {
-                qDebug()<<"killNpc fail--";
+                //qDebug()<<"killNpc fail--";
                 return;
             }
             boatIn=(boatin)GetProcAddress(dlliter,"boatIn");
             if (boatIn == NULL) {
-                qDebug()<<"boatIn fail--";
+                //qDebug()<<"boatIn fail--";
                 return;
             }
             cheIn=(chein)GetProcAddress(dlliter,"cheIn");
             if (cheIn == NULL) {
-                qDebug()<<"cheIn fail--";
+                //qDebug()<<"cheIn fail--";
                 return;
             }
-            qDebug()<<"load成功";
+            //qDebug()<<"load成功";
         }
         else
         {
-            qDebug()<<"open fail--";
+            //qDebug()<<"open fail--";
         }
     }
     else
     {
-        qDebug()<<"QFile::exists fail--";
+        //qDebug()<<"QFile::exists fail--";
     }
 #else
     if(dlliter!=nullptr)
@@ -1082,11 +1082,11 @@ void MapMainWindow::on_adddll_triggered()
                 //std::cout << mTag << "unable to find createShowWraper" << std::endl << dlerror();
                 return;
             }
-            qDebug()<<"load成功";
+            //qDebug()<<"load成功";
         }
         else
         {
-            qDebug()<<"open fail--";
+            //qDebug()<<"open fail--";
         }
     }
 #endif

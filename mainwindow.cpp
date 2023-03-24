@@ -287,7 +287,7 @@ signals:
         }
         cmdControl.appendMessage(cmd);
     });
-    connect(WorkSys::GetInstance(),&WorkSys::continueWalk,this,[this](){
+    connect(WorkSys::GetInstance(),&WorkSys::roomEnd,this,[this](){
         if(mapCreaterShow)
         {
             mapcreateWidget.GoSuccess();
@@ -394,7 +394,7 @@ signals:
             }
             else
             {
-               int num=zbuffer.size()-1;
+                int num=zbuffer.size()-1;
                 //qDebug()<<"zbuffer11--"<<zbuffer;
                 for(; num-1>=0; num--)
                 {
@@ -435,7 +435,7 @@ signals:
                 //qDebug()<<"zbuffer22--"<<zbuffer;
                 /*if(zbuffer.size()!=0)
                 {
-                    qDebug()<<"zbuffer--"<<QString(zbuffer);
+//qDebug()<<"zbuffer--"<<QString(zbuffer);
                     //messageFile->write(zbuffer);
                     //messageFile->write("\r\n");
                 }*/
