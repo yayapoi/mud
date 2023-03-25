@@ -40,8 +40,11 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
             {
                 //去除最前方空格
                 clearBlok(appendStr);
-                queueList.enqueue(appendStr);
-                doqueueList();
+                if(!appendStr.isEmpty())
+                {
+                    queueList.enqueue(appendStr);
+                    doqueueList();
+                }
             }
         }
         else
@@ -58,8 +61,11 @@ void CmdControl::appendMessage(QString inStr)//须填 ;;->;
             {
                 //去除最前方空格
                 clearBlok(appendStr);
+                if(!appendStr.isEmpty())
+                {
                 queueList.enqueue(appendStr);
                 doqueueList();
+                }
             }
             index=inStr.length();
         }

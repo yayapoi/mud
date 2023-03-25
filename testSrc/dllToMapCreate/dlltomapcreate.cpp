@@ -20,17 +20,16 @@ bool killNpc(char *roomName, char *backBegin, char *backEnd)
     return backcha;
 }
 
-bool boatIn(char *roomName, char *&backStr)
+bool boatIn(char *roomName, char *backStr)
 {
     char split[]=";";
     bool backcha=false;
-    if (strcmp("zy_hhba",roomName)==0 || strcmp("hz_hhna_1",roomName)==0|| strcmp("111",roomName)==0)
+    if (strcmp("hk_jmdd",roomName)==0 || strcmp("hk_jmdx",roomName)==0
+            ||strcmp("hk_hsdk",roomName)==0 || strcmp("hk_hsxa",roomName)==0)
     {
         backcha=true;
         char bdginchar[]="#enableReg(\"ride渡口\",\"到了\",1);ride";
         char endchar[]="#pause;#enableReg(\"ride渡口\",\"到了\",0)";
-        backStr=(char *)malloc(( strlen(bdginchar)
-                                 +strlen(split)+strlen(endchar) )*sizeof(char));
         strcpy(backStr, bdginchar);
         strcat(backStr, split);
         strcat(backStr, endchar);
@@ -40,8 +39,6 @@ bool boatIn(char *roomName, char *&backStr)
         backcha=true;
         char bdginchar[]="#enableReg(\"yellboat\",\"\",1);yell boat";
         char endchar[]="#pause;#enableReg(\"yellboat\",\"\",0)";
-        backStr=(char *)malloc(( strlen(bdginchar)
-                                 +strlen(split)+strlen(endchar) )*sizeof(char));
         strcpy(backStr, bdginchar);
         strcat(backStr, split);
         strcat(backStr, endchar);
@@ -53,7 +50,7 @@ bool boatIn(char *roomName, char *&backStr)
     return backcha;
 }
 
-bool cheIn(char *roomName, char *cmd, char *&backStr)
+bool cheIn(char *roomName, char *cmd, char *backStr)
 {
     char split[]=";";
     bool backcha=false;
@@ -62,9 +59,6 @@ bool cheIn(char *roomName, char *cmd, char *&backStr)
         backcha=true;
         char bdginchar[]="#enableReg(\"坐车\",\"下车\",1)";
         char endchar[]="#pause;#enableReg(\"坐车\",\"下车\",0)";
-        backStr=(char *)malloc((1 +strlen(bdginchar)
-                                +1+strlen(cmd)
-                                +1+strlen(endchar))*sizeof(char));
         strcpy(backStr, bdginchar);
         strcat(backStr, split);
         strcat(backStr, cmd);

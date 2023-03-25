@@ -8,8 +8,8 @@
 #include <QList>
 
 typedef bool (*killnpc)(char *roomName, char *backStr, char *backEnd);
-typedef bool (*boatin)(char *roomName, char *&backStr);
-typedef bool (*chein)(char* roomName, char* cmd, char* &backStr);
+typedef bool (*boatin)(char *roomName, char *backStr);
+typedef bool (*chein)(char* roomName, char* cmd, char* backStr);
 
 //下面几个是gmcp显示设置的
 extern bool showGmcpAllBool;

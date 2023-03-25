@@ -470,7 +470,7 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
     {
         if(boatIn!=nullptr)
         {
-            char* backchar = nullptr;
+            char* backchar = (char*)malloc(1000*sizeof(char));
             bool backBool=boatIn(pathList[nownum].roomNameZH.toUtf8().data(), backchar);
             if(backBool)
             {
@@ -483,6 +483,8 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
                 //qDebug()<<"beginchar leg--"<<strlen(backchar);
                 //qDebug()<<"fromUtf8--"<<QString::fromUtf8(backchar);
                 //qDebug()<<"fromLatin1--"<<QString::fromLatin1(backchar);
+                //qDebug()<<"_msize--"<<_msize(backchar);
+                //qDebug()<<"backchar--"<<backchar;
                 free(backchar);
             }
         }
@@ -496,7 +498,7 @@ bool WorkSys::getfunFrom(QString &inStr, QString &backStr, int &nownum)
         //qDebug()<<"chein--";
         if(cheIn!=nullptr)
         {
-            char* backchar = nullptr;
+            char* backchar = (char*)malloc(1000*sizeof(char));
             int lastint=inStr.lastIndexOf(")");
             if(lastint!=1)
             {

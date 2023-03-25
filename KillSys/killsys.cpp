@@ -14,7 +14,7 @@ KillSys::KillSys(QObject *parent)
 
 void KillSys::killNpcStart(QString str)
 {
-    qDebug()<<"#killnpc()--";
+    //qDebug()<<"#killnpc()--";
     int lastint=str.lastIndexOf(")");
     if(lastint!=1)
     {
@@ -24,18 +24,18 @@ void KillSys::killNpcStart(QString str)
         if(WorkSys::GetInstance()->working)
         {
             walkingStop=true;
-            emit sysCmd("#pause;yun qi;yun powerup;kill "+wantkill);
+            emit sysCmd("#pause;yun qi;yun powerup;killall "+wantkill);
         }
         else
         {
-            emit sysCmd("yun qi;yun powerup;kill "+wantkill);
+            emit sysCmd("yun qi;yun powerup;killall "+wantkill);
         }
     }
 }
 
 void KillSys::killmeStart(QString zhName, QString id)
 {
-    qDebug()<<"KillSys::killmeStart  zhName--"<<zhName<<"   id--"<<id;
+    //qDebug()<<"KillSys::killmeStart  zhName--"<<zhName<<"   id--"<<id;
     int beginint=id.indexOf("#");
     if(beginint!=1)
     {
@@ -127,7 +127,7 @@ void KillSys::nokillNpc()
     else
     {
         wangkillNum=true;
-        emit sysCmd("kill "+wantkill);
+        emit sysCmd("killall "+wantkill);
     }
     wantkill.clear();
 }
@@ -144,11 +144,24 @@ void KillSys::npcdie(QString name)
     }
     if(npcname.size()==0)
     {
-        if(!wantkill.isEmpty())//假如是有自己想杀的人，再叫杀一次
+        if(wantkill.isEmpty())//假如是有自己想杀的人，再叫杀一次
+        {
+            if(walkingStop)
+            {
+                walkingStop=false;
+                emit sysCmd("#walk");
+            }
+            else
+            {
+                emit sysCmd("");
+            }
+        }
+        else
         {
             //重复叫杀目标，如果已经true;而且返回没人，那就代表没目标了
             wangkillNum=true;
-            emit sysCmd("kill "+wantkill);
+            //qDebug()<<"MapMainWindow::roomMessage--  npcdie";
+            emit sysCmd("killall "+wantkill);
         }
     }
 }
@@ -163,7 +176,7 @@ void KillSys::roomMessage(QByteArray roomMess)
         QRegularExpressionMatch npcdieREGmatch=npcdieREG.match(oneStr);
         if(npcdieREGmatch.hasMatch())
         {
-            //qDebug()<<"MapMainWindow::roomMessage--  npcdieREGmatch"<<npcdieREGmatch.captured(1);
+            //qDebug()<<"MapMainWindow::roomMessage--  npcdie"<<npcdieREGmatch.captured(1);
             npcdie(npcdieREGmatch.captured(1));
         }
         else
@@ -171,7 +184,7 @@ void KillSys::roomMessage(QByteArray roomMess)
             QRegularExpressionMatch nokillNpcREGmatch=nokillNpcREG.match(oneStr);
             if(nokillNpcREGmatch.hasMatch())
             {
-                //qDebug()<<"MapMainWindow::roommes--  2222";
+                //qDebug()<<"MapMainWindow::roomMessage--  nokillNpc";
                 nokillNpc();
             }
         }
