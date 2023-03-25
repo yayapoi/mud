@@ -36,13 +36,14 @@ GoForm::~GoForm()
     delete ui;
 }
 
-void GoForm::initWidget(QString outCB, QString cmd, QString time, QString room)
+void GoForm::initWidget(QString outCB, QString cmd, QString time, QString room, bool longtime)
 {
     if(cmd=="")
     {
         ui->outCombox->setCurrentText(outCB);
         ui->time->setText(time);
         ui->room->setText(room);
+        ui->longtimeCB->setChecked(longtime);
     }
     else
     {
@@ -50,15 +51,17 @@ void GoForm::initWidget(QString outCB, QString cmd, QString time, QString room)
         ui->cmd->setText(cmd);
         ui->time->setText(time);
         ui->room->setText(room);
+        ui->longtimeCB->setChecked(longtime);
     }
 }
 
-void GoForm::getWidget(QString &outCB, QString &cmd, QString &time, QString &room)
+void GoForm::getWidget(QString &outCB, QString &cmd, QString &time, QString &room, bool &longtime)
 {
     cmd=ui->cmd->text();
     outCB=ui->outCombox->currentText();
     time=ui->time->text();
     room=ui->room->text();
+    longtime=ui->longtimeCB->isChecked();
 }
 
 void GoForm::setRoomWidget(QString room2)

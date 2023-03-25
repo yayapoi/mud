@@ -40,14 +40,15 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
     QAction* m_ActionAddTo = new QAction(tr("增加出口"), this);
     connect(m_ActionAddTo,&QAction::triggered,this,[this](){
         GoForm* goFor2=new GoForm;
-        goFor2->initWidget("west", "", "", "");
+        goFor2->initWidget("west", "", "", "",false);
         connect(goFor2,&GoForm::deleteGo,this,[this](GoForm* removeItem){
             this->toroomLayout->removeWidget(removeItem);
             removeItem->deleteLater();
         });
         connect(goFor2,&GoForm::GoFormGo,this,[this](GoForm* goItem){
             QString outCB, cmd, time, room;
-            goItem->getWidget(outCB, cmd, time, room);
+            bool longolngtime;
+            goItem->getWidget(outCB, cmd, time, room, longolngtime);
             if(!cmd.isEmpty())
             {
                 //发送命令，等待成功
@@ -55,6 +56,8 @@ MapMainWindow::MapMainWindow(QWidget *parent) :
                 this->waitOut.outCmdNow=cmd;
                 this->waitOut.time=time.toInt();
                 this->waitOut.room=room.toInt();
+                this->waitOut.room=room.toInt();
+                this->waitOut.longtime=longolngtime;
                 waitGo=true;
                 waitgoForm=goItem;
                 jishu=true;
@@ -218,14 +221,15 @@ void MapMainWindow::initToRoom()
         {
             GoForm* goFor2=new GoForm;
             goFor2->initWidget(infoList[num].outcmd, infoList[num].outCmdNow,
-                               QString::number(infoList[num].time), QString::number(infoList[num].room));
+                               QString::number(infoList[num].time), QString::number(infoList[num].room), infoList[num].longtime);
             connect(goFor2,&GoForm::deleteGo,this,[this](GoForm* removeItem){
                 this->toroomLayout->removeWidget(removeItem);
                 removeItem->deleteLater();
             });
             connect(goFor2,&GoForm::GoFormGo,this,[this](GoForm* goItem){
                 QString outCB, cmd, time, room;
-                goItem->getWidget(outCB, cmd, time, room);
+                bool longolngtime;
+                goItem->getWidget(outCB, cmd, time, room, longolngtime);
                 if(!cmd.isEmpty())
                 {
                     //发送命令，等待成功
@@ -233,6 +237,7 @@ void MapMainWindow::initToRoom()
                     this->waitOut.outCmdNow=cmd;
                     this->waitOut.time=time.toInt();
                     this->waitOut.room=room.toInt();
+                    this->waitOut.longtime=longolngtime;
                     waitGo=true;
                     waitgoForm=goItem;
                     jishu=true;
@@ -313,7 +318,8 @@ void MapMainWindow::updateTo(roomInfo *roomIter)
     for(int num=0; num<toroomLayout->count(); num++)
     {
         QString outCB, cmd, time, room;
-        ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room);
+        bool longlongtime;
+        ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room, longlongtime);
         if(time=="" || room=="" || cmd=="")
         {
             //有问题
@@ -325,6 +331,7 @@ void MapMainWindow::updateTo(roomInfo *roomIter)
             outinfo.outCmdNow=cmd;
             outinfo.time=time.toInt();
             outinfo.room=room.toInt();
+            outinfo.longtime=longlongtime;
             roomIter->toRoomList.append(room.toInt());
             roomIter->outInfo.append(outinfo);
         }
@@ -337,7 +344,8 @@ bool MapMainWindow::checkTo()
     for(int num=0; num<toroomLayout->count(); num++)
     {
         QString outCB, cmd, time, room;
-        ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room);
+        bool longlongtime;
+        ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room, longlongtime);
         if(room=="")
         {
             //有问题
@@ -349,7 +357,8 @@ bool MapMainWindow::checkTo()
                 if(num1!=num)
                 {
                     QString outCB1, cmd1, time1, room1;
-                    ((GoForm*)(toroomLayout->itemAt(num1)->widget()))->getWidget(outCB1, cmd1, time1, room1);
+                    bool longlongtime;
+                    ((GoForm*)(toroomLayout->itemAt(num1)->widget()))->getWidget(outCB1, cmd1, time1, room1, longlongtime);
                     if(room1=="")
                     {
                         //有问题
@@ -415,11 +424,7 @@ void MapMainWindow::GoSuccess()
         }
         //假如已经有时间了，统计时间
         int nowTime=begintime.msecsTo(QTime::currentTime());
-        if(errorTime && nowTime>50)
-        {
-            nowTime=50;
-        }
-        if(longOrShortTime)
+        if(waitOut.longtime)
         {
             if(waitOut.time<nowTime)
             {
@@ -427,6 +432,10 @@ void MapMainWindow::GoSuccess()
             }
         }
         else {
+            if(errorTime && nowTime>50)
+            {
+                nowTime=50;
+            }
             if(waitOut.time>nowTime)
             {
                 waitOut.time=nowTime;
@@ -494,7 +503,8 @@ void MapMainWindow::calculateTo()
     for(int num=0; num<toroomLayout->count(); num++)
     {
         QString outCB,cmd,time,room;
-        ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB,cmd,time,room);
+        bool longlongtime;
+        ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB,cmd,time,room,longlongtime);
         //qDebug()<<"aa"<<outLe;
         auto listIter=listlist.begin();
         while(listIter!=listlist.end())
@@ -515,11 +525,11 @@ void MapMainWindow::calculateTo()
         GoForm* goFor2=new GoForm;
         if(listIter.value()->roomNum!=-1)
         {
-            goFor2->initWidget(listIter.key(), "", "", QString::number(listIter.value()->roomNum));
+            goFor2->initWidget(listIter.key(), "", "", QString::number(listIter.value()->roomNum),false);
         }
         else
         {
-            goFor2->initWidget(listIter.key(), "", "", "");
+            goFor2->initWidget(listIter.key(), "", "", "",false);
         }
         connect(goFor2,&GoForm::deleteGo,this,[this](GoForm* removeItem){
             this->toroomLayout->removeWidget(removeItem);
@@ -527,7 +537,8 @@ void MapMainWindow::calculateTo()
         });
         connect(goFor2,&GoForm::GoFormGo,this,[this](GoForm* goItem){
             QString outCB, cmd, time, room;
-            goItem->getWidget(outCB, cmd, time, room);
+            bool longolngtime;
+            goItem->getWidget(outCB, cmd, time, room, longolngtime);
             if(!cmd.isEmpty())
             {
                 //发送命令，等待成功
@@ -535,6 +546,7 @@ void MapMainWindow::calculateTo()
                 this->waitOut.outCmdNow=cmd;
                 this->waitOut.time=time.toInt();
                 this->waitOut.room=room.toInt();
+                this->waitOut.longtime=longolngtime;
                 waitGo=true;
                 waitgoForm=goItem;
                 jishu=true;
@@ -923,6 +935,7 @@ void MapMainWindow::on_saveRoomBT_clicked()
                 roomJson.insert("outCmdNow",bbb[num].outCmdNow);
                 roomJson.insert("time",bbb[num].time);
                 roomJson.insert("room",bbb[num].room);
+                roomJson.insert("longtime",bbb[num].longtime);
                 outListJson.insert(QString::number(num),roomJson);
             }
 
@@ -1118,7 +1131,8 @@ void MapMainWindow::on_cmdLE_returnPressed()
         for(int num=0; num<toroomLayout->count(); num++)
         {
             QString outCB, cmd, time, room;
-            ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room);
+            bool longlongtime;
+            ((GoForm*)(toroomLayout->itemAt(num)->widget()))->getWidget(outCB, cmd, time, room, longlongtime);
             if(cmd==cmdname)
             {
                 //发送命令，等待成功
@@ -1126,6 +1140,7 @@ void MapMainWindow::on_cmdLE_returnPressed()
                 this->waitOut.outCmdNow=cmd;
                 this->waitOut.time=time.toInt();
                 this->waitOut.room=room.toInt();
+                this->waitOut.longtime=longlongtime;
                 waitGo=true;
                 waitgoForm=((GoForm*)(toroomLayout->itemAt(num)->widget()));
                 jishu=true;

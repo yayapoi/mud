@@ -13,19 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QCheckBox" name="timeCB">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>40</y>
-     <width>141</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>行走时统计最长时间</string>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="errorTimeCB">
    <property name="geometry">
     <rect>

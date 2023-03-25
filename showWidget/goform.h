@@ -15,8 +15,8 @@ public:
     explicit GoForm(QWidget *parent = nullptr);
     ~GoForm();
 
-    void initWidget(QString outCB, QString cmd, QString time, QString room);
-    void getWidget(QString &outCB, QString &cmd, QString &time, QString &room);
+    void initWidget(QString outCB, QString cmd, QString time, QString room, bool longtime);
+    void getWidget(QString &outCB, QString &cmd, QString &time, QString &room, bool &longtime);
     void setRoomWidget(QString room2);
     void setRoomTime(QString time1);
 private slots:

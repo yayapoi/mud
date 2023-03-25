@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>174</width>
-    <height>135</height>
+    <width>189</width>
+    <height>143</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item row="0" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>6</number>
      </property>
      <item>
       <widget class="QLabel" name="label">
@@ -31,6 +31,13 @@
      </item>
      <item>
       <widget class="QComboBox" name="outCombox"/>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="longtimeCB">
+       <property name="text">
+        <string>使用最长时间</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

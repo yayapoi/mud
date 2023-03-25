@@ -10,7 +10,6 @@ bool messageBool=false;
 killnpc killNpc=nullptr;
 boatin boatIn=nullptr;
 chein cheIn=nullptr;
-bool longOrShortTime=false;
 bool errorTime=true;
 bool mapCreaterShow=false;
 bool killSysGetMes=false;

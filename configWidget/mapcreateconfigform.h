@@ -16,7 +16,6 @@ public:
     ~MapCreateConfigForm();
 
 private slots:
-    void on_timeCB_toggled(bool checked);
 
     void on_errorTimeCB_toggled(bool checked);
 

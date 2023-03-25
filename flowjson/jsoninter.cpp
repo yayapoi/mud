@@ -227,6 +227,7 @@ bool JsonInter::getRoomInFile(QString fillname)
                     oneOut.outCmdNow=oneOutObj.value("outCmdNow").toString();
                     oneOut.time=oneOutObj.value("time").toInt();
                     oneOut.room=oneOutObj.value("room").toInt();
+                    oneOut.longtime=oneOutObj.value("longtime").toBool();
                     oneRoonInfo->outInfo.append(oneOut);
                 }
 
@@ -434,7 +435,7 @@ void JsonInter::itemMarge(MapCreateRoomItem *beginitem, MapCreateRoomItem *endIt
                                 endNummm=num;
                             }
                         }
-                        if(longOrShortTime)
+                        if(parentItemIter->first->outInfo[endNummm].longtime)
                         {
                             if(parentItemIter->first->outInfo[begimNummm].time>parentItemIter->first->outInfo[endNummm].time)
                             {
@@ -525,7 +526,7 @@ void JsonInter::itemMarge(MapCreateRoomItem *beginitem, MapCreateRoomItem *endIt
                 if(beginItemIter->first->outInfo[numbegimnn].room==endItemIter->first->outInfo[numendmnn].room)
                 {
                     findBool=true;
-                    if(longOrShortTime)
+                    if(endItemIter->first->outInfo[numendmnn].longtime)
                     {
                         //有相同的roominfo，俩房间最大时间给enditem的(json map)
                         if(beginItemIter->first->outInfo[numbegimnn].time>endItemIter->first->outInfo[numendmnn].time)
@@ -595,6 +596,7 @@ void JsonInter::itemMarge(MapCreateRoomItem *beginitem, MapCreateRoomItem *endIt
                     newoneout.insert("outCmdNow",beginItemIter->first->outInfo[numbegimnn].outCmdNow);
                     newoneout.insert("time",beginItemIter->first->outInfo[numbegimnn].time);
                     newoneout.insert("room",beginItemIter->first->outInfo[numbegimnn].room);
+                    newoneout.insert("longtime",beginItemIter->first->outInfo[numbegimnn].longtime);
                     endoutList.insert(QString::number(endoutList.count()),newoneout);
                     endRoom.insert("outList",endoutList);
                     allDoc.insert(QString::number(endNum),endRoom);

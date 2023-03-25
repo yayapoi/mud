@@ -27,8 +27,6 @@ extern boatin boatIn;
 extern chein cheIn;
 ///地图编辑器需要传入数据，地图编辑器获取完置为false;true:需要传数据
 extern bool mapcreateGetMessage;
-///使用最长或者最短时间，配置里选  true:最长，
-extern bool longOrShortTime;
 ///网络延时过长时 同时用户确认只需要很短时间时  使用虚假时间，配置里选  true:使用虚假时间，
 extern bool errorTime;
 
@@ -43,6 +41,8 @@ struct OutInfo{
     QString outCmdNow;//输出方向的命令
     int room=-1;//房间数字
     int time=1;//走路耗时，最小值为1
+    ///使用最长时间  true:长时间
+    bool longtime=false;
 };
 
 struct roomInfo{

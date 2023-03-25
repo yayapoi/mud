@@ -14,11 +14,6 @@ MapCreateConfigForm::~MapCreateConfigForm()
     delete ui;
 }
 
-void MapCreateConfigForm::on_timeCB_toggled(bool checked)
-{
-    longOrShortTime=checked;
-}
-
 void MapCreateConfigForm::on_errorTimeCB_toggled(bool checked)
 {
     errorTime=checked;
