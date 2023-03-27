@@ -443,11 +443,12 @@ void StatusForm::stringToJson(QByteArray &stringstr, GMCPType &type)
                     {
                         if(enemy_inin==1)//进入战斗为1
                         {
-                            KillSys::GetInstance()->killmeStart(name,id);
+                            //KillSys::GetInstance()->killmeStart(name,id);
                         }
                         else
                         {
                             //脱离战斗
+                            qDebug()<<"StatusForm::stringToJson  GMCPType::combat   die die die---";
                         }
                     }
                     else
