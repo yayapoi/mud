@@ -34,6 +34,8 @@ private slots:
 
     void on_messageCB_stateChanged(int arg1);
 
+    void on_jisuan_clicked();
+
 private:
     Ui::ConfigForm *ui;
 

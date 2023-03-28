@@ -78,6 +78,8 @@ private slots:
 
     void on_mapCreate_triggered();
 
+    void on_actioninit_triggered();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *testSocket=nullptr;

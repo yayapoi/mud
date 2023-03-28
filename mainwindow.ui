@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>1040</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -88,6 +88,7 @@
     </property>
     <addaction name="actionYuanWen"/>
     <addaction name="actiongmcp"/>
+    <addaction name="actioninit"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -133,6 +134,11 @@
   <action name="mapCreate">
    <property name="text">
     <string>地图编辑器</string>
+   </property>
+  </action>
+  <action name="actioninit">
+   <property name="text">
+    <string>init</string>
    </property>
   </action>
  </widget>

@@ -1,6 +1,7 @@
 #include "configform.h"
 #include "ui_configform.h"
 #include <INI/inimanarge.h>
+#include "work/maptomapmanage.h"
 
 ConfigForm::ConfigForm(QWidget *parent) :
     QWidget(parent),
@@ -149,5 +150,15 @@ void ConfigForm::on_messageCB_stateChanged(int arg1)
     default:
         break;
     }*/
+}
+
+
+void ConfigForm::on_jisuan_clicked()
+{
+    QVector<int> backvec;
+    MapToMapManage::GetInstance()->findLujing(ui->begin->text().toInt(), ui->end->text().toInt(), backvec);
+    qDebug()<<"ConfigForm::on_jisuan_clicked--"<<backvec;
+    ui->begin->clear();
+    ui->end->clear();
 }
 

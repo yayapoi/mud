@@ -41,6 +41,7 @@ SOURCES += \
     tcpControl/tcpprotocoltrans.cpp \
     tcpControl/tcpservercontrol.cpp \
     tcpControl/tcpserverform.cpp \
+    work/maptomapmanage.cpp \
     work/worksys.cpp
 
 HEADERS += \
@@ -75,6 +76,7 @@ HEADERS += \
     tcpControl/tcpprotocoltrans.h \
     tcpControl/tcpservercontrol.h \
     tcpControl/tcpserverform.h \
+    work/maptomapmanage.h \
     work/worksys.h \
     zconf.h \
     zlib.h

@@ -12,6 +12,7 @@
 #include <INI/inimanarge.h>
 #include "work/worksys.h"
 #include "KillSys/killsys.h"
+#include "work/maptomapmanage.h"
 
 struct totalZlibStruct{
     int showNum=0;//出现几次
@@ -1531,5 +1532,11 @@ void MainWindow::on_actiongmcp_triggered()
 void MainWindow::on_mapCreate_triggered()
 {
     mapcreateWidget.show();
+}
+
+
+void MainWindow::on_actioninit_triggered()
+{
+    MapToMapManage::GetInstance()->initallquyu();
 }
 
