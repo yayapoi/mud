@@ -92,6 +92,7 @@ void MapToMapManage::lujingListquyu()
                     newlujing.zhongdian=lujinglistlist[roonend];
                     newlujing.roomList=shortest_path(lujinglistlist[roombegin], lujinglistlist[roonend], quyuList[num].itemPointMap);
                     newlujing.time=addTimeInMap(newlujing.roomList, quyuList[num].itemPointMap);
+                    //qDebug()<<"qidian--"<<lujinglistlist[roombegin]<<"  end--"<<lujinglistlist[roonend]<<"  roomList--"<<newlujing.roomList<<"  time--"<<newlujing.time;
                     if(!newlujing.roomList.isEmpty())
                     {
                         quyuList[num].lujingList.append(newlujing);
@@ -151,7 +152,7 @@ int MapToMapManage::addTimeInMap(QVector<int> &vecvec, std::unordered_map<int, s
             auto endroomite=beginroomite->second.find(vecvec[roonnum+1]);
             if(endroomite!=beginroomite->second.end())
             {
-                    alltime=endroomite->second;
+                alltime=endroomite->second+alltime;
             }
         }
         else
@@ -213,6 +214,8 @@ bool MapToMapManage::findLujing(int begin, int end, QVector<int> &backlujing)
         if (endite!=JsonInter::GetInstance()->roomMap.end())
         {
             qDebug()<<"MapToMapManage::findLujing 222222";
+            int timetttt=-1;
+            QVector<int> tongyiquyu;
             if(beginite->first->FqZH==endite->first->FqZH
                     && beginite->first->sqZH==endite->first->sqZH
                     && beginite->first->sthqZH==endite->first->sthqZH)
@@ -227,134 +230,245 @@ bool MapToMapManage::findLujing(int begin, int end, QVector<int> &backlujing)
                             && quyuList[num].srdn==endite->first->sthqZH)
                     {
                         qDebug()<<"MapToMapManage::findLujing 在同一区域2222222222";
-                        backlujing=shortest_path(begin, end, quyuList[num].itemPointMap);
+                        tongyiquyu=shortest_path(begin, end, quyuList[num].itemPointMap);
+                        timetttt=addTimeInMap(tongyiquyu,quyuList[num].itemPointMap);
                         break;
                     }
                 }
             }
-            else
+            qDebug()<<"MapToMapManage::findLujing 不在同一区域";
+            //不在同一区域
+            //找起点到起点区域各个出口的路径和时间
+            //找起点区域各个出口到终点区域各个出口的路径和时间
+            //找终点区域各个出口到终点的路径和时间
+            int beginquyu=-1;
+            int endquyu=-1;
+            for(int num=0;num<quyuList.size();num++)
             {
-                qDebug()<<"MapToMapManage::findLujing 不在同一区域";
-                //不在同一区域
-                //找起点到起点区域各个出口的路径和时间
-                //找起点区域各个出口到终点区域各个出口的路径和时间
-                //找终点区域各个出口到终点的路径和时间
-                int beginquyu=-1;
-                int endquyu=-1;
-                for(int num=0;num<quyuList.size();num++)
+                if(quyuList[num].fn==beginite->first->FqZH
+                        && quyuList[num].sn==beginite->first->sqZH
+                        && quyuList[num].srdn==beginite->first->sthqZH)
                 {
-                    if(quyuList[num].fn==beginite->first->FqZH
-                            && quyuList[num].sn==beginite->first->sqZH
-                            && quyuList[num].srdn==beginite->first->sthqZH)
-                    {
-                        beginquyu=num;
-                    }
-                    if(quyuList[num].fn==endite->first->FqZH
-                            && quyuList[num].sn==endite->first->sqZH
-                            && quyuList[num].srdn==endite->first->sthqZH)
-                    {
-                        endquyu=num;
-                    }
-                    if(beginquyu!=-1 && endquyu!=-1)
-                    {
-                        break;
-                    }
+                    beginquyu=num;
                 }
-                qDebug()<<"MapToMapManage::findLujing beginquyu--"<<beginquyu<<"    endquyu---"<<endquyu;
+                if(quyuList[num].fn==endite->first->FqZH
+                        && quyuList[num].sn==endite->first->sqZH
+                        && quyuList[num].srdn==endite->first->sthqZH)
+                {
+                    endquyu=num;
+                }
                 if(beginquyu!=-1 && endquyu!=-1)
                 {
-                    QList<lujing> begintoquyu;
-                    QList<lujing> quyutoquyu;
-                    QList<lujing> quyutoend;
-                    std::unordered_map<int, std::unordered_map<int, int>> vertices;
-                    std::unordered_map<int, int> newmp;
-                    foreach(int chukouroon,quyuList[beginquyu].IOroom)//找起点到起点区域各个出口的路径和时间
+                    break;
+                }
+            }
+            qDebug()<<"MapToMapManage::findLujing beginquyu--"<<beginquyu<<"    endquyu---"<<endquyu;
+            if(beginquyu!=-1 && endquyu!=-1)
+            {
+                QList<lujing> begintoquyu;
+                QList<lujing> quyutoquyu;
+                QList<lujing> quyutoend;
+                std::unordered_map<int, std::unordered_map<int, int>> vertices;
+                std::unordered_map<int, int> newmp;
+                foreach(int chukouroon,quyuList[beginquyu].IOroom)//找起点到起点区域各个出口的路径和时间
+                {
+                    lujing newlujing;
+                    newlujing.qidian=begin;
+                    newlujing.zhongdian=chukouroon;
+                    newlujing.roomList=shortest_path(begin, chukouroon, quyuList[beginquyu].itemPointMap);
+                    newlujing.time=addTimeInMap(newlujing.roomList, quyuList[beginquyu].itemPointMap);
+                    qDebug()<<"begin--"<<begin<<"  chukouroon--"<<chukouroon<<"  roomList--"<<newlujing.roomList<<"  time--"<<newlujing.time;
+                    if(!newlujing.roomList.isEmpty())
                     {
-                        lujing newlujing;
-                        newlujing.qidian=begin;
-                        newlujing.zhongdian=chukouroon;
-                        newlujing.roomList=shortest_path(begin, chukouroon, quyuList[beginquyu].itemPointMap);
-                        qDebug()<<"begin--"<<begin<<"  chukouroon--"<<chukouroon<<"  roomList--"<<newlujing.roomList;
-                        newlujing.time=addTimeInMap(newlujing.roomList, quyuList[beginquyu].itemPointMap);
                         begintoquyu.append(newlujing);
                         newmp.insert(std::unordered_map<int, int>::value_type(chukouroon,newlujing.time));
                     }
-                    vertices.insert(std::unordered_map<int, std::unordered_map<int, int>>::value_type(begin,newmp));
-                    qDebug()<<"MapToMapManage::findLujing beginquyu  vertices1--"<<vertices.size()<<"  begintoquyu--"<<begintoquyu.size();
+                }
+                vertices.insert(std::unordered_map<int, std::unordered_map<int, int>>::value_type(begin,newmp));
+                qDebug()<<"MapToMapManage::findLujing beginquyu  vertices1--"<<vertices.size()<<"  begintoquyu--"<<begintoquyu.size();
 
-                    foreach(int beginroon,quyuList[beginquyu].IOroom)//找起点区域各个出口到终点区域各个出口的路径和时间
+                //printfitemPointMap(vertices);
+                foreach(int beginroon,quyuList[beginquyu].IOroom)//找起点区域各个出口到终点区域各个出口的路径和时间
+                {
+                    //先找刚才是不是已经添加过了
+                    auto aginite=vertices.find(beginroon);
+                    if(aginite!=vertices.end())//已经添加过了
                     {
+                        newmp=aginite->second;
+                        vertices.erase(beginroon);
+                    }
+                    else
                         newmp.clear();
-                        foreach(int endroon,quyuList[endquyu].IOroom)
+                    foreach(int endroon,quyuList[endquyu].IOroom)
+                    {
+                        lujing newlujing;
+                        newlujing.qidian=beginroon;
+                        newlujing.zhongdian=endroon;
+                        newlujing.roomList=shortest_path(beginroon, endroon, itemPointMap);
+                        newlujing.time=addTimeInMap(newlujing.roomList, itemPointMap);
+                        qDebug()<<"beginroon--"<<beginroon<<"  endroon--"<<endroon<<"  roomList--"<<newlujing.roomList<<"  time--"<<newlujing.time;
+                        if(!newlujing.roomList.isEmpty())
                         {
-                            lujing newlujing;
-                            newlujing.qidian=beginroon;
-                            newlujing.zhongdian=endroon;
-                            newlujing.roomList=shortest_path(beginroon, endroon, itemPointMap);
-                            qDebug()<<"beginroon--"<<beginroon<<"  endroon--"<<endroon<<"  roomList--"<<newlujing.roomList;
-                            newlujing.time=addTimeInMap(newlujing.roomList, itemPointMap);
                             quyutoquyu.append(newlujing);
                             newmp.insert(std::unordered_map<int, int>::value_type(endroon,newlujing.time));
+                            //qDebug()<<"size--"<<newmp.size();
                         }
-                        vertices.insert(std::unordered_map<int, std::unordered_map<int, int>>::value_type(beginroon,newmp));
                     }
-                    qDebug()<<"MapToMapManage::findLujing beginquyu  vertices2--"<<vertices.size()<<"  quyutoquyu--"<<quyutoquyu.size();
+                    vertices.insert(std::unordered_map<int, std::unordered_map<int, int>>::value_type(beginroon,newmp));
+                }
+                qDebug()<<"MapToMapManage::findLujing beginquyu  vertices2--"<<vertices.size()<<"  quyutoquyu--"<<quyutoquyu.size();
 
-                    foreach(int endroon,quyuList[endquyu].IOroom)//找终点区域各个出口到终点的路径和时间
+                //printfitemPointMap(vertices);
+                foreach(int endroon,quyuList[endquyu].IOroom)//找终点区域各个出口到终点的路径和时间
+                {
+                    //先找刚才是不是已经添加过了
+                    auto aginite=vertices.find(endroon);
+                    if(aginite!=vertices.end())//已经添加过了
                     {
+                        newmp=aginite->second;
+                    }
+                    else
                         newmp.clear();
-                        lujing newlujing;
-                        newlujing.qidian=endroon;
-                        newlujing.zhongdian=end;
-                        newlujing.roomList=shortest_path(endroon, end, quyuList[endquyu].itemPointMap);
-                        qDebug()<<"endroon--"<<endroon<<"  end--"<<end<<"  roomList--"<<newlujing.roomList;
-                        newlujing.time=addTimeInMap(newlujing.roomList, quyuList[endquyu].itemPointMap);
+                    lujing newlujing;
+                    newlujing.qidian=endroon;
+                    newlujing.zhongdian=end;
+                    newlujing.roomList=shortest_path(endroon, end, quyuList[endquyu].itemPointMap);
+                    newlujing.time=addTimeInMap(newlujing.roomList, quyuList[endquyu].itemPointMap);
+                    qDebug()<<"endroon--"<<endroon<<"  end--"<<end<<"  roomList--"<<newlujing.roomList<<"  time--"<<newlujing.time;
+                    if(!newlujing.roomList.isEmpty())
+                    {
                         quyutoend.append(newlujing);
                         newmp.insert(std::unordered_map<int, int>::value_type(end,newlujing.time));
                         vertices.insert(std::unordered_map<int, std::unordered_map<int, int>>::value_type(endroon,newmp));
                     }
-                    qDebug()<<"MapToMapManage::findLujing beginquyu  vertices3--"<<vertices.size()<<"  quyutoend--"<<quyutoend.size();
+                }
+                qDebug()<<"MapToMapManage::findLujing beginquyu  vertices3--"<<vertices.size()<<"  quyutoend--"<<quyutoend.size();
 
-                    QVector<int> backvecbec=shortest_path(begin, end, vertices);
-                    qDebug()<<"MapToMapManage::findLujing beginquyu  backvecbec--"<<backvecbec;
-                    int allllltime=addTimeInMap(backvecbec, vertices);
-                    if(backvecbec.size()>=4)
+                printfitemPointMap(vertices);
+                QVector<int> backvecbec=shortest_path(begin, end, vertices);
+                qDebug()<<"MapToMapManage::findLujing beginquyu  backvecbec--"<<backvecbec;
+                int allllltime=-1;
+                allllltime=addTimeInMap(backvecbec, vertices);
+                if(backvecbec.size()>=2)
+                {
+                    for(int begin=0;begin<backvecbec.size()-1;begin++)
                     {
+                        bool findbool=false;
                         for(int num=0;num<begintoquyu.size();num++)
                         {
-                            if(begintoquyu[num].qidian==backvecbec[0] && begintoquyu[num].zhongdian==backvecbec[1])
+                            if(begintoquyu[num].qidian==backvecbec[begin] && begintoquyu[num].zhongdian==backvecbec[begin+1])
                             {
+                                findbool=true;
                                 for(int beginnum=0; beginnum<begintoquyu[num].roomList.size(); beginnum++)
                                 {
-                                    backlujing.append(begintoquyu[num].roomList[beginnum]);
+                                    if(backlujing.back()!=begintoquyu[num].roomList[beginnum])
+                                    {
+                                        backlujing.append(begintoquyu[num].roomList[beginnum]);
+                                    }
                                 }
                                 break;
                             }
                         }
-                        for(int num=0;num<quyutoquyu.size();num++)
+                        qDebug()<<"MapToMapManage::findLujing beginquyu  backlujing--"<<backlujing;
+                        if(findbool==false)
                         {
-                            if(quyutoquyu[num].qidian==backvecbec[1] && quyutoquyu[num].zhongdian==backvecbec[2])
+                            for(int num=0;num<quyutoend.size();num++)
                             {
-                                for(int midnum=0; midnum<quyutoquyu[num].roomList.size(); midnum++)
+                                if(quyutoend[num].qidian==backvecbec[begin] && quyutoend[num].zhongdian==backvecbec[begin+1])
                                 {
-                                    backlujing.append(quyutoquyu[num].roomList[midnum]);
+                                    findbool=true;
+                                    for(int endnum=0; endnum<quyutoend[num].roomList.size(); endnum++)
+                                    {
+                                        if(backlujing.back()!=begintoquyu[num].roomList[endnum])
+                                        {
+                                            backlujing.append(quyutoend[num].roomList[endnum]);
+                                        }
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
-                        for(int num=0;num<quyutoend.size();num++)
+                        qDebug()<<"MapToMapManage::findLujing beginquyu  backlujing11--"<<backlujing;
+                        if(findbool==false)
                         {
-                            if(quyutoend[num].qidian==backvecbec[2] && quyutoend[num].zhongdian==backvecbec[3])
+                            for(int num=0;num<quyutoquyu.size();num++)
                             {
-                                for(int endnum=0; endnum<quyutoend[num].roomList.size(); endnum++)
+                                if(quyutoquyu[num].qidian==backvecbec[begin] && quyutoquyu[num].zhongdian==backvecbec[begin+1])
                                 {
-                                    backlujing.append(quyutoend[num].roomList[endnum]);
+                                    qDebug()<<"backvecbec1--"<<backvecbec[begin]<<"  backvecbec2="<<backvecbec[begin+1];
+                                    findbool=true;
+                                    for(int midnum=0; midnum<quyutoquyu[num].roomList.size()-1; midnum++)
+                                    {
+                                        qDebug()<<"begin--"<<quyutoquyu[num].roomList[midnum]<<"  ebd="<<quyutoquyu[num].roomList[1+midnum];
+                                        //看房间出口有没有第二个数字，有则表示相邻房间，没有就是同一区域的出口到出口
+                                        auto iteerer=JsonInter::GetInstance()->roomMap.find(quyutoquyu[num].roomList[midnum]);
+                                        if(iteerer!=JsonInter::GetInstance()->roomMap.end())
+                                        {
+                                            bool oneoutinfofind=false;
+                                            foreach(auto oneoutinfo,iteerer->first->outInfo)
+                                            {
+                                                if(oneoutinfo.room==quyutoquyu[num].roomList[midnum+1])
+                                                {
+                                                    oneoutinfofind=true;
+                                                    break;
+                                                }
+                                            }
+                                            if(oneoutinfofind)//如果不是相邻的两个房间，则是同一区域的出口到出口
+                                            {
+                                                qDebug()<<"this  room="<<quyutoquyu[num].roomList[midnum];
+                                                if(backlujing.back()!=quyutoquyu[num].roomList[midnum])
+                                                {
+                                                    backlujing.append(quyutoquyu[num].roomList[midnum]);
+                                                }
+                                                backlujing.append(quyutoquyu[num].roomList[midnum+1]);
+                                            }
+                                            else
+                                            {
+                                                for(int quyunum=0;quyunum<quyuList.size();quyunum++)
+                                                {
+                                                    bool brak=false;
+                                                    foreach(auto onelujing,quyuList[quyunum].lujingList)
+                                                    {
+                                                        if(onelujing.qidian==quyutoquyu[num].roomList[midnum] &&
+                                                                onelujing.zhongdian==quyutoquyu[num].roomList[midnum+1])
+                                                        {
+                                                            foreach(auto oneroom,onelujing.roomList)
+                                                            {
+                                                                qDebug()<<"lujing="<<quyutoquyu[num].roomList[midnum];
+                                                                if(backlujing.back()!=oneroom)
+                                                                    backlujing.append(oneroom);
+                                                            }
+                                                            brak=true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(brak)
+                                                    {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
+                        qDebug()<<"MapToMapManage::findLujing beginquyu  backlujing33--"<<backlujing;
                     }
                 }
+                if(timetttt!=-1 && allllltime!=-1)
+                {
+                    if(timetttt<allllltime)
+                    {
+                        backlujing=tongyiquyu;
+                    }
+                    else
+                    {
+                        tongyiquyu=backlujing;
+                    }
+                }
+                qDebug()<<"MapToMapManage::findLujing beginquyu  backlujingeeeeeend--"<<backlujing;
             }
         }
     }
@@ -372,6 +486,22 @@ void MapToMapManage::printf()
             qDebug()<<"zhongdian---"<<ontlujing.zhongdian;
             qDebug()<<"roomList---"<<ontlujing.roomList;
         }
+    }
+}
+
+void MapToMapManage::printfitemPointMap(std::unordered_map<int, std::unordered_map<int, int>>& sadf)
+{
+    auto oneite=sadf.begin();
+    while(oneite!=sadf.end())
+    {
+        qDebug()<<"MapToMapManage::printfitemPointMap        begin---"<<oneite->first;
+        auto seite=oneite->second.begin();
+        while(seite!=oneite->second.end())
+        {
+            qDebug()<<"MapToMapManage::printfitemPointMap  seite---"<<seite->first<<"   time---"<<seite->second;
+            seite++;
+        }
+        oneite++;
     }
 }
 

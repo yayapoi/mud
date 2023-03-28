@@ -70,6 +70,8 @@ public:
 
     ///打印而已，不要慌
     void printf();
+    ///打印而已，不要慌
+    void printfitemPointMap(std::unordered_map<int, std::unordered_map<int, int>>& sadf);
     ///寻找最短路径
     QVector<int> shortest_path(int start, int finish, std::unordered_map<int, std::unordered_map<int, int>> &vertices);
 signals:
