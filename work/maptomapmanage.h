@@ -10,7 +10,7 @@ struct lujing{
     int qidian;
     ///int是JsonInter的首值
     int zhongdian;
-    ///int是JsonInter的首值
+    ///int是JsonInter的首值     路径有可能空的
     QVector<int> roomList;
     int time;
 };
@@ -26,7 +26,7 @@ struct quyu{
     QList<int> IOroom;
     ///本区域所房间的权值  前两个int是JsonInter的首值  第三个是权值
     std::unordered_map<int, std::unordered_map<int, int>> itemPointMap;
-    ///本区域内所有出入口之间最短路径
+    ///本区域内所有出入口之间最短路径   路径有可能空的
     QList<lujing> lujingList;
 };
 
@@ -44,9 +44,7 @@ public:
         return m_pipe_rw;
     }
 
-    ///放着区域出入口简化房间 int对应JsonInter中的数值
-    QList<int> easyRoomList;
-    ///所有点的权值 初始化必须在调用lujingListquyu()之后 前两个int是easyRoomList的坐标  第三个是权值或者路径最大值
+    ///所有点的权值 初始化必须在调用lujingListquyu()之后 前两个int是JsonInter的首值  第三个是权值或者路径最大值
     std::unordered_map<int, std::unordered_map<int, int>> itemPointMap;
     ///存着每个区域都有哪些房间
     QList<quyu> quyuList;
@@ -72,7 +70,7 @@ public:
     void printf();
     ///打印而已，不要慌
     void printfitemPointMap(std::unordered_map<int, std::unordered_map<int, int>>& sadf);
-    ///寻找最短路径
+    ///寻找最短路径  注意，最后一个点一定要存在与第一个int中,否则查不出路径
     QVector<int> shortest_path(int start, int finish, std::unordered_map<int, std::unordered_map<int, int>> &vertices);
 signals:
 private:

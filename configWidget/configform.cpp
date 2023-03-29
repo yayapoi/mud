@@ -2,6 +2,7 @@
 #include "ui_configform.h"
 #include <INI/inimanarge.h>
 #include "work/maptomapmanage.h"
+#include <QDateTime>
 
 ConfigForm::ConfigForm(QWidget *parent) :
     QWidget(parent),
@@ -156,8 +157,9 @@ void ConfigForm::on_messageCB_stateChanged(int arg1)
 void ConfigForm::on_jisuan_clicked()
 {
     QVector<int> backvec;
+    QDateTime asdf=QDateTime::currentDateTime();
     MapToMapManage::GetInstance()->findLujing(ui->begin->text().toInt(), ui->end->text().toInt(), backvec);
-    qDebug()<<"ConfigForm::on_jisuan_clicked--"<<backvec;
+    qDebug()<<"ConfigForm::on_jisuan_clicked--"<<backvec<<" msec--"<<asdf.msecsTo(QDateTime::currentDateTime());
     ui->begin->clear();
     ui->end->clear();
 }
