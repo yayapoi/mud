@@ -144,7 +144,7 @@ int MapToMapManage::addTime(QVector<int> &vecvec)
 
 int MapToMapManage::addTimeInMap(QVector<int> &vecvec, std::unordered_map<int, std::unordered_map<int, int> > &vertices)
 {
-    int alltime=1;
+    int alltime=0;
     for(int roonnum=0;roonnum<vecvec.size()-1;roonnum++)
     {
         auto beginroomite=vertices.find(vecvec[roonnum]);
